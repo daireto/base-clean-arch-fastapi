@@ -1,5 +1,6 @@
 # API
 fastapi==0.115.12
+validators==0.35.0
 
 # Linting
 mypy==1.15.0
