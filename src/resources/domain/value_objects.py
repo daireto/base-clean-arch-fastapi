@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import validators
 
-from resources.domain.exceptions import InvalidURL
+from resources.domain.exceptions import InvalidURLError
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -11,4 +11,4 @@ class ResourceUrl:
 
     def __post_init__(self):
         if not validators.url(self.value):
-            raise InvalidURL(self.value)
+            raise InvalidURLError(self.value)
