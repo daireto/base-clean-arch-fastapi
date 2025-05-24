@@ -10,8 +10,9 @@ from resources.infrastructure.repositories import (
 
 
 class TestSQLModelResourcesRepository:
-    @pytest.fixture(autouse=True)
+    @pytest.fixture(autouse=True, scope='function')
     def cleanup(self):
+        SQLModel.metadata.create_all(engine)
         yield
         SQLModel.metadata.drop_all(engine)
 
@@ -21,8 +22,7 @@ class TestSQLModelResourcesRepository:
         repo.save(Resource(ResourceUrl(value='https://example.com')))
 
         with Session(engine) as session:
-            stmt = select(ResourceModel)
-            resource = session.exec(stmt).one()
+            resource = session.exec(select(ResourceModel)).one()
             assert resource.url == 'https://example.com'
 
     def test_return_all_resources_from_database(self) -> None:
