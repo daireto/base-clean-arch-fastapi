@@ -22,5 +22,17 @@ class TestSQLModelResourcesRepository:
 
         with Session(engine) as session:
             stmt = select(ResourceModel)
-            resource = session.exec(stmt).first()
+            resource = session.exec(stmt).one()
             assert resource.url == 'https://example.com'
+
+    def test_return_all_resources_from_database(self) -> None:
+        with Session(engine) as session:
+            session.add(ResourceModel(url='https://example.com'))
+            session.add(ResourceModel(url='https://example.org'))
+            session.commit()
+
+        resources = SQLModelResourcesRepository().all()
+
+        assert len(resources) == 2
+        assert resources[0].url == 'https://example.com'
+        assert resources[1].url == 'https://example.org'
