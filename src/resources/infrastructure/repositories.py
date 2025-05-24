@@ -2,6 +2,9 @@ from resources.domain.models import Resource
 from resources.domain.repositories import ResourcesRepository
 
 
-class PostgreSQLResourcesRepository(ResourcesRepository):
-    def get(self) -> Resource:
-        return None
+class SQLModelResourcesRepository(ResourcesRepository):
+    def all(self) -> list[Resource]:
+        pass
+
+    def save(self, resource: Resource) -> None:
+        pass
