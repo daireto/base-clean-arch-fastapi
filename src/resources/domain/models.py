@@ -9,5 +9,6 @@ class Resource:
     def create(cls, resource_url: ResourceUrl) -> 'Resource':
         return cls(resource_url)
 
+    @property
     def url(self) -> str:
         return self._resource_url.value
