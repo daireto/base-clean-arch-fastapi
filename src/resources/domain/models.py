@@ -10,5 +10,5 @@ class Resource:
         return cls(resource_url)
 
     @property
-    def url(self) -> str:
-        return self._resource_url.value
+    def url(self) -> ResourceUrl:
+        return self._resource_url
