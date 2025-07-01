@@ -1,14 +1,22 @@
 # API
-fastapi==0.115.12
-validators==0.35.0
+fastapi[standard]>=0.115.0<0.116.0
+validators>=0.35.0<0.36.0
+
+# Event loop
+# uvloop==0.17.0 # Windows is not supported at the moment
 
 # Database
-sqlmodel==0.0.24
+aiosqlite>=0.21.0<0.22.0
+sqlactive>=0.3.6<0.4.0
+odata-v4-query>=0.3.0<0.4.0
+
+# Dependencies
+lagom>=2.7.0<2.8.0
 
 # Linting
-mypy==1.15.0
-ruff==0.11.8
+mypy>=1.15.0<1.16.0
+ruff<=0.12.1<0.13.0
 
 # Testing
-httpx==0.28.1
-pytest==8.3.5
+httpx>=0.28.1<0.29.0
+pytest>=8.4.1<8.5.0
