@@ -10,6 +10,8 @@ class DBModel(ActiveRecordBaseModel):
 
 
 class SQLiteResourceModel(DBModel):
+    __tablename__ = 'resources'
+
     name: Mapped[str] = mapped_column()
     url: Mapped[str] = mapped_column()
     type: Mapped[str] = mapped_column()
