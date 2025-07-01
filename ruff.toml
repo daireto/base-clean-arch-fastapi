@@ -1,5 +1,3 @@
-extend-exclude = ["tests"]
-
 [format]
 quote-style = "single"
 
@@ -39,6 +37,12 @@ ignore = [
     "TD003",   # Missing issue link for this TODO
     "FIX001",  # Line contains FIXME, consider resolving the issue
     "FIX002",  # Line contains TODO, consider resolving the issue
+]
+
+[lint.per-file-ignores]
+"test_*.py" = [
+    "ANN201",  # Missing type annotation for public function
+    "S101",    # Use of `assert` detected
 ]
 
 [lint.flake8-quotes]
