@@ -9,6 +9,7 @@ from resources.domain.errors import ResourceNotFoundError
 from resources.domain.repositories import ResourceRepositoryABC
 from resources.domain.value_objects import ResourceType, ResourceUrl
 from resources.infrastructure.models import DBModel, SQLiteResourceModel
+from shared.config import SharedSettings
 
 
 class SQLiteResourceRepository(ResourceRepositoryABC):
@@ -26,7 +27,13 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
             updated_at=resource.updated_at.timestamp(),
         )
 
-    async def all(self, odata_options: ODataQueryOptions) -> list[Resource]:
+    async def all(
+        self,
+        odata_options: ODataQueryOptions | None = None,
+    ) -> list[Resource]:
+        if not odata_options:
+            odata_options = ODataQueryOptions(top=SharedSettings.MAX_RECORDS_PER_PAGE)
+
         query = apply_to_sqlalchemy_query(odata_options, SQLiteResourceModel)
         result = await execute(query, DBModel)
         resources = result.scalars().all()
