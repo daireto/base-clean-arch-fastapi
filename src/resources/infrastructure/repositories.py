@@ -42,10 +42,18 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
             for resource in resources
         ]
 
-    async def save(self, resource: Resource) -> SQLiteResourceModel:
+    async def save(self, resource: Resource) -> Resource:
         resource_model = SQLiteResourceModel(
             name=resource.name,
             url=resource.url.value,
             type=resource.type.value,
         )
-        return await resource_model.save()
+        await resource_model.save()
+        return Resource(
+            id=resource_model.id,
+            name=resource_model.name,
+            url=ResourceUrl(value=resource_model.url),
+            type=ResourceType(value=resource_model.type),
+            created_at=resource_model.created_at.timestamp(),
+            updated_at=resource_model.updated_at.timestamp(),
+        )

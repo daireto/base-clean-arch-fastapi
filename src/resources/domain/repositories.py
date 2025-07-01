@@ -4,7 +4,6 @@ from uuid import UUID
 from odata_v4_query import ODataQueryOptions
 
 from resources.domain.entities import Resource
-from resources.infrastructure.models import DBModel
 
 
 class ResourceRepositoryABC(ABC):
@@ -15,4 +14,4 @@ class ResourceRepositoryABC(ABC):
     async def all(self, odata_options: ODataQueryOptions) -> list[Resource]: ...
 
     @abstractmethod
-    async def save(self, resource: Resource) -> DBModel: ...
+    async def save(self, resource: Resource) -> Resource: ...
