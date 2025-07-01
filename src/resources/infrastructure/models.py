@@ -1,4 +1,4 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from sqlactive import ActiveRecordBaseModel
 from sqlalchemy.orm import Mapped, mapped_column
@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 class DBModel(ActiveRecordBaseModel):
     __abstract__ = True
-    id: Mapped[UUID] = mapped_column(primary_key=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
 
 
 class SQLiteResourceModel(DBModel):
