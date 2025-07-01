@@ -1,11 +1,18 @@
 from abc import ABC, abstractmethod
+from uuid import UUID
 
-from resources.domain.models import Resource
+from odata_v4_query import ODataQueryOptions
+
+from resources.domain.entities import Resource
+from resources.infrastructure.models import DBModel
 
 
-class ResourcesRepository(ABC):
+class ResourceRepositoryABC(ABC):
     @abstractmethod
-    def all(self) -> list[Resource]: ...
+    async def get_by_id(self, id_: UUID) -> Resource: ...
 
     @abstractmethod
-    def save(self, resource: Resource) -> None: ...
+    async def all(self, odata_options: ODataQueryOptions) -> list[Resource]: ...
+
+    @abstractmethod
+    async def save(self, resource: Resource) -> DBModel: ...
