@@ -46,6 +46,6 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
         resource_model = SQLiteResourceModel(
             name=resource.name,
             url=resource.url.value,
-            type=resource.type,
+            type=resource.type.value,
         )
         return await resource_model.save()
