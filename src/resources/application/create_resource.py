@@ -1,20 +1,26 @@
 from dataclasses import dataclass
 
-from resources.domain.models import Resource
-from resources.domain.repositories import ResourcesRepository
-from resources.domain.value_objects import ResourceUrl
+from resources.domain.entities import Resource
+from resources.domain.repositories import ResourceRepositoryABC
+from resources.domain.value_objects import ResourceType, ResourceUrl
 
 
 @dataclass
-class CreateResourceDTO:
-    resource_url: str
+class CreateResourceCommand:
+    name: str
+    url: str
+    type: str
 
 
-class CreateResource:
-    def __init__(self, resource_repository: ResourcesRepository):
+class CreateResourceHandler:
+    def __init__(self, resource_repository: ResourceRepositoryABC) -> None:
         self._resource_repository = resource_repository
 
-    def execute(self, dto: CreateResourceDTO) -> None:
-        resource_url = ResourceUrl(value=dto.resource_url)
-        resource = Resource.create(resource_url)
-        self._resource_repository.save(resource)
+    async def handle(self, command: CreateResourceCommand) -> Resource:
+        resource = Resource(
+            name=command.name,
+            url=ResourceUrl(value=command.url),
+            type=ResourceType(value=command.type),
+        )
+        await self._resource_repository.save(resource)
+        return resource
