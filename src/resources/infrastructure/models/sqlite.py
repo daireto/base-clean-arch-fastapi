@@ -4,11 +4,11 @@ from sqlactive import ActiveRecordBaseModel
 from sqlalchemy.orm import Mapped, mapped_column
 
 
-class DBModel(ActiveRecordBaseModel):
+class SQLiteDBModel(ActiveRecordBaseModel):
     __abstract__ = True
 
 
-class SQLiteResourceModel(DBModel):
+class SQLiteResourceModel(SQLiteDBModel):
     __tablename__ = 'resources'
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
