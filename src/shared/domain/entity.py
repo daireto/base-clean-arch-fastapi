@@ -1,11 +1,14 @@
-from dataclasses import dataclass, field
+import time
 from uuid import UUID
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from shared.domain.utils import empty_uuid
 
 
-@dataclass(frozen=True, kw_only=True)
-class Entity:
-    id: UUID = field(default_factory=empty_uuid)
-    created_at: float = 0
-    updated_at: float = 0
+class Entity(BaseModel):
+    id: UUID = Field(default_factory=empty_uuid)
+    created_at: float = Field(default_factory=time.time)
+    updated_at: float = Field(default_factory=time.time)
+
+    model_config = ConfigDict(frozen=True)
