@@ -1,39 +1,58 @@
+from uuid import UUID
+
 import pytest
 
 from resources.application.create_resource import (
-    CreateResource,
-    CreateResourceDTO,
+    CreateResourceCommand,
+    CreateResourceHandler,
 )
-from resources.domain.exceptions import InvalidURLError
-from resources.domain.models import Resource
-from resources.domain.repositories import ResourcesRepository
+from resources.domain.entities import Resource
+from resources.domain.errors import InvalidURLError
+from resources.domain.repositories import ResourceRepositoryABC
 
 
-class FakeResourcesRepository(ResourcesRepository):
-    def __init__(self):
-        self.resources = []
+class FakeResourcesRepository(ResourceRepositoryABC):
+    def __init__(self) -> None:
+        self.resources = {}
 
-    def all(self) -> list[Resource]:
-        return self.resources
+    async def get_by_id(self, id_: UUID) -> Resource:
+        return self.resources[id_]
 
-    def save(self, resource: Resource) -> None:
-        self.resources.append(resource)
+    async def all(self) -> list[Resource]:
+        return list(self.resources.values())
+
+    async def save(self, resource: Resource) -> None:
+        self.resources[resource.id] = resource
 
 
+@pytest.mark.asyncio
 class TestCreateResource:
-    def test_create_resource(self):
+    async def test_create_resource(self):
         resource_repository = FakeResourcesRepository()
-        CreateResource(resource_repository).execute(
-            CreateResourceDTO(resource_url='https://example.com')
+
+        await CreateResourceHandler(resource_repository).handle(
+            CreateResourceCommand(
+                name='Random Image',
+                url='https://example.com',
+                type='image',
+            )
         )
-        resources = resource_repository.all()
+        resources = await resource_repository.all()
+
         assert len(resources) == 1
         assert resources[0].url == 'https://example.com'
 
-    def test_raise_when_resource_url_is_invalid(self):
+    async def test_raise_when_resource_url_is_invalid(self):
         resource_repository = FakeResourcesRepository()
-        create_resource = CreateResource(resource_repository)
+
         with pytest.raises(InvalidURLError):
-            create_resource.execute(CreateResourceDTO(resource_url='not-a-valid-url'))
-        resources = resource_repository.all()
+            await CreateResourceHandler(resource_repository).handle(
+                CreateResourceCommand(
+                    name='Random Image',
+                    url='not-a-valid-url',
+                    type='image',
+                )
+            )
+        resources = await resource_repository.all()
+
         assert len(resources) == 0
