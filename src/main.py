@@ -6,16 +6,20 @@ from fastapi.responses import ORJSONResponse
 from sqlactive import DBConnection
 
 from resources.api import router as resources_router
-from resources.infrastructure.models import DBModel as ResourcesDBModel
+from resources.infrastructure.models.sqlite import SQLiteDBModel as ResourcesDBModel
+from shared import settings
 from shared.api import router as shared_router
-from shared.config import SharedSettings
 
-conn = DBConnection(SharedSettings.DATABASE_URL, echo=False)
+conn = DBConnection(settings.DATABASE_URL, echo=False)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    await conn.init_db(ResourcesDBModel)
+    base_models = [
+        ResourcesDBModel,
+    ]
+    for model in base_models:
+        await conn.init_db(model)
     yield
 
 
