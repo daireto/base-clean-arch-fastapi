@@ -25,17 +25,39 @@ This project follows the **Hexagonal Architecture** (Ports and Adapters) pattern
 
 ```
 src/
-├── main.py                 # FastAPI application entry point
-├── shared/                 # Shared utilities and common code
-│   └── api.py             # Shared API routes (health check)
-└── resources/             # Resources domain module
-    ├── api.py             # Resource API endpoints
-    ├── di.py              # Dependency injection configuration
-    ├── domain/            # Domain layer
-    │   └── repositories/  # Repository interfaces
-    └── infrastructure/    # Infrastructure layer
-        ├── models/        # Database models
-        └── repositories/  # Repository implementations
+├── resources/                  # Resources domain module
+│   ├── application/            # Application layer (use cases)
+│   │   ├── create_resource.py  # Create resource use case
+│   │   ├── delete_resource.py  # Delete resource use case
+│   │   ├── get_resource.py     # Get resource use case
+│   │   ├── list_resources.py   # List resources use case
+│   │   └── update_resource.py  # Update resource use case
+│   ├── domain/                 # Domain layer
+│   │   ├── entities.py         # Domain entities
+│   │   ├── errors.py           # Domain-specific errors
+│   │   ├── repositories.py     # Repository interfaces
+│   │   └── value_objects.py    # Value objects
+│   ├── infrastructure/         # Infrastructure layer
+│   │   ├── models/             # Database models
+│   │   │   └── sqlite.py       # SQLite database models
+│   │   └── repositories/       # Repository implementations
+│   │       └── sqlite.py       # SQLite repository implementation
+│   ├── tests/                  # Tests
+│   │   ├── api/                # API tests
+│   │   ├── application/        # Application layer tests
+│   │   └── infrastructure/     # Infrastructure layer tests
+│   ├── api.py                  # Resource API endpoints
+│   ├── di.py                   # Dependency injection configuration
+│   └── dtos.py                 # Data transfer objects
+├── shared/                     # Shared utilities and common code
+│   ├── domain/                 # Shared domain layer
+│   │   ├── bases.py            # Base classes for DTOs, entities, etc.
+│   │   ├── entity.py           # Entity base class
+│   │   ├── utils.py            # Shared utility functions
+│   │   └── value_object.py     # Value object base class
+│   ├── api.py                  # Shared API routes (e.g., health check)
+│   └── settings.py             # Application settings
+└── main.py                     # FastAPI application entry point
 ```
 
 ## 🛠️ Development Setup
@@ -121,4 +143,4 @@ This project structure provides:
 
 ## 📄 License
 
-This project is a base template for FastAPI applications with clean architecture.
+This project is licensed under the [MIT License](LICENSE.md).
