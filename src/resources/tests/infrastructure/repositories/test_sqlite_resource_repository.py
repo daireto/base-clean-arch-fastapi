@@ -2,11 +2,14 @@ import pytest
 import pytest_asyncio
 from sqlactive import DBConnection
 
-from resources.domain.entities import Resource
-from resources.domain.value_objects import ResourceType, ResourceUrl
-from resources.infrastructure.models.sqlite import SQLiteDBModel, SQLiteResourceModel
-from resources.infrastructure.repositories.sqlite import SQLiteResourceRepository
-from shared import settings
+from src.resources.domain.entities import Resource
+from src.resources.domain.value_objects import ResourceType, ResourceUrl
+from src.resources.infrastructure.models.sqlite import (
+    SQLiteDBModel,
+    SQLiteResourceModel,
+)
+from src.resources.infrastructure.repositories.sqlite import SQLiteResourceRepository
+from src.shared import settings
 
 db_conn = DBConnection(settings.DATABASE_URL, echo=False)
 

@@ -3,7 +3,7 @@ from uuid import UUID
 
 from odata_v4_query import ODataQueryOptions
 
-from resources.domain.entities import Resource
+from src.resources.domain.entities import Resource
 
 
 class ResourceRepositoryABC(ABC):
@@ -15,3 +15,6 @@ class ResourceRepositoryABC(ABC):
 
     @abstractmethod
     async def save(self, resource: Resource) -> Resource: ...
+
+    @abstractmethod
+    async def delete(self, id_: UUID) -> None: ...
