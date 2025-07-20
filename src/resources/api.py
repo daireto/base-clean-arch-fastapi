@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Request, Response, status
+from odata_v4_query import ODataQueryParser
 
 from src.resources.application.create_resource import (
     CreateResourceCommand,
@@ -12,6 +13,7 @@ from src.resources.application.get_resource import (
     GetResourceCommand,
     GetResourceHandler,
 )
+from src.resources.application.list_resources import ListResourcesHandler
 from src.resources.application.update_resource import (
     UpdateResourceCommand,
     UpdateResourceHandler,
@@ -30,6 +32,17 @@ async def get_resource(
 ) -> ResourceResponseDTO:
     resource = await GetResourceHandler(repo).handle(GetResourceCommand(id_))
     return ResourceResponseDTO.from_domain(resource)
+
+
+@router.get('/resources/')
+async def list_resources(
+    request: Request,
+    repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
+) -> list[ResourceResponseDTO]:
+    parser = ODataQueryParser()
+    odata_options = parser.parse_query_string(request.url.query)
+    resources = await ListResourcesHandler(repo).handle(odata_options)
+    return [ResourceResponseDTO.from_domain(resource) for resource in resources]
 
 
 @router.post('/resources/')
