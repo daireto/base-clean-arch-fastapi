@@ -62,8 +62,8 @@ class TestSQLiteResourcesRepository:
         assert resources[0].url == 'https://example.com'
         assert resources[1].url == 'https://example.org'
 
-    async def test_save_resource_to_database(self):
-        await SQLiteResourceRepository().save(
+    async def test_create_resource_and_save_it_to_database(self):
+        await SQLiteResourceRepository().create(
             Resource(
                 name='Random Image',
                 url=ResourceUrl(value='https://example.com'),
@@ -75,6 +75,36 @@ class TestSQLiteResourcesRepository:
         assert resource.name == 'Random Image'
         assert resource.url == 'https://example.com'
         assert resource.type == 'image'
+        assert resource.created_at == resource.updated_at
+
+    async def test_update_resource_in_database(self):
+        resource = await SQLiteResourceModel.create(
+            name='Random Image',
+            url='https://example.com',
+            type='image',
+        )
+
+        resource = await SQLiteResourceRepository().update(
+            Resource(
+                id=resource.id,
+                name='Random Image',
+                url=ResourceUrl(value='https://example.org'),
+                type=ResourceType(value='image'),
+            )
+        )
+
+        assert resource.url == 'https://example.org'
+
+    async def test_raise_when_updating_resource_that_does_not_exist(self):
+        with pytest.raises(ResourceNotFoundError):
+            await SQLiteResourceRepository().update(
+                Resource(
+                    id=empty_uuid(),
+                    name='Random Image',
+                    url=ResourceUrl(value='https://example.org'),
+                    type=ResourceType(value='image'),
+                )
+            )
 
     async def test_delete_resource_from_database(self):
         resource = await SQLiteResourceModel.create(
