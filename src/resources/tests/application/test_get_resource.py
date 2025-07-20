@@ -32,7 +32,7 @@ class TestGetResource:
         assert resource.url == 'https://example.com'
         assert resource.type == 'image'
 
-    async def test_raise_when_getting_a_resource_that_does_not_exist(self):
+    async def test_raise_when_getting_resource_that_does_not_exist(self):
         resource_repository = MockResourcesRepository()
 
         with pytest.raises(ResourceNotFoundError):

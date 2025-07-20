@@ -39,7 +39,7 @@ class TestSQLiteResourcesRepository:
         assert resource.url == 'https://example.com'
         assert resource.type == 'image'
 
-    async def test_raise_when_getting_a_resource_that_does_not_exist(self):
+    async def test_raise_when_getting_resource_that_does_not_exist(self):
         with pytest.raises(ResourceNotFoundError):
             await SQLiteResourceRepository().get_by_id(empty_uuid())
 
@@ -87,6 +87,6 @@ class TestSQLiteResourcesRepository:
 
         assert await SQLiteResourceModel.count() == 0
 
-    async def test_raise_when_deleting_a_resource_that_does_not_exist(self):
+    async def test_raise_when_deleting_resource_that_does_not_exist(self):
         with pytest.raises(ResourceNotFoundError):
             await SQLiteResourceRepository().delete(empty_uuid())
