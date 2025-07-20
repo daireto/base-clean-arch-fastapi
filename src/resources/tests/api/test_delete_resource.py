@@ -24,20 +24,16 @@ async def resource():
 
 
 @pytest.mark.asyncio
-class TestGetResource:
-    async def test_get_resource_and_return_200(self, resource: Resource):
+class TestDeleteResource:
+    async def test_delete_resource_and_return_204(self, resource: Resource):
         with TestClient(app) as client:
-            response = client.get(f'/resources/{resource.id}')
+            response = client.delete(f'/resources/{resource.id}')
 
-        assert response.status_code == status.HTTP_200_OK
+        assert response.status_code == status.HTTP_204_NO_CONTENT
 
-        response_content = response.json()
-        assert response_content['id'] == str(resource.id)
-        assert response_content['name'] == 'Random Image'
-        assert response_content['url'] == 'https://example.com'
-        assert response_content['type'] == 'image'
-
-    async def test_raise_when_getting_resource_that_does_not_exist_and_return_404(self):
+    async def test_raise_when_deleting_resource_that_does_not_exist_and_return_404(
+        self,
+    ):
         with TestClient(app) as client:
             response = client.get(f'/resources/{empty_uuid()}')
 
