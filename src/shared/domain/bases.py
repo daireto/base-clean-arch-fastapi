@@ -1,4 +1,4 @@
-from fastapi import status
+from fastapi import HTTPException, status
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
@@ -28,12 +28,10 @@ class BaseEntityResponseDTO(BaseResponseDTO):
     updated_at: float
 
 
-class BaseError(Exception):
+class BaseError(HTTPException):
     def __init__(
         self,
-        message: str,
+        detail: str,
         status_code: int = status.HTTP_400_BAD_REQUEST,
     ) -> None:
-        self.message = message
-        self.status_code = status_code
-        super().__init__(message)
+        super().__init__(status_code=status_code, detail=detail)
