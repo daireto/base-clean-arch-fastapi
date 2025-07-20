@@ -3,6 +3,7 @@ import pytest_asyncio
 from sqlactive import DBConnection
 
 from src.resources.domain.entities import Resource
+from src.resources.domain.errors import ResourceNotFoundError
 from src.resources.domain.value_objects import ResourceType, ResourceUrl
 from src.resources.infrastructure.models.sqlite import (
     SQLiteDBModel,
@@ -10,6 +11,7 @@ from src.resources.infrastructure.models.sqlite import (
 )
 from src.resources.infrastructure.repositories.sqlite import SQLiteResourceRepository
 from src.shared import settings
+from src.shared.domain.utils import empty_uuid
 
 db_conn = DBConnection(settings.DATABASE_URL, echo=False)
 
@@ -36,6 +38,10 @@ class TestSQLiteResourcesRepository:
         assert resource.name == 'Random Image'
         assert resource.url == 'https://example.com'
         assert resource.type == 'image'
+
+    async def test_raise_when_getting_a_resource_that_does_not_exist(self):
+        with pytest.raises(ResourceNotFoundError):
+            await SQLiteResourceRepository().get_by_id(empty_uuid())
 
     async def test_return_all_resources_from_database(self):
         await SQLiteResourceModel.create(
@@ -80,3 +86,7 @@ class TestSQLiteResourcesRepository:
         await SQLiteResourceRepository().delete(resource.id)
 
         assert await SQLiteResourceModel.count() == 0
+
+    async def test_raise_when_deleting_a_resource_that_does_not_exist(self):
+        with pytest.raises(ResourceNotFoundError):
+            await SQLiteResourceRepository().delete(empty_uuid())
