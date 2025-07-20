@@ -13,7 +13,7 @@ from src.resources.domain.value_objects import ResourceType, ResourceUrl
 class TestUpdateResource:
     async def test_update_resource_and_return_200(self):
         repo = container[ResourceRepositoryABC]
-        resource = await repo.save(
+        resource = await repo.create(
             Resource(
                 name='Random Image',
                 url=ResourceUrl(value='https://example.com'),
@@ -32,7 +32,7 @@ class TestUpdateResource:
         assert response.status_code == status.HTTP_200_OK
 
         response_content = response.json()
-        assert response_content['id'] == resource.id
+        assert response_content['id'] == str(resource.id)
         assert response_content['name'] == data['name']
         assert response_content['url'] == data['url']
         assert response_content['type'] == data['type']
