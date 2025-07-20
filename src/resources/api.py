@@ -1,8 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response, status
 
 from src.resources.application.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
+)
+from src.resources.application.delete_resource import (
+    DeleteResourceCommand,
+    DeleteResourceHandler,
 )
 from src.resources.application.get_resource import (
     GetResourceCommand,
@@ -58,3 +62,12 @@ async def update_resource(
         )
     )
     return ResourceResponseDTO.from_domain(resource)
+
+
+@router.delete('/resources/{id_}')
+async def delete_resource(
+    id_: str,
+    repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
+) -> Response:
+    await DeleteResourceHandler(repo).handle(DeleteResourceCommand(id_))
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
