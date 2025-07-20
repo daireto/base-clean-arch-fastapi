@@ -21,14 +21,7 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
         if not resource:
             raise ResourceNotFoundError(id_)
 
-        return Resource(
-            id=resource.id,
-            name=resource.name,
-            url=ResourceUrl(value=resource.url),
-            type=ResourceType(value=resource.type),
-            created_at=resource.created_at.timestamp(),
-            updated_at=resource.updated_at.timestamp(),
-        )
+        return self.__get_model_to_entity(resource)
 
     async def all(
         self,
@@ -40,36 +33,40 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
         query = apply_to_sqlalchemy_query(odata_options, SQLiteResourceModel)
         result = await execute(query, SQLiteDBModel)
         resources = result.scalars().all()
-        return [
-            Resource(
-                id=resource.id,
-                name=resource.name,
-                url=ResourceUrl(value=resource.url),
-                type=ResourceType(value=resource.type),
-                created_at=resource.created_at.timestamp(),
-                updated_at=resource.updated_at.timestamp(),
-            )
-            for resource in resources
-        ]
+        return [self.__get_model_to_entity(resource) for resource in resources]
 
-    async def save(self, resource: Resource) -> Resource:
+    async def create(self, resource: Resource) -> Resource:
         resource_model = SQLiteResourceModel(
             name=resource.name,
             url=resource.url.value,
             type=resource.type.value,
         )
         await resource_model.save()
-        return Resource(
-            id=resource_model.id,
-            name=resource_model.name,
-            url=ResourceUrl(value=resource_model.url),
-            type=ResourceType(value=resource_model.type),
-            created_at=resource_model.created_at.timestamp(),
-            updated_at=resource_model.updated_at.timestamp(),
-        )
+        return self.__get_model_to_entity(resource_model)
+
+    async def update(self, resource: Resource) -> Resource:
+        resource_model = await SQLiteResourceModel.get(resource.id)
+        if not resource_model:
+            raise ResourceNotFoundError(resource.id)
+
+        resource_model.name = resource.name
+        resource_model.url = resource.url.value
+        resource_model.type = resource.type.value
+        await resource_model.save()
+        return self.__get_model_to_entity(resource_model)
 
     async def delete(self, id_: UUID) -> None:
         resource = await SQLiteResourceModel.get(id_)
         if not resource:
             raise ResourceNotFoundError(id_)
         await resource.delete()
+
+    def __get_model_to_entity(self, model: SQLiteResourceModel) -> Resource:
+        return Resource(
+            id=model.id,
+            name=model.name,
+            url=ResourceUrl(value=model.url),
+            type=ResourceType(value=model.type),
+            created_at=model.created_at.timestamp(),
+            updated_at=model.updated_at.timestamp(),
+        )
