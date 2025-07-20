@@ -1,5 +1,6 @@
 import pytest
 import pytest_asyncio
+from odata_v4_query import ODataQueryOptions
 from sqlactive import DBConnection
 
 from src.resources.domain.entities import Resource
@@ -55,7 +56,9 @@ class TestSQLiteResourcesRepository:
             type='image',
         )
 
-        resources = await SQLiteResourceRepository().all()
+        resources = await SQLiteResourceRepository().all(
+            odata_options=ODataQueryOptions(top=10),
+        )
 
         expected_resources_count = 2
         assert len(resources) == expected_resources_count
