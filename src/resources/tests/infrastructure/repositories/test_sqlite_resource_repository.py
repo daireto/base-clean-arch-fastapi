@@ -66,3 +66,14 @@ class TestSQLiteResourcesRepository:
         assert resource.name == 'Random Image'
         assert resource.url == 'https://example.com'
         assert resource.type == 'image'
+
+    async def test_delete_resource_from_database(self):
+        resource = await SQLiteResourceModel.create(
+            name='Random Image',
+            url='https://example.com',
+            type='image',
+        )
+
+        await SQLiteResourceRepository().delete(resource.id)
+
+        assert await SQLiteResourceModel.count() == 0
