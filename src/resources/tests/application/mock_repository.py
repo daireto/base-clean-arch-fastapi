@@ -17,7 +17,13 @@ class MockResourcesRepository(ResourceRepositoryABC):
     async def all(self) -> list[Resource]:
         return list(self.resources.values())
 
-    async def save(self, resource: Resource) -> Resource:
+    async def create(self, resource: Resource) -> Resource:
+        self.resources[resource.id] = resource
+        return resource
+
+    async def update(self, resource: Resource) -> Resource:
+        if resource.id not in self.resources:
+            raise ResourceNotFoundError(resource.id)
         self.resources[resource.id] = resource
         return resource
 
