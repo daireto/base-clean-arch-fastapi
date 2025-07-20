@@ -21,6 +21,19 @@ async def cleanup():
 
 @pytest.mark.asyncio
 class TestSQLiteResourcesRepository:
+    async def test_get_resource_by_id(self):
+        resource = await SQLiteResourceModel.create(
+            name='Random Image',
+            url='https://example.com',
+            type='image',
+        )
+
+        resource = await SQLiteResourceRepository().get_by_id(resource.id)
+
+        assert resource.name == 'Random Image'
+        assert resource.url == 'https://example.com'
+        assert resource.type == 'image'
+
     async def test_return_all_resources_from_database(self):
         await SQLiteResourceModel.create(
             name='Random Image',
