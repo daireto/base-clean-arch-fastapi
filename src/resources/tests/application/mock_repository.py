@@ -1,8 +1,11 @@
 from uuid import UUID
 
+from odata_v4_query import ODataQueryOptions
+
 from src.resources.domain.entities import Resource
 from src.resources.domain.errors import ResourceNotFoundError
 from src.resources.domain.repositories import ResourceRepositoryABC
+from src.shared import settings
 
 
 class MockResourcesRepository(ResourceRepositoryABC):
@@ -14,7 +17,23 @@ class MockResourcesRepository(ResourceRepositoryABC):
             raise ResourceNotFoundError(id_)
         return self.resources[id_]
 
-    async def all(self) -> list[Resource]:
+    async def all(
+        self, odata_options: ODataQueryOptions | None = None
+    ) -> list[Resource]:
+        if not odata_options:
+            odata_options = ODataQueryOptions(top=settings.MAX_RECORDS_PER_PAGE)
+
+        if odata_options.skip and odata_options.top:
+            return list(self.resources.values())[
+                odata_options.skip : odata_options.skip + odata_options.top
+            ]
+
+        if odata_options.skip:
+            return list(self.resources.values())[odata_options.skip :]
+
+        if odata_options.top:
+            return list(self.resources.values())[: odata_options.top]
+
         return list(self.resources.values())
 
     async def create(self, resource: Resource) -> Resource:
