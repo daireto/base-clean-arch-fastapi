@@ -4,8 +4,8 @@ from src.resources.application.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
 )
-from src.resources.domain.errors import InvalidURLError
-from src.resources.infrastructure.repositories.mock import MockResourcesRepository
+from src.resources.domain.errors import InvalidURLError, ResourceTypeNotSupportedError
+from src.resources.tests.application.mock import MockResourcesRepository
 
 
 @pytest.mark.asyncio
@@ -34,6 +34,21 @@ class TestCreateResource:
                     name='Random Image',
                     url='not-a-valid-url',
                     type='image',
+                )
+            )
+        resources = await resource_repository.all()
+
+        assert len(resources) == 0
+
+    async def test_raise_when_resource_type_is_not_supported(self):
+        resource_repository = MockResourcesRepository()
+
+        with pytest.raises(ResourceTypeNotSupportedError):
+            await CreateResourceHandler(resource_repository).handle(
+                CreateResourceCommand(
+                    name='Random Image',
+                    url='https://example.com',
+                    type='not-a-valid-type',
                 )
             )
         resources = await resource_repository.all()
