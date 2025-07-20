@@ -17,8 +17,9 @@ class MockResourcesRepository(ResourceRepositoryABC):
     async def all(self) -> list[Resource]:
         return list(self.resources.values())
 
-    async def save(self, resource: Resource) -> None:
+    async def save(self, resource: Resource) -> Resource:
         self.resources[resource.id] = resource
+        return resource
 
     async def delete(self, id_: UUID) -> None:
         if id_ not in self.resources:

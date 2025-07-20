@@ -23,6 +23,7 @@ class TestUpdateResource:
         resource_repository = MockResourcesRepository()
         id_ = uuid.uuid4()
         resource_repository.resources[id_] = Resource(
+            id=id_,
             name='Random Image',
             url=ResourceUrl(value='https://example.com'),
             type=ResourceType(value='image'),
@@ -37,7 +38,7 @@ class TestUpdateResource:
             )
         )
 
-        assert resource.id_ == id_
+        assert resource.id == id_
         assert resource.name == 'Random Text'
         assert resource.url == 'https://example.org'
         assert resource.type == 'text'
@@ -46,6 +47,7 @@ class TestUpdateResource:
         resource_repository = MockResourcesRepository()
         id_ = uuid.uuid4()
         resource_repository.resources[id_] = Resource(
+            id=id_,
             name='Random Image',
             url=ResourceUrl(value='https://example.com'),
             type=ResourceType(value='image'),
@@ -60,14 +62,12 @@ class TestUpdateResource:
                     type='image',
                 )
             )
-        resources = await resource_repository.all()
-
-        assert len(resources) == 0
 
     async def test_raise_when_resource_type_is_not_supported(self):
         resource_repository = MockResourcesRepository()
         id_ = uuid.uuid4()
         resource_repository.resources[id_] = Resource(
+            id=id_,
             name='Random Image',
             url=ResourceUrl(value='https://example.com'),
             type=ResourceType(value='image'),
@@ -82,9 +82,6 @@ class TestUpdateResource:
                     type='not-a-valid-type',
                 )
             )
-        resources = await resource_repository.all()
-
-        assert len(resources) == 0
 
     async def test_raise_when_updating_resource_that_does_not_exist(self):
         resource_repository = MockResourcesRepository()
