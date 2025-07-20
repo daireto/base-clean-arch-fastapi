@@ -18,13 +18,11 @@ class TestGetResource:
     async def test_get_resource_by_id(self):
         resource_repository = MockResourcesRepository()
         id_ = uuid.uuid4()
-        resource_repository.resources = {
-            id_: Resource(
-                name='Random Image',
-                url=ResourceUrl(value='https://example.com'),
-                type=ResourceType(value='image'),
-            )
-        }
+        resource_repository.resources[id_] = Resource(
+            name='Random Image',
+            url=ResourceUrl(value='https://example.com'),
+            type=ResourceType(value='image'),
+        )
 
         resource = await GetResourceHandler(resource_repository).handle(
             GetResourceCommand(id_=id_)
