@@ -1,5 +1,5 @@
-from resources.domain.entities import Resource
-from shared.domain.bases import BaseEntityResponseDTO, BaseRequestDTO
+from src.resources.domain.entities import Resource
+from src.shared.domain.bases import BaseEntityResponseDTO, BaseRequestDTO
 
 
 class CreateResourceRequestDTO(BaseRequestDTO):

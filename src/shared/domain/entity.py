@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from shared.domain.utils import empty_uuid
+from src.shared.domain.utils import empty_uuid
 
 
 class Entity(BaseModel):

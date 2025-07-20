@@ -1,5 +1,5 @@
-from resources.domain.value_objects import ResourceType, ResourceUrl
-from shared.domain.entity import Entity
+from src.resources.domain.value_objects import ResourceType, ResourceUrl
+from src.shared.domain.entity import Entity
 
 
 class Resource(Entity):

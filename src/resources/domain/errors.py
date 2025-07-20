@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import status
 
-from shared.domain.bases import BaseError
+from src.shared.domain.bases import BaseError
 
 
 class ResourceNotFoundError(BaseError, ValueError):

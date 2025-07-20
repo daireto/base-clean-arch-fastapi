@@ -1,34 +1,17 @@
-from uuid import UUID
-
 import pytest
 
-from resources.application.create_resource import (
+from src.resources.application.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
 )
-from resources.domain.entities import Resource
-from resources.domain.errors import InvalidURLError
-from resources.domain.repositories import ResourceRepositoryABC
-
-
-class FakeResourcesRepository(ResourceRepositoryABC):
-    def __init__(self) -> None:
-        self.resources = {}
-
-    async def get_by_id(self, id_: UUID) -> Resource:
-        return self.resources[id_]
-
-    async def all(self) -> list[Resource]:
-        return list(self.resources.values())
-
-    async def save(self, resource: Resource) -> None:
-        self.resources[resource.id] = resource
+from src.resources.domain.errors import InvalidURLError
+from src.resources.infrastructure.repositories.mock import MockResourcesRepository
 
 
 @pytest.mark.asyncio
 class TestCreateResource:
     async def test_create_resource(self):
-        resource_repository = FakeResourcesRepository()
+        resource_repository = MockResourcesRepository()
 
         await CreateResourceHandler(resource_repository).handle(
             CreateResourceCommand(
@@ -43,7 +26,7 @@ class TestCreateResource:
         assert resources[0].url == 'https://example.com'
 
     async def test_raise_when_resource_url_is_invalid(self):
-        resource_repository = FakeResourcesRepository()
+        resource_repository = MockResourcesRepository()
 
         with pytest.raises(InvalidURLError):
             await CreateResourceHandler(resource_repository).handle(

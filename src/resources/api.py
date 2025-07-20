@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 
-from resources.application.create_resource import (
+from src.resources.application.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
 )
-from resources.di import deps
-from resources.domain.repositories import ResourceRepositoryABC
-from resources.dtos import CreateResourceRequestDTO, ResourceResponseDTO
+from src.resources.di import deps
+from src.resources.domain.repositories import ResourceRepositoryABC
+from src.resources.dtos import CreateResourceRequestDTO, ResourceResponseDTO
 
 router = APIRouter()
 

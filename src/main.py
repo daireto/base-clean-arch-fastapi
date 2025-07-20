@@ -5,10 +5,10 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from sqlactive import DBConnection
 
-from resources.api import router as resources_router
-from resources.infrastructure.models.sqlite import SQLiteDBModel as ResourcesDBModel
-from shared import settings
-from shared.api import router as shared_router
+from src.resources.api import router as resources_router
+from src.resources.infrastructure.models.sqlite import SQLiteDBModel as ResourcesDBModel
+from src.shared import settings
+from src.shared.api import router as shared_router
 
 conn = DBConnection(settings.DATABASE_URL, echo=False)
 

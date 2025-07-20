@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from resources.domain.entities import Resource
-from resources.domain.repositories import ResourceRepositoryABC
-from resources.domain.value_objects import ResourceType, ResourceUrl
+from src.resources.domain.entities import Resource
+from src.resources.domain.repositories import ResourceRepositoryABC
+from src.resources.domain.value_objects import ResourceType, ResourceUrl
 
 
 @dataclass
