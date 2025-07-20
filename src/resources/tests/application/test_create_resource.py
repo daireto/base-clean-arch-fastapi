@@ -5,7 +5,7 @@ from src.resources.application.create_resource import (
     CreateResourceHandler,
 )
 from src.resources.domain.errors import InvalidURLError, ResourceTypeNotSupportedError
-from src.resources.tests.application.mock import MockResourcesRepository
+from src.resources.tests.application.mock_repository import MockResourcesRepository
 
 
 @pytest.mark.asyncio
