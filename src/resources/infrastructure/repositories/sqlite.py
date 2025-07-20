@@ -12,7 +12,6 @@ from src.resources.infrastructure.models.sqlite import (
     SQLiteDBModel,
     SQLiteResourceModel,
 )
-from src.shared import settings
 
 
 class SQLiteResourceRepository(ResourceRepositoryABC):
@@ -23,13 +22,7 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
 
         return self.__get_model_to_entity(resource)
 
-    async def all(
-        self,
-        odata_options: ODataQueryOptions | None = None,
-    ) -> list[Resource]:
-        if not odata_options:
-            odata_options = ODataQueryOptions(top=settings.MAX_RECORDS_PER_PAGE)
-
+    async def all(self, odata_options: ODataQueryOptions) -> list[Resource]:
         query = apply_to_sqlalchemy_query(odata_options, SQLiteResourceModel)
         result = await execute(query, SQLiteDBModel)
         resources = result.scalars().all()
