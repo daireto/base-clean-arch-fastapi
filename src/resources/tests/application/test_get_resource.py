@@ -2,6 +2,10 @@ import uuid
 
 import pytest
 
+from src.resources.application.get_resource import (
+    GetResourceCommand,
+    GetResourceHandler,
+)
 from src.resources.domain.entities import Resource
 from src.resources.domain.errors import ResourceNotFoundError
 from src.resources.domain.value_objects import ResourceType, ResourceUrl
