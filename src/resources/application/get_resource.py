@@ -7,7 +7,7 @@ from src.resources.domain.repositories import ResourceRepositoryABC
 
 @dataclass
 class GetResourceCommand:
-    id_: UUID
+    id_: UUID | str
 
 
 class GetResourceHandler:
@@ -15,4 +15,7 @@ class GetResourceHandler:
         self._resource_repository = resource_repository
 
     async def handle(self, command: GetResourceCommand) -> Resource:
+        if isinstance(command.id_, str):
+            command.id_ = UUID(command.id_)
+
         return await self._resource_repository.get_by_id(command.id_)

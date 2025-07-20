@@ -22,4 +22,4 @@ class CreateResourceHandler:
             url=ResourceUrl(value=command.url),
             type=ResourceType(value=command.type),
         )
-        return await self._resource_repository.save(resource)
+        return await self._resource_repository.create(resource)

@@ -8,7 +8,7 @@ from src.resources.domain.value_objects import ResourceType, ResourceUrl
 
 @dataclass
 class UpdateResourceCommand:
-    id_: UUID
+    id_: UUID | str
     name: str
     url: str
     type: str
@@ -19,8 +19,13 @@ class UpdateResourceHandler:
         self._resource_repository = resource_repository
 
     async def handle(self, command: UpdateResourceCommand) -> Resource:
-        resource = await self._resource_repository.get_by_id(command.id_)
-        resource.name = command.name
-        resource.url = ResourceUrl(value=command.url)
-        resource.type = ResourceType(value=command.type)
-        return await self._resource_repository.save(resource)
+        if isinstance(command.id_, str):
+            command.id_ = UUID(command.id_)
+
+        resource = Resource(
+            id=command.id_,
+            name=command.name,
+            url=ResourceUrl(value=command.url),
+            type=ResourceType(value=command.type),
+        )
+        return await self._resource_repository.update(resource)
