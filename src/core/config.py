@@ -34,8 +34,12 @@ class Settings(BaseSettings):
         return self.env != 'dev' and bool(self.logs_path)
 
     @property
-    def docs_url(self) -> str:
+    def swagger_url(self) -> str:
         return f'{self.scheme}://localhost:{self.port}/docs'
+
+    @property
+    def redoc_url(self) -> str:
+        return f'{self.scheme}://localhost:{self.port}/redoc'
 
 
 @lru_cache
