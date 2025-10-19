@@ -18,8 +18,24 @@ class Settings(BaseSettings):
         return self.env == 'dev'
 
     @property
+    def is_lab(self) -> bool:
+        return self.env == 'lab'
+
+    @property
+    def is_prod(self) -> bool:
+        return self.env == 'prod'
+
+    @property
+    def scheme(self) -> Literal['http', 'https']:
+        return 'http' if self.is_dev else 'https'
+
+    @property
     def use_log_rotation(self) -> bool:
         return self.env != 'dev' and bool(self.logs_path)
+
+    @property
+    def docs_url(self) -> str:
+        return f'{self.scheme}://localhost:{self.port}/docs'
 
 
 @lru_cache
