@@ -1,21 +1,29 @@
 # API
-fastapi[standard]
-odata-v4-query
-orjson
-validators
+asgi-correlation-id==4.3.4
+fastapi[standard]==0.116.1
+odata-v4-query==0.3.0
+orjson==3.11.0
+validators==0.35.0
+uvloop==0.21.0
 
 # Database
-aiosqlite
-sqlactive
+aiosqlite==0.21.0
+sqlactive==0.3.6
 
 # Dependencies
-lagom
+lagom==2.7.7
+
+# Settings
+pydantic-settings==2.11.0
 
 # Linting
-mypy
-ruff
+ruff==0.12.4
+
+# Logging & Monitoring
+structlog==25.4.0
+python-json-logger==4.0.0
 
 # Testing
-httpx
-pytest
-pytest-asyncio
+httpx==0.28.1
+pytest==8.4.1
+pytest-asyncio==1.1.0
