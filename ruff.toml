@@ -8,6 +8,7 @@ ignore = [
     "ANN003",  # Missing type annotation for `**kwargs`
     "ANN401",  # typing.Any is disallowed
     "B008",    # Do not perform function calls in argument defaults
+    "BLE001",  # Do not catch blind exception: `Exception`
     "COM812",  # Trailing comma missing
     "D100",    # Missing docstring in public module
     "D101",    # Missing docstring in public class
@@ -25,24 +26,21 @@ ignore = [
     "FA102",   # Missing `from __future__ import annotations`
     "FBT001",  # Boolean-typed positional argument in function definition
     "FBT002",  # Boolean default positional argument in function definition
+    "FIX001",  # Line contains FIXME, consider resolving the issue
+    "FIX002",  # Line contains TODO, consider resolving the issue
     "N805",    # First argument of a method should be named `self`
-    "PD901",   # Avoid using the generic variable name `df` for DataFrames
     "PERF203", # try-except within a loop incurs performance overhead
     "PGH003",  # Use specific rule codes when ignoring type issues
     "PLR0913", # Too many arguments in function definition
-    "PTH123",  # `open()` should be replaced by `Path.open()`
-    "S311",    # Standard pseudo-random generators are not suitable for security/cryptographic purposes
-    "T201",    # `print` found
+    "S104",    # Possible binding to all interfaces
     "TD002",   # Missing author in TODO
     "TD003",   # Missing issue link for this TODO
-    "FIX001",  # Line contains FIXME, consider resolving the issue
-    "FIX002",  # Line contains TODO, consider resolving the issue
 ]
 
 [lint.per-file-ignores]
 "test_*.py" = [
-    "ANN201",  # Missing type annotation for public function
-    "S101",    # Use of `assert` detected
+    "ANN201", # Missing type annotation for public function
+    "S101",   # Use of `assert` detected
 ]
 
 [lint.flake8-quotes]
