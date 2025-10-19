@@ -1,4 +1,5 @@
 .vscode/
+.copilot/
 .logs/
 .temp/
 .ignore/
