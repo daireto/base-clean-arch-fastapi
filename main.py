@@ -35,6 +35,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     try:
         conn = await init_db(base_models)
         global_app_logger.info(f'App started. Listening on port {settings.port}')
+        global_app_logger.info(f'Documentation available at {settings.docs_url}')
         yield
     except Exception as e:
         global_app_logger.error('Error initializing database', exc_info=e)
