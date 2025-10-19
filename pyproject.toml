@@ -1,21 +1,24 @@
 [project]
-name = "hexagon-arch-api"
+name = "base-clean-arch-api"
 version = "0.1.0"
-description = "Base project for FastAPI-based APIs with a clean architecture pattern."
+description = "Base project for FastAPI-based APIs implementing clean architecture patterns for maintainable and testable code."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "aiosqlite>=0.21.0",
-    "fastapi[standard]>=0.116.1",
-    "httpx>=0.28.1",
-    "lagom>=2.7.7",
-    "mypy>=1.17.0",
-    "odata-v4-query>=0.3.0",
-    "orjson>=3.11.0",
-    "pytest>=8.4.1",
-    "pytest-asyncio>=1.1.0",
-    "ruff>=0.12.4",
-    "sqlactive>=0.3.6",
-    "uvloop>=0.21.0",
-    "validators>=0.35.0",
+    "aiosqlite==0.21.0",
+    "asgi-correlation-id==4.3.4",
+    "fastapi[standard]==0.119.0",
+    "httpx==0.28.1",
+    "lagom==2.7.7",
+    "odata-v4-query==0.3.0",
+    "orjson==3.11.0",
+    "pydantic-settings==2.11.0",
+    "pytest==8.4.1",
+    "pytest-asyncio==1.1.0",
+    "python-json-logger==4.0.0",
+    "ruff==0.12.4",
+    "sqlactive==0.3.6",
+    "structlog==25.4.0",
+    "uvloop==0.21.0",
+    "validators==0.35.0",
 ]
