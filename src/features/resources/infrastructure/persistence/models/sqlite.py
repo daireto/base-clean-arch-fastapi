@@ -19,7 +19,7 @@ class SQLiteResourceModel(SQLiteResourcesBaseModel):
     url: Mapped[str] = mapped_column()
     type: Mapped[str] = mapped_column()
 
-    def to_entity(self) -> 'Resource':
+    def to_entity(self) -> Resource:
         return Resource(
             id=self.id,
             name=self.name,
@@ -30,7 +30,7 @@ class SQLiteResourceModel(SQLiteResourcesBaseModel):
         )
 
     @classmethod
-    def from_entity(cls, entity: 'Resource') -> 'SQLiteResourceModel':
+    def from_entity(cls, entity: Resource) -> 'SQLiteResourceModel':
         return cls(
             id=entity.id,
             name=entity.name,
