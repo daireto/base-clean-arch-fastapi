@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.features.resources.application.instrumentation.get_resource import (
-    GetResourceInstrumentation,
-)
 from src.features.resources.domain.entities import Resource
 from src.features.resources.domain.errors import ResourceNotFoundError
 from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from src.features.resources.infrastructure.instrumentation.use_cases.get_resource import (
+    GetResourceInstrumentation,
+)
 from src.shared.application.interfaces.base import CommandHandler
 from src.shared.domain.result import Result
 

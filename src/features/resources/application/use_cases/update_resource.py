@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.features.resources.application.instrumentation.update_resource import (
-    UpdateResourceInstrumentation,
-)
 from src.features.resources.domain.entities import Resource
 from src.features.resources.domain.errors import ResourceNotFoundError
 from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from src.features.resources.domain.value_objects import ResourceType, ResourceUrl
+from src.features.resources.infrastructure.instrumentation.use_cases.update_resource import (
+    UpdateResourceInstrumentation,
+)
 from src.shared.application.interfaces.base import CommandHandler
 from src.shared.domain.result import Result
 
