@@ -1,7 +1,5 @@
 from dataclasses import dataclass
 
-from odata_v4_query import ODataQueryOptions
-
 from src.features.resources.domain.entities import Resource
 from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from src.features.resources.infrastructure.instrumentation.use_cases.list_resources import (
@@ -9,11 +7,12 @@ from src.features.resources.infrastructure.instrumentation.use_cases.list_resour
 )
 from src.shared.application.interfaces.base import CommandHandler
 from src.shared.domain.result import Result
+from src.shared.utils.odata_options import SafeODataQueryOptions
 
 
 @dataclass
 class ListResourcesCommand:
-    odata_options: ODataQueryOptions
+    odata_options: SafeODataQueryOptions
 
 
 class ListResourcesHandler(CommandHandler):
@@ -28,7 +27,9 @@ class ListResourcesHandler(CommandHandler):
     async def handle(self, command: ListResourcesCommand) -> Result[list[Resource]]:
         self._instrumentation.before()
         try:
-            resources = await self._resource_repository.all(command.odata_options)
+            resources = await self._resource_repository.all(
+                command.odata_options.get_sanitized()
+            )
         except Exception as error:
             self._instrumentation.error(error)
             return Result.failure(error)
