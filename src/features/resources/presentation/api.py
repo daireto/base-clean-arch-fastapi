@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, Response
 from odata_v4_query import ODataQueryParser
 
+from src.core.config import settings
 from src.core.responses import EmptyResponse
 from src.features.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
@@ -15,6 +16,7 @@ from src.features.resources.application.use_cases.get_resource import (
     GetResourceHandler,
 )
 from src.features.resources.application.use_cases.list_resources import (
+    ListResourcesCommand,
     ListResourcesHandler,
 )
 from src.features.resources.application.use_cases.update_resource import (
@@ -29,7 +31,7 @@ from src.features.resources.presentation.dtos import (
     ResourcesResponseDTO,
 )
 from src.shared.presentation.exception_mapper import to_http_exception
-from src.shared.utils import uuid_from_string
+from src.shared.utils import sanitize_odata_options, uuid_from_string
 
 router = APIRouter()
 
@@ -53,7 +55,9 @@ async def list_resources(
 ) -> ResourcesResponseDTO:
     parser = ODataQueryParser()
     odata_options = parser.parse_query_string(request.url.query)
-    if result := await ListResourcesHandler(repo).handle(odata_options):
+    sanitize_odata_options(odata_options, settings.max_records_per_page)
+    command = ListResourcesCommand(odata_options=odata_options)
+    if result := await ListResourcesHandler(repo).handle(command):
         return ResourcesResponseDTO.from_entities(result.get_value_or_raise())
     raise to_http_exception(result.get_error_or_raise())
 

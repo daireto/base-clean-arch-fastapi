@@ -25,12 +25,9 @@ def uuid_from_string(uuid_str: str) -> UUID:
         raise InvalidUUIDError(uuid_str) from e
 
 
-def set_default_odata_options(
-    odata_options: ODataQueryOptions | None,
+def sanitize_odata_options(
+    odata_options: ODataQueryOptions,
     max_top: int,
-) -> ODataQueryOptions:
-    if not odata_options:
-        odata_options = ODataQueryOptions(top=max_top)
+) -> None:
     if odata_options.top and odata_options.top > max_top:
         odata_options.top = max_top
-    return odata_options
