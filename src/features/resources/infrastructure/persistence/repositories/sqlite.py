@@ -44,3 +44,6 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
             return False
         await resource.delete()
         return True
+
+    async def count(self) -> int:
+        return await SQLiteResourceModel.count()

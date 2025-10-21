@@ -21,3 +21,6 @@ class ResourceRepositoryABC(ABC):
 
     @abstractmethod
     async def delete(self, id_: UUID) -> bool: ...
+
+    @abstractmethod
+    async def count(self) -> bool: ...
