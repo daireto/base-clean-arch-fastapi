@@ -10,7 +10,7 @@ from src.features.resources.domain.value_objects import ResourceType, ResourceUr
 from src.features.resources.infrastructure.persistence.repositories.mock import (
     MockResourceRepository,
 )
-from src.shared.utils import empty_uuid
+from src.shared.utils.uuid_tools import empty_uuid
 
 
 @pytest.mark.asyncio

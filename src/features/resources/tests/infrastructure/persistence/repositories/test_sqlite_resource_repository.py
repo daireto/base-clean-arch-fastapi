@@ -12,7 +12,7 @@ from src.features.resources.infrastructure.persistence.models.sqlite import (
 from src.features.resources.infrastructure.persistence.repositories.sqlite import (
     SQLiteResourceRepository,
 )
-from src.shared.utils import empty_uuid
+from src.shared.utils.uuid_tools import empty_uuid
 
 mock_conn = DBConnection('sqlite+aiosqlite:///:memory:', echo=False)
 

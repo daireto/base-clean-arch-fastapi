@@ -1,7 +1,6 @@
 import pytest
 from odata_v4_query import ODataQueryOptions
 
-from src.core.config import settings
 from src.features.resources.application.use_cases.list_resources import (
     ListResourcesCommand,
     ListResourcesHandler,
@@ -11,6 +10,7 @@ from src.features.resources.domain.value_objects import ResourceType, ResourceUr
 from src.features.resources.infrastructure.persistence.repositories.mock import (
     MockResourceRepository,
 )
+from src.shared.utils.odata_options import SafeODataQueryOptions
 
 
 @pytest.mark.asyncio
@@ -37,7 +37,7 @@ class TestListResource:
         # Act
         result = await ListResourcesHandler(repo).handle(
             ListResourcesCommand(
-                odata_options=ODataQueryOptions(top=settings.max_records_per_page),
+                odata_options=SafeODataQueryOptions(ODataQueryOptions(top=10)),
             ),
         )
         resources = result.get_value_or_raise()
@@ -68,7 +68,9 @@ class TestListResource:
 
         # Act
         result = await ListResourcesHandler(repo).handle(
-            ListResourcesCommand(odata_options=ODataQueryOptions(top=limit)),
+            ListResourcesCommand(
+                odata_options=SafeODataQueryOptions(ODataQueryOptions(top=limit)),
+            ),
         )
         resources = result.get_value_or_raise()
 

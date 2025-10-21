@@ -7,7 +7,7 @@ from main import app
 from src.features.resources.domain.entities import Resource
 from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from src.features.resources.domain.value_objects import ResourceType, ResourceUrl
-from src.shared.utils import empty_uuid
+from src.shared.utils.uuid_tools import empty_uuid
 
 
 @pytest_asyncio.fixture()
