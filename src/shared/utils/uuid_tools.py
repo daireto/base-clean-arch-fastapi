@@ -1,7 +1,5 @@
 from uuid import UUID
 
-from odata_v4_query import ODataQueryOptions
-
 EMPTY_UUID = '00000000-0000-0000-0000-000000000000'
 
 
@@ -23,11 +21,3 @@ def uuid_from_string(uuid_str: str) -> UUID:
         return UUID(uuid_str)
     except ValueError as e:
         raise InvalidUUIDError(uuid_str) from e
-
-
-def sanitize_odata_options(
-    odata_options: ODataQueryOptions,
-    max_top: int,
-) -> None:
-    if odata_options.top and odata_options.top > max_top:
-        odata_options.top = max_top
