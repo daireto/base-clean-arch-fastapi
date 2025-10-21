@@ -1,4 +1,4 @@
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from sqlactive import ActiveRecordBaseModel
 from sqlalchemy.orm import Mapped, mapped_column
@@ -14,7 +14,7 @@ class SQLiteResourcesBaseModel(ActiveRecordBaseModel):
 class SQLiteResourceModel(SQLiteResourcesBaseModel):
     __tablename__ = 'resources'
 
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    id: Mapped[UUID] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
     url: Mapped[str] = mapped_column()
     type: Mapped[str] = mapped_column()
@@ -32,6 +32,7 @@ class SQLiteResourceModel(SQLiteResourcesBaseModel):
     @classmethod
     def from_entity(cls, entity: 'Resource') -> 'SQLiteResourceModel':
         return cls(
+            id=entity.id,
             name=entity.name,
             url=entity.url_value,
             type=entity.type_value,
