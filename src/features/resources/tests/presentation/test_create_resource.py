@@ -1,9 +1,11 @@
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
 from main import app
 
 
+@pytest.mark.usefixtures('repo')
 class TestCreateResource:
     def test_returns_200_and_resource_details(self):
         # Arrange

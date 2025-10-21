@@ -4,7 +4,6 @@ from odata_v4_query import ODataQueryOptions
 from sqlactive import DBConnection
 
 from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.value_objects import ResourceType, ResourceUrl
 from src.features.resources.infrastructure.persistence.models.sqlite import (
     SQLiteResourceModel,
     SQLiteResourcesBaseModel,
@@ -25,18 +24,44 @@ async def setup_and_clean_db():
         await conn.run_sync(SQLiteResourcesBaseModel.metadata.drop_all)
 
 
+@pytest_asyncio.fixture
+async def resource_model() -> SQLiteResourceModel:
+    return await SQLiteResourceModel.from_entity(
+        Resource.Builder()
+        .with_name('Random Image')
+        .with_url('https://example.com')
+        .with_type('image')
+        .build()
+    ).save()
+
+
+@pytest_asyncio.fixture
+async def resource_models() -> list[SQLiteResourceModel]:
+    return [
+        await SQLiteResourceModel.from_entity(
+            Resource.Builder()
+            .with_name('Random Image')
+            .with_url('https://example.com')
+            .with_type('image')
+            .build()
+        ).save(),
+        await SQLiteResourceModel.from_entity(
+            Resource.Builder()
+            .with_name('Random Image')
+            .with_url('https://example.org')
+            .with_type('image')
+            .build()
+        ).save(),
+    ]
+
+
 @pytest.mark.asyncio
 class TestSQLiteResourcesRepository:
-    async def test_get_by_id_returns_resource_details_when_resource_exists(self):
-        # Arrange
-        resource = await SQLiteResourceModel.create(
-            name='Random Image',
-            url='https://example.com',
-            type='image',
-        )
-
+    async def test_get_by_id_returns_resource_details_when_resource_exists(
+        self, resource_model: SQLiteResourceModel
+    ):
         # Act
-        resource = await SQLiteResourceRepository().get_by_id(resource.id)
+        resource = await SQLiteResourceRepository().get_by_id(resource_model.id)
 
         # Assert
         assert resource is not None
@@ -51,38 +76,27 @@ class TestSQLiteResourcesRepository:
         # Assert
         assert resource is None
 
-    async def test_all_returns_all_requested_resources(self):
-        # Arrange
-        expected_resources_count = 2
-        await SQLiteResourceModel.create(
-            name='Random Image',
-            url='https://example.com',
-            type='image',
-        )
-        await SQLiteResourceModel.create(
-            name='Random Image',
-            url='https://example.org',
-            type='image',
-        )
-
+    async def test_all_returns_all_requested_resources(
+        self, resource_models: list[SQLiteResourceModel]
+    ):
         # Act
         resources = await SQLiteResourceRepository().all(
             odata_options=ODataQueryOptions(top=10),
         )
 
         # Assert
-        assert len(resources) == expected_resources_count
+        assert len(resources) == len(resource_models)
         assert resources[0].url == 'https://example.com'
         assert resources[1].url == 'https://example.org'
 
     async def test_create_returns_resource_details_after_creating_resource(self):
         # Act
         await SQLiteResourceRepository().create(
-            Resource(
-                name='Random Image',
-                url=ResourceUrl(value='https://example.com'),
-                type=ResourceType(value='image'),
-            )
+            Resource.Builder()
+            .with_name('Random Image')
+            .with_url('https://example.com')
+            .with_type('image')
+            .build()
         )
         resource = await SQLiteResourceModel.one()
 
@@ -92,22 +106,17 @@ class TestSQLiteResourcesRepository:
         assert resource.type == 'image'
         assert resource.created_at == resource.updated_at
 
-    async def test_update_returns_resource_details_after_updating_resource(self):
-        # Arrange
-        resource = await SQLiteResourceModel.create(
-            name='Random Image',
-            url='https://example.com',
-            type='image',
-        )
-
+    async def test_update_returns_resource_details_after_updating_resource(
+        self, resource_model: SQLiteResourceModel
+    ):
         # Act
         resource = await SQLiteResourceRepository().update(
-            Resource(
-                id=resource.id,
-                name='Random Image',
-                url=ResourceUrl(value='https://example.org'),
-                type=ResourceType(value='image'),
-            )
+            Resource.Builder()
+            .with_id(resource_model.id)
+            .with_name('Random Image')
+            .with_url('https://example.org')
+            .with_type('image')
+            .build(),
         )
 
         # Assert
@@ -117,27 +126,21 @@ class TestSQLiteResourcesRepository:
     async def test_update_returns_none_when_resource_does_not_exist(self):
         # Act
         resource = await SQLiteResourceRepository().update(
-            Resource(
-                id=empty_uuid(),
-                name='Random Image',
-                url=ResourceUrl(value='https://example.org'),
-                type=ResourceType(value='image'),
-            )
+            Resource.Builder()
+            .with_name('Random Image')
+            .with_url('https://example.org')
+            .with_type('image')
+            .build(),
         )
 
         # Assert
         assert resource is None
 
-    async def test_delete_returns_true_after_deleting_resource(self):
-        # Arrange
-        resource = await SQLiteResourceModel.create(
-            name='Random Image',
-            url='https://example.com',
-            type='image',
-        )
-
+    async def test_delete_returns_true_after_deleting_resource(
+        self, resource_model: SQLiteResourceModel
+    ):
         # Act
-        deleted = await SQLiteResourceRepository().delete(resource.id)
+        deleted = await SQLiteResourceRepository().delete(resource_model.id)
 
         # Assert
         assert deleted

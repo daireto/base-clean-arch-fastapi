@@ -6,65 +6,34 @@ from src.features.resources.application.use_cases.list_resources import (
     ListResourcesHandler,
 )
 from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.value_objects import ResourceType, ResourceUrl
-from src.features.resources.infrastructure.persistence.repositories.mock import (
-    MockResourceRepository,
-)
+from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from src.shared.utils.odata_options import SafeODataQueryOptions
 
 
 @pytest.mark.asyncio
 class TestListResource:
-    async def test_returns_all_available_resources_from_repository(self):
-        # Arrange
-        repo = MockResourceRepository()
-        expected_resources_count = 2
-        await repo.create(
-            Resource(
-                name='Random Image',
-                url=ResourceUrl(value='https://example.com'),
-                type=ResourceType(value='image'),
-            )
-        )
-        await repo.create(
-            Resource(
-                name='Random Image',
-                url=ResourceUrl(value='https://example.org'),
-                type=ResourceType(value='image'),
-            )
-        )
-
+    async def test_returns_all_available_resources_from_repository(
+        self, repo: ResourceRepositoryABC, resources: list[Resource]
+    ):
         # Act
         result = await ListResourcesHandler(repo).handle(
             ListResourcesCommand(
                 odata_options=SafeODataQueryOptions(ODataQueryOptions(top=10)),
             ),
         )
-        resources = result.get_value_or_raise()
+        listed_resources = result.get_value_or_raise()
 
         # Assert
-        assert len(resources) == expected_resources_count
-        assert resources[0].url == 'https://example.com'
-        assert resources[1].url == 'https://example.org'
+        assert len(listed_resources) == len(resources)
+        assert listed_resources[0].url == 'https://example.com'
+        assert listed_resources[1].url == 'https://example.org'
 
-    async def test_returns_only_requested_number_of_resources(self):
+    @pytest.mark.usefixtures('resources')
+    async def test_returns_only_requested_number_of_resources(
+        self, repo: ResourceRepositoryABC
+    ):
         # Arrange
-        repo = MockResourceRepository()
         limit = 1
-        await repo.create(
-            Resource(
-                name='Random Image',
-                url=ResourceUrl(value='https://example.com'),
-                type=ResourceType(value='image'),
-            )
-        )
-        await repo.create(
-            Resource(
-                name='Random Image',
-                url=ResourceUrl(value='https://example.org'),
-                type=ResourceType(value='image'),
-            )
-        )
 
         # Act
         result = await ListResourcesHandler(repo).handle(
@@ -72,8 +41,8 @@ class TestListResource:
                 odata_options=SafeODataQueryOptions(ODataQueryOptions(top=limit)),
             ),
         )
-        resources = result.get_value_or_raise()
+        listed_resources = result.get_value_or_raise()
 
         # Assert
-        assert len(resources) == limit
-        assert resources[0].url == 'https://example.com'
+        assert len(listed_resources) == limit
+        assert listed_resources[0].url == 'https://example.com'

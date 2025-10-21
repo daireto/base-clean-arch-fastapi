@@ -1,29 +1,14 @@
 import pytest
-import pytest_asyncio
 from fastapi import status
 from fastapi.testclient import TestClient
 
 from main import app
 from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.features.resources.domain.value_objects import ResourceType, ResourceUrl
 from src.shared.utils.uuid_tools import empty_uuid
 
 
-@pytest_asyncio.fixture()
-async def resource(repo: ResourceRepositoryABC):
-    return await repo.create(
-        Resource(
-            name='Random Image',
-            url=ResourceUrl(value='https://example.com'),
-            type=ResourceType(value='image'),
-        )
-    )
-
-
-@pytest.mark.asyncio
 class TestUpdateResource:
-    async def test_returns_200_and_resource_details(self, resource: Resource):
+    def test_returns_200_and_resource_details(self, resource: Resource):
         # Arrange
         data = {
             'name': 'Random Image',
@@ -43,7 +28,7 @@ class TestUpdateResource:
         assert response_content['resource']['url'] == data['url']
         assert response_content['resource']['type'] == data['type']
 
-    async def test_returns_400_when_resource_url_is_invalid(self, resource: Resource):
+    def test_returns_400_when_resource_url_is_invalid(self, resource: Resource):
         # Arrange
         data = {
             'name': 'Random Image',
@@ -58,9 +43,7 @@ class TestUpdateResource:
         # Assert
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    async def test_returns_400_when_resource_type_is_not_supported(
-        self, resource: Resource
-    ):
+    def test_returns_400_when_resource_type_is_not_supported(self, resource: Resource):
         # Arrange
         data = {
             'name': 'Random Image',
@@ -75,7 +58,8 @@ class TestUpdateResource:
         # Assert
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    async def test_returns_404_when_resource_does_not_exist(
+    @pytest.mark.usefixtures('repo')
+    def test_returns_404_when_resource_does_not_exist(
         self,
     ):
         # Arrange
