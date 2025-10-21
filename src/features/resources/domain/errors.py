@@ -1,7 +1,12 @@
+from enum import Enum
 from uuid import UUID
 
-from src.features.resources.domain.error_codes import ErrorCodes
 from src.shared.domain.errors import InvalidInputError, NotFoundError
+
+
+class ErrorCodes(str, Enum):
+    RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND'
+    RESOURCE_TYPE_NOT_SUPPORTED = 'RESOURCE_TYPE_NOT_SUPPORTED'
 
 
 class ResourceNotFoundError(NotFoundError):
