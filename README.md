@@ -19,6 +19,7 @@ feature having its own directory containing all the necessary layers.
 
 It also implements other patterns and practices, such as:
 
+- **Builder Pattern** for entity creation.
 - **Dependency Injection** (via Lagom).
 - **Data Transfer Objects** (DTOs) for request and response payloads.
 - **Value Objects** for data validation.
@@ -56,13 +57,7 @@ src/
 ├── features/                   # Feature modules (domain-driven)
 │   └── resources/              # Resources feature module
 │       ├── application/        # Application layer (use cases)
-│       │   ├── use_cases/      # Use case implementations
-│       │   │   ├── create_resource.py
-│       │   │   ├── delete_resource.py
-│       │   │   ├── get_resource.py
-│       │   │   ├── list_resources.py
-│       │   │   └── update_resource.py
-│       │   └── instrumentation/  # Use case instrumentation/decorators
+│       │   └── use_cases/      # Use case implementations
 │       │       ├── create_resource.py
 │       │       ├── delete_resource.py
 │       │       ├── get_resource.py
@@ -70,12 +65,18 @@ src/
 │       │       └── update_resource.py
 │       ├── domain/             # Domain layer
 │       │   ├── entities.py     # Domain entities
-│       │   ├── error_codes.py  # Domain error codes
 │       │   ├── errors.py       # Domain-specific errors
 │       │   ├── value_objects.py # Value objects
 │       │   └── interfaces/     # Repository interfaces
 │       │       └── repositories.py
 │       ├── infrastructure/     # Infrastructure layer
+│       │   ├── instrumentation/  # Use case instrumentation/decorators
+│       │   │   └── use_cases/
+│       │   │       ├── create_resource.py
+│       │   │       ├── delete_resource.py
+│       │   │       ├── get_resource.py
+│       │   │       ├── list_resources.py
+│       │   │       └── update_resource.py
 │       │   └── persistence/    # Persistence implementations
 │       │       ├── models/     # Database models
 │       │       │   ├── mock.py # Mock models for testing
@@ -94,7 +95,8 @@ src/
 ├── shared/                     # Shared utilities and common code
 │   ├── application/            # Shared application layer
 │   │   └── interfaces/         # Shared interfaces
-│   │       └── base.py         # Base interfaces
+│   │       ├── base.py         # Base interfaces
+│   │       └── instrumentation.py # Instrumentation interfaces
 │   ├── domain/                 # Shared domain layer
 │   │   ├── entity.py           # Entity base class
 │   │   ├── error_codes.py      # Shared error codes
@@ -111,7 +113,9 @@ src/
 │   ├── tests/                  # Shared tests
 │   │   └── presentation/       # Shared presentation tests
 │   │       └── api/            # API tests
-│   └── utils.py                # Shared utility functions
+│   └── utils/                  # Shared utility functions
+│       ├── odata_options.py    # OData query options parsing
+│       └── uuid_tools.py       # UUID utility functions
 └── main.py                     # FastAPI application entry point
 ```
 
