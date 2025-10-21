@@ -1,5 +1,5 @@
 import time
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
 
@@ -8,7 +8,7 @@ from src.features.resources.domain.value_objects import ResourceType, ResourceUr
 
 
 class MockResourceModel(BaseModel):
-    id: UUID
+    id: UUID = Field(default_factory=uuid4)
     name: str
     url: str
     type: str
