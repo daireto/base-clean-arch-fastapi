@@ -6,18 +6,20 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
-from src.core.config import settings
-from src.core.logger import get_logger, global_app_logger, setup_log_rotation
-from src.core.middlewares.access_log import AccessLogMiddleware
-from src.features.resources.infrastructure.persistence.models.sqlite import (
+from core.config import settings
+from core.logger import get_logger, global_app_logger, setup_log_rotation
+from features.resources.infrastructure.persistence.models.sqlite import (
     SQLiteResourcesBaseModel,
 )
-from src.features.resources.presentation.api import router as resources_router
-from src.shared.domain.errors import DomainError
-from src.shared.infrastructure.db import init_db
-from src.shared.presentation.api import router as shared_router
-from src.shared.presentation.exception_mapper import to_http_exception
-from src.shared.presentation.http_exception_handler import http_exception_handler
+from features.resources.presentation.api import router as resources_router
+from middlewares.access_log import AccessLogMiddleware
+from shared.domain.errors import DomainError
+from shared.infrastructure.db import init_db
+from shared.presentation.api import router as shared_router
+from shared.presentation.exception_handling import (
+    http_exception_handler,
+    to_http_exception,
+)
 
 if settings.use_log_rotation:
     setup_log_rotation(
