@@ -1,13 +1,13 @@
 import pytest
 from odata_v4_query import ODataQueryOptions
 
-from src.features.resources.application.use_cases.list_resources import (
+from features.resources.application.use_cases.list_resources import (
     ListResourcesCommand,
     ListResourcesHandler,
 )
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.shared.utils.odata_options import SafeODataQueryOptions
+from features.resources.domain.entities import Resource
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from shared.utils.odata_options import SafeODataQueryOptions
 
 
 @pytest.mark.asyncio

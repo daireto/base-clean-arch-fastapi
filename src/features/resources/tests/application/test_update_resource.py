@@ -1,17 +1,17 @@
 import pytest
 
-from src.features.resources.application.use_cases.update_resource import (
+from features.resources.application.use_cases.update_resource import (
     UpdateResourceCommand,
     UpdateResourceHandler,
 )
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.errors import (
+from features.resources.domain.entities import Resource
+from features.resources.domain.errors import (
     ResourceNotFoundError,
     ResourceTypeNotSupportedError,
 )
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.shared.domain.errors import InvalidURLError
-from src.shared.utils.uuid_tools import empty_uuid
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from shared.domain.errors import InvalidURLError
+from shared.utils.uuid_tools import empty_uuid
 
 
 @pytest.mark.asyncio

@@ -1,13 +1,13 @@
 import pytest
 
-from src.features.resources.application.use_cases.delete_resource import (
+from features.resources.application.use_cases.delete_resource import (
     DeleteResourceCommand,
     DeleteResourceHandler,
 )
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.errors import ResourceNotFoundError
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.shared.utils.uuid_tools import empty_uuid
+from features.resources.domain.entities import Resource
+from features.resources.domain.errors import ResourceNotFoundError
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from shared.utils.uuid_tools import empty_uuid
 
 
 @pytest.mark.asyncio

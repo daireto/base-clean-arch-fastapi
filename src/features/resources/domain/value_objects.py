@@ -1,8 +1,8 @@
 import validators
 
-from src.features.resources.domain.errors import ResourceTypeNotSupportedError
-from src.shared.domain.errors import InvalidURLError
-from src.shared.domain.value_object import ValueObject
+from features.resources.domain.errors import ResourceTypeNotSupportedError
+from shared.domain.errors import InvalidURLError
+from shared.domain.value_object import ValueObject
 
 
 class ResourceType(ValueObject[str]):

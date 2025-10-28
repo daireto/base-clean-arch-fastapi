@@ -1,8 +1,8 @@
 from lagom import Container
 from lagom.integrations.fast_api import FastApiIntegration
 
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.features.resources.infrastructure.persistence.repositories.sqlite import (
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from features.resources.infrastructure.persistence.repositories.sqlite import (
     SQLiteResourceRepository,
 )
 

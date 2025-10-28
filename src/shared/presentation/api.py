@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.core.health import server_health
+from core.health import server_health
 
 router = APIRouter()
 

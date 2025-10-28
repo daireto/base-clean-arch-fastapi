@@ -1,14 +1,14 @@
 import pytest
 from odata_v4_query import ODataQueryOptions
 
-from src.core.config import settings
-from src.features.resources.application.use_cases.create_resource import (
+from core.config import settings
+from features.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
 )
-from src.features.resources.domain.errors import ResourceTypeNotSupportedError
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.shared.domain.errors import InvalidURLError
+from features.resources.domain.errors import ResourceTypeNotSupportedError
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from shared.domain.errors import InvalidURLError
 
 
 @pytest.mark.asyncio

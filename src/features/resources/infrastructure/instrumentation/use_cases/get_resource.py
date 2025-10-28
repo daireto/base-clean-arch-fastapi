@@ -1,8 +1,8 @@
 from uuid import UUID
 
-from src.core.logger import get_app_logger
-from src.features.resources.domain.entities import Resource
-from src.shared.application.interfaces.instrumentation import Instrumentation
+from core.logger import get_app_logger
+from features.resources.domain.entities import Resource
+from shared.application.interfaces.instrumentation import Instrumentation
 
 
 class GetResourceInstrumentation(Instrumentation):

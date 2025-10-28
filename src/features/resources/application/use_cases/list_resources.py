@@ -1,13 +1,13 @@
 from dataclasses import dataclass
 
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.features.resources.infrastructure.instrumentation.use_cases.list_resources import (
+from features.resources.domain.entities import Resource
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from features.resources.infrastructure.instrumentation.use_cases.list_resources import (
     ListResourcesInstrumentation,
 )
-from src.shared.application.interfaces.base import CommandHandler
-from src.shared.domain.result import Result
-from src.shared.utils.odata_options import SafeODataQueryOptions
+from shared.application.interfaces.base import CommandHandler
+from shared.domain.result import Result
+from shared.utils.odata_options import SafeODataQueryOptions
 
 
 @dataclass

@@ -4,9 +4,9 @@ from odata_v4_query import ODataQueryOptions
 from odata_v4_query.utils.sqlalchemy import apply_to_sqlalchemy_query
 from sqlactive import execute
 
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.features.resources.infrastructure.persistence.models.sqlite import (
+from features.resources.domain.entities import Resource
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from features.resources.infrastructure.persistence.models.sqlite import (
     SQLiteResourceModel,
     SQLiteResourcesBaseModel,
 )

@@ -1,6 +1,6 @@
 from abc import ABC
 
-from src.shared.domain.error_codes import ErrorCodes
+from shared.domain.error_codes import ErrorCodes
 
 
 class DomainError(Exception, ABC):

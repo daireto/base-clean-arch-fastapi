@@ -2,9 +2,9 @@ from uuid import UUID
 
 from odata_v4_query import ODataQueryOptions
 
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.features.resources.infrastructure.persistence.models.mock import (
+from features.resources.domain.entities import Resource
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from features.resources.infrastructure.persistence.models.mock import (
     MockResourceModel,
 )
 

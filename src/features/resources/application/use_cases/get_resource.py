@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.errors import ResourceNotFoundError
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.features.resources.infrastructure.instrumentation.use_cases.get_resource import (
+from features.resources.domain.entities import Resource
+from features.resources.domain.errors import ResourceNotFoundError
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from features.resources.infrastructure.instrumentation.use_cases.get_resource import (
     GetResourceInstrumentation,
 )
-from src.shared.application.interfaces.base import CommandHandler
-from src.shared.domain.result import Result
+from shared.application.interfaces.base import CommandHandler
+from shared.domain.result import Result
 
 
 @dataclass

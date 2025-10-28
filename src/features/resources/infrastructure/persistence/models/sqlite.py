@@ -3,8 +3,8 @@ from uuid import UUID, uuid4
 from sqlactive import ActiveRecordBaseModel
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.value_objects import ResourceType, ResourceUrl
+from features.resources.domain.entities import Resource
+from features.resources.domain.value_objects import ResourceType, ResourceUrl
 
 
 class SQLiteResourcesBaseModel(ActiveRecordBaseModel):

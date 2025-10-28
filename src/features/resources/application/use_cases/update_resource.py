@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from src.features.resources.domain.entities import Resource
-from src.features.resources.domain.errors import ResourceNotFoundError
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.features.resources.domain.value_objects import ResourceType, ResourceUrl
-from src.features.resources.infrastructure.instrumentation.use_cases.update_resource import (
+from features.resources.domain.entities import Resource
+from features.resources.domain.errors import ResourceNotFoundError
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from features.resources.domain.value_objects import ResourceType, ResourceUrl
+from features.resources.infrastructure.instrumentation.use_cases.update_resource import (
     UpdateResourceInstrumentation,
 )
-from src.shared.application.interfaces.base import CommandHandler
-from src.shared.domain.result import Result
+from shared.application.interfaces.base import CommandHandler
+from shared.domain.result import Result
 
 
 @dataclass

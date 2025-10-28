@@ -1,7 +1,7 @@
 from enum import Enum
 from uuid import UUID
 
-from src.shared.domain.errors import InvalidInputError, NotFoundError
+from shared.domain.errors import InvalidInputError, NotFoundError
 
 
 class ErrorCodes(str, Enum):

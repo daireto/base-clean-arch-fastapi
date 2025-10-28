@@ -3,15 +3,15 @@ import pytest_asyncio
 from odata_v4_query import ODataQueryOptions
 from sqlactive import DBConnection
 
-from src.features.resources.domain.entities import Resource
-from src.features.resources.infrastructure.persistence.models.sqlite import (
+from features.resources.domain.entities import Resource
+from features.resources.infrastructure.persistence.models.sqlite import (
     SQLiteResourceModel,
     SQLiteResourcesBaseModel,
 )
-from src.features.resources.infrastructure.persistence.repositories.sqlite import (
+from features.resources.infrastructure.persistence.repositories.sqlite import (
     SQLiteResourceRepository,
 )
-from src.shared.utils.uuid_tools import empty_uuid
+from shared.utils.uuid_tools import empty_uuid
 
 mock_conn = DBConnection('sqlite+aiosqlite:///:memory:', echo=False)
 

@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from src.core.logger import get_app_logger
-from src.shared.application.interfaces.instrumentation import Instrumentation
+from core.logger import get_app_logger
+from shared.application.interfaces.instrumentation import Instrumentation
 
 
 class DeleteResourceInstrumentation(Instrumentation):

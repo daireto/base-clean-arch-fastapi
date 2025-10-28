@@ -2,9 +2,9 @@ import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
+from features.resources.domain.entities import Resource
 from main import app
-from src.features.resources.domain.entities import Resource
-from src.shared.utils.uuid_tools import empty_uuid
+from shared.utils.uuid_tools import empty_uuid
 
 
 class TestDeleteResource:

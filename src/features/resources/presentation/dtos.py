@@ -1,5 +1,5 @@
-from src.features.resources.domain.entities import Resource
-from src.shared.presentation.dto import EntityResponseDTO, RequestDTO, ResponseDTO
+from features.resources.domain.entities import Resource
+from shared.presentation.dto import EntityResponseDTO, RequestDTO, ResponseDTO
 
 
 class CreateResourceRequestDTO(RequestDTO):

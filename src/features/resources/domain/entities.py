@@ -1,7 +1,7 @@
 from pydantic import Field
 
-from src.features.resources.domain.value_objects import ResourceType, ResourceUrl
-from src.shared.domain.entity import Entity
+from features.resources.domain.value_objects import ResourceType, ResourceUrl
+from shared.domain.entity import Entity
 
 
 class Resource(Entity):

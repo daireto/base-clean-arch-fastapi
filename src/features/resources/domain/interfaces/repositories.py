@@ -3,7 +3,7 @@ from uuid import UUID
 
 from odata_v4_query import ODataQueryOptions
 
-from src.features.resources.domain.entities import Resource
+from features.resources.domain.entities import Resource
 
 
 class ResourceRepositoryABC(ABC):

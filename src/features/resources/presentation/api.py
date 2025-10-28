@@ -1,36 +1,36 @@
 from fastapi import APIRouter, Request, Response
 
-from src.core.responses import EmptyResponse
-from src.features.resources.application.use_cases.create_resource import (
+from features.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
 )
-from src.features.resources.application.use_cases.delete_resource import (
+from features.resources.application.use_cases.delete_resource import (
     DeleteResourceCommand,
     DeleteResourceHandler,
 )
-from src.features.resources.application.use_cases.get_resource import (
+from features.resources.application.use_cases.get_resource import (
     GetResourceCommand,
     GetResourceHandler,
 )
-from src.features.resources.application.use_cases.list_resources import (
+from features.resources.application.use_cases.list_resources import (
     ListResourcesCommand,
     ListResourcesHandler,
 )
-from src.features.resources.application.use_cases.update_resource import (
+from features.resources.application.use_cases.update_resource import (
     UpdateResourceCommand,
     UpdateResourceHandler,
 )
-from src.features.resources.di import deps
-from src.features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from src.features.resources.presentation.dtos import (
+from features.resources.di import deps
+from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from features.resources.presentation.dtos import (
     CreateResourceRequestDTO,
     ResourceResponseDTO,
     ResourcesResponseDTO,
 )
-from src.shared.presentation.exception_mapper import to_http_exception
-from src.shared.utils.odata_options import SafeODataQueryOptions
-from src.shared.utils.uuid_tools import uuid_from_string
+from shared.presentation.exception_handling import to_http_exception
+from shared.presentation.responses import EmptyResponse
+from shared.utils.odata_options import SafeODataQueryOptions
+from shared.utils.uuid_tools import uuid_from_string
 
 router = APIRouter()
 

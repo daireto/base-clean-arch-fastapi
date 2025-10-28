@@ -1,6 +1,6 @@
 from odata_v4_query import ODataQueryOptions, ODataQueryParser
 
-from src.core.config import settings
+from core.config import settings
 
 
 class SafeODataQueryOptions:
