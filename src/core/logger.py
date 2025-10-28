@@ -22,7 +22,7 @@ class StreamHandler(logging.StreamHandler):
 
 
 default_stream_handler = StreamHandler(
-    formatter=JsonFormatter('%(logger)s %(level)s %(timestamp)s %(message)s')
+    formatter=JsonFormatter('%(timestamp)s %(logger)s %(level)s %(message)s')
 )
 
 
@@ -41,7 +41,7 @@ _processors = [
     structlog.stdlib.add_logger_name,
     structlog.stdlib.add_log_level,
     add_correlation_id,
-    structlog.processors.TimeStamper(fmt='iso'),
+    structlog.processors.TimeStamper(fmt='iso', utc=False),
     structlog.processors.StackInfoRenderer(),
     structlog.processors.format_exc_info,
     structlog.processors.UnicodeDecoder(),
@@ -101,7 +101,7 @@ global_app_logger = get_logger(
     handlers=[
         StreamHandler(
             formatter=JsonFormatter(
-                '%(logger)s %(level)s %(module)s %(lineno)d %(timestamp)s %(message)s'
+                '%(timestamp)s %(logger)s %(level)s %(module)s %(lineno)d %(message)s'
             )
         )
     ],
