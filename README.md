@@ -14,8 +14,8 @@ layers:
 - **Application Layer**: Use cases and application services.
 - **Infrastructure Layer**: External dependencies and integrations.
 
-The project is structured around **features** (vertical slices), with each
-feature having its own directory containing all the necessary layers.
+The project is structured around **modules** (vertical slices), with each
+module having its own directory containing all the necessary layers.
 
 It also implements other patterns and practices, such as:
 
@@ -46,77 +46,101 @@ These are some of the main technologies used in this project:
 ## 📁 Project Structure
 
 ```
-src/
-├── core/                       # Core API configuration and utilities
-│   ├── config.py               # Application configuration
-│   ├── health.py               # Health check logic
-│   ├── logger.py               # Logging configuration
-│   ├── responses.py            # Response utilities
-│   └── middlewares/            # Application middlewares
-│       └── access_log.py       # Access logging middleware
-├── features/                   # Feature modules (domain-driven)
-│   └── resources/              # Resources feature module
-│       ├── application/        # Application layer (use cases)
-│       │   └── use_cases/      # Use case implementations
-│       │       ├── create_resource.py
-│       │       ├── delete_resource.py
-│       │       ├── get_resource.py
-│       │       ├── list_resources.py
-│       │       └── update_resource.py
-│       ├── domain/             # Domain layer
-│       │   ├── entities.py     # Domain entities
-│       │   ├── errors.py       # Domain-specific errors
-│       │   ├── value_objects.py # Value objects
-│       │   └── interfaces/     # Repository interfaces
-│       │       └── repositories.py
-│       ├── infrastructure/     # Infrastructure layer
-│       │   ├── instrumentation/  # Use case instrumentation/decorators
-│       │   │   └── use_cases/
-│       │   │       ├── create_resource.py
-│       │   │       ├── delete_resource.py
-│       │   │       ├── get_resource.py
-│       │   │       ├── list_resources.py
-│       │   │       └── update_resource.py
-│       │   └── persistence/    # Persistence implementations
-│       │       ├── models/     # Database models
-│       │       │   ├── mock.py # Mock models for testing
-│       │       │   └── sqlite.py # SQLite database models
-│       │       └── repositories/ # Repository implementations
-│       │           ├── mock.py # Mock repository for testing
-│       │           └── sqlite.py # SQLite repository implementation
-│       ├── presentation/       # Presentation layer (API)
-│       │   ├── api.py          # Resource API endpoints
-│       │   └── dtos.py         # Data transfer objects
-│       ├── tests/              # Feature tests
-│       │   ├── application/    # Application layer tests
-│       │   ├── infrastructure/ # Infrastructure layer tests
-│       │   └── presentation/   # Presentation layer tests
-│       └── di.py               # Dependency injection configuration
-├── shared/                     # Shared utilities and common code
-│   ├── application/            # Shared application layer
-│   │   └── interfaces/         # Shared interfaces
-│   │       ├── base.py         # Base interfaces
-│   │       └── instrumentation.py # Instrumentation interfaces
-│   ├── domain/                 # Shared domain layer
-│   │   ├── entity.py           # Entity base class
-│   │   ├── error_codes.py      # Shared error codes
-│   │   ├── errors.py           # Shared error classes
-│   │   ├── result.py           # Result type for operations
-│   │   └── value_object.py     # Value object base class
-│   ├── infrastructure/         # Shared infrastructure
-│   │   └── db.py               # Database connection utilities
-│   ├── presentation/           # Shared presentation layer
-│   │   ├── api.py              # Shared API routes (e.g., health check)
-│   │   ├── dto.py              # Base DTO class
-│   │   ├── exception_mapper.py # Exception to response mapping
-│   │   └── http_exception_handler.py # HTTP exception handling
-│   ├── tests/                  # Shared tests
-│   │   └── presentation/       # Shared presentation tests
-│   │       └── api/            # API tests
-│   └── utils/                  # Shared utility functions
-│       ├── odata_options.py    # OData query options parsing
-│       └── uuid_tools.py       # UUID utility functions
-└── main.py                     # FastAPI application entry point
+├── .env.example                # Environment variables template
+├── api.http                    # HTTP requests for testing
+├── docs/                       # Project documentation
+│   └── COMMITS.md              # Git commit guidelines
+├── pyproject.toml              # Project configuration and dependencies
+├── pytest.ini                  # Pytest configuration
+├── README.md                   # Project documentation
+├── requirements.txt            # Python dependencies (pip format)
+├── ruff.toml                   # Ruff linter configuration
+├── uv.lock                     # UV dependency lock file
+├── LICENSE.md                  # Project license
+└── src/                        # Source code
+    ├── main.py                 # FastAPI application entry point
+    ├── conftest.py             # Pytest global fixtures
+    ├── core/                   # Core API configuration and utilities
+    │   ├── config.py           # Application configuration
+    │   ├── health.py           # Health check logic
+    │   └── logger.py           # Logging configuration
+    ├── middlewares/            # Application middlewares
+    │   └── access_log.py       # Access logging middleware
+    ├── modules/                # Feature modules (domain-driven)
+    │   └── resources/          # Resources feature module
+    │       ├── application/    # Application layer (use cases)
+    │       │   └── use_cases/  # Use case implementations
+    │       │       ├── create_resource.py
+    │       │       ├── delete_resource.py
+    │       │       ├── get_resource.py
+    │       │       ├── list_resources.py
+    │       │       └── update_resource.py
+    │       ├── domain/         # Domain layer
+    │       │   ├── entities.py # Domain entities
+    │       │   ├── errors.py   # Domain-specific errors
+    │       │   ├── value_objects.py # Value objects
+    │       │   └── interfaces/ # Repository interfaces
+    │       │       └── repositories.py
+    │       ├── infrastructure/ # Infrastructure layer
+    │       │   ├── instrumentation/ # Use case instrumentation/decorators
+    │       │   │   └── use_cases/
+    │       │   │       ├── create_resource.py
+    │       │   │       ├── delete_resource.py
+    │       │   │       ├── get_resource.py
+    │       │   │       ├── list_resources.py
+    │       │   │       └── update_resource.py
+    │       │   └── persistence/ # Persistence implementations
+    │       │       ├── models/ # Database models
+    │       │       │   ├── mock.py # Mock models for testing
+    │       │       │   └── sqlite.py # SQLite database models
+    │       │       └── repositories/ # Repository implementations
+    │       │           ├── mock.py # Mock repository for testing
+    │       │           └── sqlite.py # SQLite repository implementation
+    │       ├── presentation/   # Presentation layer (API)
+    │       │   ├── api.py      # Resource API endpoints
+    │       │   └── dtos.py     # Data transfer objects
+    │       ├── tests/          # Feature tests
+    │       │   ├── application/ # Application layer tests
+    │       │   │   ├── test_create_resource.py
+    │       │   │   ├── test_delete_resource.py
+    │       │   │   ├── test_get_resource.py
+    │       │   │   ├── test_list_resources.py
+    │       │   │   └── test_update_resource.py
+    │       │   ├── infrastructure/ # Infrastructure layer tests
+    │       │   │   └── persistence/ # Persistence layer tests
+    │       │   │       └── repositories/ # Repository tests
+    │       │   │           └── test_sqlite_resource_repository.py
+    │       │   └── presentation/ # Presentation layer tests
+    │       │       ├── test_create_resource.py
+    │       │       ├── test_delete_resource.py
+    │       │       ├── test_get_resource.py
+    │       │       ├── test_list_resources.py
+    │       │       └── test_update_resource.py
+    │       └── di.py           # Dependency injection configuration
+    └── shared/                 # Shared utilities and common code
+        ├── application/        # Shared application layer
+        │   └── interfaces/     # Shared interfaces
+        │       ├── base.py     # Base interfaces
+        │       └── instrumentation.py # Instrumentation interfaces
+        ├── domain/             # Shared domain layer
+        │   ├── entity.py       # Entity base class
+        │   ├── errors.py       # Shared error classes
+        │   └── value_object.py # Value object base class
+        ├── infrastructure/     # Shared infrastructure
+        │   └── db.py           # Database connection utilities
+        ├── presentation/       # Shared presentation layer
+        │   ├── api.py          # Shared API routes (e.g., health check)
+        │   ├── dto.py          # Base DTO class
+        │   ├── exception_handling.py # Exception handling utilities
+        │   └── responses.py    # Response utilities
+        ├── tests/              # Shared tests
+        │   └── presentation/   # Shared presentation tests
+        │       └── api/        # API tests
+        │           └── test_health.py # Health endpoint tests
+        └── utils/              # Shared utility functions
+            ├── odata_options.py # OData query options parsing
+            ├── result.py       # Result type for operations
+            └── uuid_tools.py   # UUID utility functions
 ```
 
 ## 🛠️ Development Setup
@@ -181,11 +205,16 @@ LOGS_PATH=./.logs/app.log
 
 Replace `$PORT` with the port number you configured in the `.env` file.
 
-## 🧪 Testing
+## 🧪 Testing & Linting
 
 Run tests with pytest:
 ```bash
 uv run -m pytest
+```
+
+Run linting with ruff:
+```bash
+uv run -m ruff check .
 ```
 
 ## 📋 Available Endpoints
