@@ -8,11 +8,11 @@ from fastapi.responses import ORJSONResponse
 
 from core.config import settings
 from core.logger import get_logger, global_app_logger, setup_log_rotation
-from features.resources.infrastructure.persistence.models.sqlite import (
+from middlewares.access_log import AccessLogMiddleware
+from modules.resources.infrastructure.persistence.models.sqlite import (
     SQLiteResourcesBaseModel,
 )
-from features.resources.presentation.api import router as resources_router
-from middlewares.access_log import AccessLogMiddleware
+from modules.resources.presentation.api import router as resources_router
 from shared.domain.errors import DomainError
 from shared.infrastructure.db import init_db
 from shared.presentation.api import router as shared_router

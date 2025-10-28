@@ -1,6 +1,9 @@
 from abc import ABC
+from enum import Enum
 
-from shared.domain.error_codes import ErrorCodes
+
+class ErrorCodes(str, Enum):
+    INVALID_URL = 'INVALID_URL'
 
 
 class DomainError(Exception, ABC):

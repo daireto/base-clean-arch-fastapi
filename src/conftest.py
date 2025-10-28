@@ -3,10 +3,10 @@ from collections.abc import Generator
 import pytest
 import pytest_asyncio
 
-from features.resources.di import deps
-from features.resources.domain.entities import Resource
-from features.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from features.resources.infrastructure.persistence.repositories.mock import (
+from modules.resources.di import deps
+from modules.resources.domain.entities import Resource
+from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.infrastructure.persistence.repositories.mock import (
     MockResourceRepository,
 )
 
