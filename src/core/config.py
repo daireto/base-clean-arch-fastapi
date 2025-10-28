@@ -5,7 +5,7 @@ from pydantic import Secret
 from pydantic_settings import BaseSettings
 
 
-class Settings(BaseSettings):
+class _Settings(BaseSettings):
     env: Literal['dev', 'lab', 'prod'] = 'dev'
     port: int = 8000
     debug: bool = False
@@ -43,8 +43,8 @@ class Settings(BaseSettings):
 
 
 @lru_cache
-def get_settings() -> Settings:
-    return Settings()
+def get_settings() -> _Settings:
+    return _Settings()
 
 
 settings = get_settings()
