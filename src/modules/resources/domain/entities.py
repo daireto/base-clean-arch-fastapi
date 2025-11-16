@@ -11,11 +11,11 @@ class Resource(Entity):
 
     @property
     def url_value(self) -> str:
-        return self.url.get_value()
+        return self.url.value
 
     @property
     def type_value(self) -> str:
-        return self.type.get_value()
+        return self.type.value
 
     def set_name(self, name: str) -> None:
         self.name = name
