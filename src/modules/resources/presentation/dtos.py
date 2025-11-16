@@ -1,5 +1,5 @@
 from modules.resources.domain.entities import Resource
-from shared.presentation.dto import EntityResponseDTO, RequestDTO, ResponseDTO
+from shared.presentation.dtos import EntityResponseDTO, RequestDTO, ResponseDTO
 
 
 class CreateResourceRequestDTO(RequestDTO):
@@ -37,12 +37,11 @@ class ResourceResponseDTO(ResponseDTO):
             resource=ResourceDTO.from_entity(resource),
         )
 
-
-class ResourcesResponseDTO(ResponseDTO):
-    resources: list[ResourceDTO]
-
     @classmethod
-    def from_entities(cls, resources: list[Resource]) -> 'ResourcesResponseDTO':
-        return cls(
-            resources=[ResourceDTO.from_entity(resource) for resource in resources],
-        )
+    def from_entities(cls, resources: list[Resource]) -> 'list[ResourceResponseDTO]':
+        return [
+            cls(
+                resource=ResourceDTO.from_entity(resource),
+            )
+            for resource in resources
+        ]
