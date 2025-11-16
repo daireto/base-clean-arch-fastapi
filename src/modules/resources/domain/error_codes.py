@@ -1,0 +1,6 @@
+from enum import Enum
+
+
+class ErrorCodes(str, Enum):
+    RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND'
+    RESOURCE_TYPE_NOT_SUPPORTED = 'RESOURCE_TYPE_NOT_SUPPORTED'
