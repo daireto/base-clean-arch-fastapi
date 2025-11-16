@@ -1,0 +1,7 @@
+from enum import Enum
+
+
+class ErrorCodes(str, Enum):
+    AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR'
+    AUTHORIZATION_ERROR = 'AUTHORIZATION_ERROR'
+    INVALID_URL = 'INVALID_URL'
