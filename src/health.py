@@ -1,17 +1,11 @@
-from enum import Enum
 from functools import lru_cache
 
-from pydantic import BaseModel
-
-
-class HealthStatus(str, Enum):
-    HEALTHY = 'healthy'
-    UNHEALTHY = 'unhealthy'
+from pydantic import BaseModel, Field
 
 
 class ServerHealthResponse(BaseModel):
-    message: str
-    status: HealthStatus
+    message: str = Field(..., description='"ok" if healthy, error message otherwise.')
+    healthy: bool = Field(..., description='Health status')
 
 
 class _ServerHealth:
@@ -40,16 +34,14 @@ class _ServerHealth:
     def to_response(self) -> ServerHealthResponse:
         return ServerHealthResponse(
             message='ok' if self.is_healthy else self.get_unhealthy_reason(),
-            status=HealthStatus.HEALTHY
-            if self.is_healthy
-            else HealthStatus.UNHEALTHY,
+            healthy=self.is_healthy,
         )
 
     def __str__(self) -> str:
         return (
-            HealthStatus.HEALTHY
+            'healthy'
             if self.is_healthy
-            else f'{HealthStatus.UNHEALTHY}: {self.get_unhealthy_reason()}'
+            else f'unhealthy, reason={self.get_unhealthy_reason()}'
         )
 
     def __bool__(self) -> bool:
