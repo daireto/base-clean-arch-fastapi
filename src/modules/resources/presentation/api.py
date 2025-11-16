@@ -25,11 +25,10 @@ from modules.resources.domain.interfaces.repositories import ResourceRepositoryA
 from modules.resources.presentation.dtos import (
     CreateResourceRequestDTO,
     ResourceResponseDTO,
-    ResourcesResponseDTO,
 )
-from shared.presentation.exception_handling import to_http_exception
+from shared.domain.helpers.odata_helper import ODataHelper
+from shared.presentation.dtos import PaginatedResponseDTO
 from shared.presentation.responses import EmptyResponse
-from shared.utils.odata_options import SafeODataQueryOptions
 from shared.utils.uuid_tools import uuid_from_string
 
 router = APIRouter()
@@ -44,20 +43,23 @@ async def get_resource(
     command = GetResourceCommand(id=uuid_id)
     if result := await GetResourceHandler(repo).handle(command):
         return ResourceResponseDTO.from_entity(result.get_value_or_raise())
-    raise to_http_exception(result.get_error_or_raise())
+    raise result.get_error_or_raise()
 
 
 @router.get('/resources/')
 async def list_resources(
     request: Request,
     repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
-) -> ResourcesResponseDTO:
+) -> PaginatedResponseDTO[ResourceResponseDTO]:
+    odata = ODataHelper.get_from_query(request.url.query)
     command = ListResourcesCommand(
-        odata_options=SafeODataQueryOptions.get_from_query(request.url.query),
+        odata=odata,
     )
-    if result := await ListResourcesHandler(repo).handle(command):
-        return ResourcesResponseDTO.from_entities(result.get_value_or_raise())
-    raise to_http_exception(result.get_error_or_raise())
+    if result := await ListResourcesHandler(repo).handle_with_count(command):
+        resources, total = result.get_value_or_raise()
+        items = ResourceResponseDTO.from_entities(resources)
+        return PaginatedResponseDTO.from_odata_query_result(total, items, odata)
+    raise result.get_error_or_raise()
 
 
 @router.post('/resources/')
@@ -68,7 +70,7 @@ async def create_resource(
     command = CreateResourceCommand(name=dto.name, url=dto.url, type=dto.type)
     if result := await CreateResourceHandler(repo).handle(command):
         return ResourceResponseDTO.from_entity(result.get_value_or_raise())
-    raise to_http_exception(result.get_error_or_raise())
+    raise result.get_error_or_raise()
 
 
 @router.put('/resources/{id_}')
@@ -86,7 +88,7 @@ async def update_resource(
     )
     if result := await UpdateResourceHandler(repo).handle(command):
         return ResourceResponseDTO.from_entity(result.get_value_or_raise())
-    raise to_http_exception(result.get_error_or_raise())
+    raise result.get_error_or_raise()
 
 
 @router.delete('/resources/{id_}')
@@ -97,4 +99,4 @@ async def delete_resource(
     command = DeleteResourceCommand(id=uuid_from_string(id_))
     if result := await DeleteResourceHandler(repo).handle(command):
         return EmptyResponse()
-    raise to_http_exception(result.get_error_or_raise())
+    raise result.get_error_or_raise()
