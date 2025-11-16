@@ -10,7 +10,7 @@ dependencies = [
     "fastapi[standard]==0.119.0",
     "httpx==0.28.1",
     "lagom==2.7.7",
-    "odata-v4-query==0.3.0",
+    "odata-v4-query==0.4.1",
     "orjson==3.11.0",
     "pydantic-settings==2.11.0",
     "pytest==8.4.1",
@@ -22,3 +22,6 @@ dependencies = [
     "uvloop==0.21.0",
     "validators==0.35.0",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = "src"
