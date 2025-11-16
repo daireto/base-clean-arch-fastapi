@@ -1,25 +1,24 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from asgi_correlation_id import CorrelationIdMiddleware
+from asgi_correlation_id import CorrelationIdMiddleware, correlation_id
 from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
+from fastapi.utils import is_body_allowed_for_status_code
+from starlette.responses import JSONResponse
 
-from core.config import settings
-from core.logger import get_logger, global_app_logger, setup_log_rotation
-from middlewares.access_log import AccessLogMiddleware
+from config import settings
+from logger import get_logger, global_app_logger, setup_log_rotation
+from middlewares.access_log_middleware import AccessLogMiddleware
 from modules.resources.infrastructure.persistence.models.sqlite import (
     SQLiteResourcesBaseModel,
 )
 from modules.resources.presentation.api import router as resources_router
-from shared.domain.errors import DomainError
+from shared.domain.exceptions import DomainError
 from shared.infrastructure.db import init_db
 from shared.presentation.api import router as shared_router
-from shared.presentation.exception_handling import (
-    http_exception_handler,
-    to_http_exception,
-)
 
 if settings.use_log_rotation:
     setup_log_rotation(
@@ -73,23 +72,48 @@ app.add_middleware(AccessLogMiddleware, logger=get_logger('access'))
 
 
 # Exception handlers
+def get_correlation_id_header() -> dict[str, str]:
+    return {'X-Request-ID': correlation_id.get() or ''}
+
+
 @app.exception_handler(HTTPException)
-async def http_exception_handler_with_correlation_id(
-    request: Request, exc: HTTPException
-) -> Response:
-    return await http_exception_handler(request, exc)
+async def http_exception_handler(_: Request, exc: HTTPException) -> Response:
+    headers = getattr(exc, 'headers', {}) or {}
+    headers.update(get_correlation_id_header())
+    if not is_body_allowed_for_status_code(exc.status_code):
+        return Response(status_code=exc.status_code, headers=headers)
+    return ORJSONResponse(
+        {'detail': exc.detail}, status_code=exc.status_code, headers=headers
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def request_validation_exception_handler(
+    _: Request, exc: RequestValidationError
+) -> JSONResponse:
+    return ORJSONResponse(
+        content={'detail': exc.errors()},
+        status_code=422,
+        headers=get_correlation_id_header(),
+    )
 
 
 @app.exception_handler(DomainError)
-async def domain_error_handler(request: Request, exc: DomainError) -> Response:
-    return await http_exception_handler(request, to_http_exception(exc))
+async def domain_exception_handler(_: Request, exc: DomainError) -> Response:
+    return ORJSONResponse(
+        {'detail': exc.detail.model_dump()},
+        status_code=exc.status_code,
+        headers=get_correlation_id_header(),
+    )
 
 
 @app.exception_handler(Exception)
-async def unhandled_error_handler(request: Request, exc: Exception) -> Response:
-    global_app_logger.error('Unhandled error', exc_info=exc)
-    return await http_exception_handler(
-        request, HTTPException(500, 'Internal server error')
+async def unexpected_exception_handler(_: Request, exc: Exception) -> Response:
+    global_app_logger.error('Unexpected error', exc_info=exc)
+    return ORJSONResponse(
+        {'detail': 'Internal server error'},
+        status_code=500,
+        headers=get_correlation_id_header(),
     )
 
 
