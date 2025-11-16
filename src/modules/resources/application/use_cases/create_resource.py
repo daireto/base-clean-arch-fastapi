@@ -7,7 +7,7 @@ from modules.resources.infrastructure.instrumentation.use_cases.create_resource 
     CreateResourceInstrumentation,
 )
 from shared.application.interfaces.base import CommandHandler
-from shared.utils.result import Result
+from shared.domain.result import Result
 
 
 @dataclass

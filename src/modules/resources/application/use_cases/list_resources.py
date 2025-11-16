@@ -6,13 +6,13 @@ from modules.resources.infrastructure.instrumentation.use_cases.list_resources i
     ListResourcesInstrumentation,
 )
 from shared.application.interfaces.base import CommandHandler
-from shared.utils.odata_options import SafeODataQueryOptions
-from shared.utils.result import Result
+from shared.domain.helpers.odata_helper import ODataHelper
+from shared.domain.result import Result
 
 
 @dataclass
 class ListResourcesCommand:
-    odata_options: SafeODataQueryOptions
+    odata: ODataHelper
 
 
 class ListResourcesHandler(CommandHandler):
@@ -27,11 +27,24 @@ class ListResourcesHandler(CommandHandler):
     async def handle(self, command: ListResourcesCommand) -> Result[list[Resource]]:
         self._instrumentation.before()
         try:
-            resources = await self._resource_repository.all(
-                command.odata_options.get_sanitized()
-            )
+            resources = await self._resource_repository.all(command.odata.get())
         except Exception as error:
             self._instrumentation.error(error)
             return Result.failure(error)
         self._instrumentation.after(resources)
         return Result.success(resources)
+
+    async def handle_with_count(
+        self, command: ListResourcesCommand
+    ) -> Result[tuple[list[Resource], int]]:
+        self._instrumentation.before()
+        try:
+            resources = await self._resource_repository.all(command.odata.get())
+            total = await self._resource_repository.count(
+                command.odata.get_for_counting()
+            )
+        except Exception as error:
+            self._instrumentation.error(error)
+            return Result.failure(error)
+        self._instrumentation.after(resources)
+        return Result.success((resources, total))

@@ -2,13 +2,13 @@ from dataclasses import dataclass
 from uuid import UUID
 
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.errors import ResourceNotFoundError
+from modules.resources.domain.exceptions import ResourceNotFoundError
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from modules.resources.infrastructure.instrumentation.use_cases.get_resource import (
     GetResourceInstrumentation,
 )
 from shared.application.interfaces.base import CommandHandler
-from shared.utils.result import Result
+from shared.domain.result import Result
 
 
 @dataclass
