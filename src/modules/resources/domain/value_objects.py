@@ -1,7 +1,7 @@
 import validators
 
-from modules.resources.domain.errors import ResourceTypeNotSupportedError
-from shared.domain.errors import InvalidURLError
+from modules.resources.domain.exceptions import ResourceTypeNotSupportedError
+from shared.domain.exceptions import InvalidURLError
 from shared.domain.value_object import ValueObject
 
 
