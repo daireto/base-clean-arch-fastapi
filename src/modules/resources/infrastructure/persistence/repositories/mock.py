@@ -46,5 +46,5 @@ class MockResourceRepository(ResourceRepositoryABC):
         del self._storage[id_]
         return True
 
-    async def count(self) -> int:
+    async def count(self, _: ODataQueryOptions | None = None) -> int:
         return len(self._storage)

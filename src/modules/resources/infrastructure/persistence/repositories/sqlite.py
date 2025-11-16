@@ -45,5 +45,9 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
         await resource.delete()
         return True
 
-    async def count(self) -> int:
+    async def count(self, odata_options: ODataQueryOptions | None = None) -> int:
+        if odata_options:
+            query = apply_to_sqlalchemy_query(odata_options, SQLiteResourceModel)
+            result = await execute(query, SQLiteResourcesBaseModel)
+            return result.scalar_one()
         return await SQLiteResourceModel.count()
