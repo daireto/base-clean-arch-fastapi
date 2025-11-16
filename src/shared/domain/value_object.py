@@ -14,15 +14,12 @@ class ValueObject(BaseModel, Generic[T]):
         super().__init__(value=value)
         self.validate()
 
-    def get_value(self) -> T:
-        return self.value
-
     def validate(self) -> None:
         pass
 
     @model_serializer(mode='plain')
     def serialize_model(self) -> T:
-        return self.get_value()
+        return self.value
 
     def __str__(self) -> str:
         return str(self.value)
