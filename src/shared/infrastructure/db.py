@@ -1,7 +1,7 @@
 from sqlactive import ActiveRecordBaseModel, DBConnection
 
-from core.config import settings
-from core.logger import async_log_decorator, get_logger
+from config import settings
+from logger import async_log_decorator, get_logger
 
 logger = get_logger('db')
 
