@@ -21,9 +21,10 @@ class TestListResource:
                 odata=ODataHelper(ODataQueryOptions(top=10)),
             ),
         )
-        listed_resources = result.get_value_or_raise()
 
         # Assert
+        assert result
+        listed_resources = result.unwrap_value()
         assert len(listed_resources) == len(resources)
         assert listed_resources[0].url == 'https://example.com'
         assert listed_resources[1].url == 'https://example.org'
@@ -41,8 +42,9 @@ class TestListResource:
                 odata=ODataHelper(ODataQueryOptions(top=limit)),
             ),
         )
-        listed_resources = result.get_value_or_raise()
 
         # Assert
+        assert result
+        listed_resources = result.unwrap_value()
         assert len(listed_resources) == limit
         assert listed_resources[0].url == 'https://example.com'

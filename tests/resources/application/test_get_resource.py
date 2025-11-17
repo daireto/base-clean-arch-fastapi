@@ -19,9 +19,10 @@ class TestGetResource:
         result = await GetResourceHandler(repo).handle(
             GetResourceCommand(id=resource.id)
         )
-        resource = result.get_value_or_raise()
 
         # Assert
+        assert result
+        resource = result.unwrap_value()
         assert resource.name == 'Random Image'
         assert resource.url == 'https://example.com'
         assert resource.type == 'image'

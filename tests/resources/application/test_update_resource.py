@@ -30,9 +30,10 @@ class TestUpdateResource:
                 type='text',
             )
         )
-        updated = result.get_value_or_raise()
 
         # Assert
+        assert result
+        updated = result.unwrap_value()
         assert updated.id == resource.id
         assert updated.name == 'Random Text'
         assert updated.url == 'https://example.org'
