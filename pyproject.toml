@@ -17,6 +17,7 @@ dependencies = [
     "pytest-asyncio==1.1.0",
     "python-json-logger==4.0.0",
     "ruff==0.12.4",
+    "simple-result==0.1.0",
     "sqlactive==0.3.6",
     "structlog==25.4.0",
     "uvloop==0.21.0",
