@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from uuid import UUID
 
+from simple_result import Err, Ok, Result
+
 from modules.resources.domain.entities import Resource
 from modules.resources.domain.exceptions import ResourceNotFoundError
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
@@ -9,7 +11,6 @@ from modules.resources.infrastructure.instrumentation.use_cases.update_resource 
     UpdateResourceInstrumentation,
 )
 from shared.application.interfaces.base import CommandHandler
-from shared.domain.result import Result
 
 
 @dataclass
@@ -29,7 +30,10 @@ class UpdateResourceHandler(CommandHandler):
         self._resource_repository = resource_repository
         self._instrumentation = instrumentation or UpdateResourceInstrumentation()
 
-    async def handle(self, command: UpdateResourceCommand) -> Result[Resource]:
+    async def handle(
+        self,
+        command: UpdateResourceCommand,
+    ) -> Result[Resource, Exception]:
         resource = Resource(
             id=command.id,
             name=command.name,
@@ -41,9 +45,9 @@ class UpdateResourceHandler(CommandHandler):
             updated = await self._resource_repository.update(resource)
         except Exception as error:
             self._instrumentation.error(error)
-            return Result.failure(error)
+            return Err(error)
         if not updated:
             self._instrumentation.not_found(resource)
-            return Result.failure(ResourceNotFoundError(command.id))
+            return Err(ResourceNotFoundError(command.id))
         self._instrumentation.after(updated)
-        return Result.success(updated)
+        return Ok(updated)

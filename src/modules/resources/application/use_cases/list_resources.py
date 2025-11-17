@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+from simple_result import Err, Ok, Result
+
 from modules.resources.domain.entities import Resource
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from modules.resources.infrastructure.instrumentation.use_cases.list_resources import (
@@ -7,7 +9,6 @@ from modules.resources.infrastructure.instrumentation.use_cases.list_resources i
 )
 from shared.application.interfaces.base import CommandHandler
 from shared.domain.helpers.odata_helper import ODataHelper
-from shared.domain.result import Result
 
 
 @dataclass
@@ -24,19 +25,23 @@ class ListResourcesHandler(CommandHandler):
         self._resource_repository = resource_repository
         self._instrumentation = instrumentation or ListResourcesInstrumentation()
 
-    async def handle(self, command: ListResourcesCommand) -> Result[list[Resource]]:
+    async def handle(
+        self,
+        command: ListResourcesCommand,
+    ) -> Result[list[Resource], Exception]:
         self._instrumentation.before()
         try:
             resources = await self._resource_repository.all(command.odata.get())
         except Exception as error:
             self._instrumentation.error(error)
-            return Result.failure(error)
+            return Err(error)
         self._instrumentation.after(resources)
-        return Result.success(resources)
+        return Ok(resources)
 
     async def handle_with_count(
-        self, command: ListResourcesCommand
-    ) -> Result[tuple[list[Resource], int]]:
+        self,
+        command: ListResourcesCommand,
+    ) -> Result[tuple[list[Resource], int], Exception]:
         self._instrumentation.before()
         try:
             resources = await self._resource_repository.all(command.odata.get())
@@ -45,6 +50,6 @@ class ListResourcesHandler(CommandHandler):
             )
         except Exception as error:
             self._instrumentation.error(error)
-            return Result.failure(error)
+            return Err(error)
         self._instrumentation.after(resources)
-        return Result.success((resources, total))
+        return Ok((resources, total))
