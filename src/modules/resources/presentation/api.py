@@ -42,8 +42,8 @@ async def get_resource(
     uuid_id = uuid_from_string(id_)
     command = GetResourceCommand(id=uuid_id)
     if result := await GetResourceHandler(repo).handle(command):
-        return ResourceResponseDTO.from_entity(result.get_value_or_raise())
-    raise result.get_error_or_raise()
+        return ResourceResponseDTO.from_entity(result.unwrap_value())
+    raise result.unwrap_error()
 
 
 @router.get('/resources/')
@@ -56,10 +56,10 @@ async def list_resources(
         odata=odata,
     )
     if result := await ListResourcesHandler(repo).handle_with_count(command):
-        resources, total = result.get_value_or_raise()
+        resources, total = result.unwrap_value()
         items = ResourceResponseDTO.from_entities(resources)
         return PaginatedResponseDTO.from_odata_query_result(total, items, odata)
-    raise result.get_error_or_raise()
+    raise result.unwrap_error()
 
 
 @router.post('/resources/')
@@ -69,8 +69,8 @@ async def create_resource(
 ) -> ResourceResponseDTO:
     command = CreateResourceCommand(name=dto.name, url=dto.url, type=dto.type)
     if result := await CreateResourceHandler(repo).handle(command):
-        return ResourceResponseDTO.from_entity(result.get_value_or_raise())
-    raise result.get_error_or_raise()
+        return ResourceResponseDTO.from_entity(result.unwrap_value())
+    raise result.unwrap_error()
 
 
 @router.put('/resources/{id_}')
@@ -87,8 +87,8 @@ async def update_resource(
         type=dto.type,
     )
     if result := await UpdateResourceHandler(repo).handle(command):
-        return ResourceResponseDTO.from_entity(result.get_value_or_raise())
-    raise result.get_error_or_raise()
+        return ResourceResponseDTO.from_entity(result.unwrap_value())
+    raise result.unwrap_error()
 
 
 @router.delete('/resources/{id_}')
@@ -99,4 +99,4 @@ async def delete_resource(
     command = DeleteResourceCommand(id=uuid_from_string(id_))
     if result := await DeleteResourceHandler(repo).handle(command):
         return EmptyResponse()
-    raise result.get_error_or_raise()
+    raise result.unwrap_error()
