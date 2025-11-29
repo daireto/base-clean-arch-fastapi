@@ -24,6 +24,11 @@ It also implements other patterns and practices, such as:
 - **Data Transfer Objects** (DTOs) for request and response payloads.
 - **Value Objects** for data validation.
 - **Result Pattern** for handling operation outcomes.
+- **Repository Pattern** for data access.
+- **Collections** for enhanced filtering and sorting.
+- **Instrumentation** for logging and monitoring use cases.
+- **OData V4 Query** for filtering and sorting data.
+- **Correlation ID** for request tracing.
 
 ## 🚀 Technology Stack
 
