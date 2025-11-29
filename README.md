@@ -52,7 +52,6 @@ These are some of the main technologies used in this project:
 ├── COMMITS.md                  # Git commit guidelines
 ├── pyproject.toml              # Project configuration and dependencies
 ├── README.md                   # Project documentation
-├── requirements.txt            # Python dependencies (pip format)
 ├── ruff.toml                   # Ruff linter configuration
 ├── uv.lock                     # UV dependency lock file
 ├── LICENSE.md                  # Project license
