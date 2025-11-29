@@ -160,3 +160,21 @@ class TestResourceCollection:
         # Assert
         assert len(others) == len(expected)
         assert all(resource.type == 'other' for resource in others)
+
+    def test_sort_by_name_returns_resources_sorted_by_name(self, resources: list[Resource]):
+        # Act
+        collection = ResourceCollection(resources)
+        sorted_ = collection.sort_by_name()
+
+        # Assert
+        assert sorted_ == sorted(resources, key=lambda resource: resource.name)
+
+    def test_sort_by_created_at_returns_resources_sorted_by_created_at(
+        self, resources: list[Resource]
+    ):
+        # Act
+        collection = ResourceCollection(resources)
+        sorted_ = collection.sort_by_created_at()
+
+        # Assert
+        assert sorted_ == sorted(resources, key=lambda resource: resource.created_at)
