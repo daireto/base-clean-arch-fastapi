@@ -56,9 +56,11 @@ async def list_resources(
         odata=odata,
     )
     if result := await ListResourcesHandler(repo).handle_with_count(command):
-        resources, total = result.unwrap_value()
+        resources = result.unwrap_value()
         items = ResourceResponseDTO.from_entities(resources)
-        return PaginatedResponseDTO.from_odata_query_result(total, items, odata)
+        return PaginatedResponseDTO.from_odata_query_result(
+            resources.total_stored, items, odata
+        )
     raise result.unwrap_error()
 
 

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from simple_result import Err, Ok, Result
 
-from modules.resources.domain.entities import Resource
+from modules.resources.domain.collections import ResourceCollection
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from modules.resources.infrastructure.instrumentation.use_cases.list_resources import (
     ListResourcesInstrumentation,
@@ -28,7 +28,7 @@ class ListResourcesHandler(CommandHandler):
     async def handle(
         self,
         command: ListResourcesCommand,
-    ) -> Result[list[Resource], Exception]:
+    ) -> Result[ResourceCollection, Exception]:
         self._instrumentation.before()
         try:
             resources = await self._resource_repository.all(command.odata.get())
@@ -36,12 +36,12 @@ class ListResourcesHandler(CommandHandler):
             self._instrumentation.error(error)
             return Err(error)
         self._instrumentation.after(resources)
-        return Ok(resources)
+        return Ok(ResourceCollection(resources))
 
     async def handle_with_count(
         self,
         command: ListResourcesCommand,
-    ) -> Result[tuple[list[Resource], int], Exception]:
+    ) -> Result[ResourceCollection, Exception]:
         self._instrumentation.before()
         try:
             resources = await self._resource_repository.all(command.odata.get())
@@ -52,4 +52,4 @@ class ListResourcesHandler(CommandHandler):
             self._instrumentation.error(error)
             return Err(error)
         self._instrumentation.after(resources)
-        return Ok((resources, total))
+        return Ok(ResourceCollection(resources, total))
