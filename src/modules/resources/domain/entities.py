@@ -29,9 +29,9 @@ class Resource(Entity):
     class Builder(Entity.Builder):
         def __init__(self) -> None:
             super().__init__()
-            self._name = ''
-            self._url = ''
-            self._type = ''
+            self._name = None
+            self._url = None
+            self._type = None
 
         def with_name(self, name: str) -> 'Resource.Builder':
             self._name = name
@@ -46,17 +46,11 @@ class Resource(Entity):
             return self
 
         def build(self) -> 'Resource':
-            return Resource(
-                id=self._id,
-                name=self._name,
-                url=ResourceUrl(value=self._url),
-                type=ResourceType(value=self._type),
-            )
-
-        def build_with_defaults(self) -> 'Resource':
-            return Resource(
-                id=self._id,
-                name=self._name or 'unnamed',
-                url=ResourceUrl(value=self._url or 'https://example.com'),
-                type=ResourceType(value=self._type or 'other'),
+            return Resource.model_validate(
+                {
+                    'id': self._id,
+                    'name': self._name,
+                    'url': ResourceUrl(value=self._url) if self._url else None,
+                    'type': ResourceType(value=self._type) if self._type else None,
+                }
             )
