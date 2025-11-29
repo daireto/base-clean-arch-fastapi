@@ -23,6 +23,3 @@ class Entity(BaseModel, ABC):
 
         @abstractmethod
         def build(self): ...  # noqa: ANN201
-
-        @abstractmethod
-        def build_with_defaults(self): ...  # noqa: ANN201
