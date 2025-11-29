@@ -98,7 +98,7 @@ requires-dist = [
     { name = "pytest-asyncio", specifier = "==1.1.0" },
     { name = "python-json-logger", specifier = "==4.0.0" },
     { name = "ruff", specifier = "==0.12.4" },
-    { name = "simple-result", specifier = ">=0.1.0" },
+    { name = "simple-result", specifier = "==0.1.0" },
     { name = "sqlactive", specifier = "==0.3.6" },
     { name = "structlog", specifier = "==25.4.0" },
     { name = "uvloop", specifier = "==0.21.0" },
