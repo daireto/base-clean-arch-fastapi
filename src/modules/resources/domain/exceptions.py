@@ -17,12 +17,15 @@ class ResourceNotFoundError(NotFoundError):
 
 
 class ResourceTypeNotSupportedError(InvalidInputError):
-    def __init__(self, type_: str) -> None:
+    def __init__(self, type_: str, supported_types: list[str]) -> None:
         self.type = type_
         super().__init__(
             detail=ErrorDetail(
                 code=ErrorCodes.RESOURCE_TYPE_NOT_SUPPORTED,
-                message='Resource type not supported',
+                message=(
+                    f'Resource type not supported,'
+                    f' supported types are: {", ".join(supported_types)}'
+                ),
                 extra={'resource_type': type_},
             ),
         )
