@@ -52,21 +52,11 @@ These are some of the main technologies used in this project:
 
 ```
 .
-├── .env.example                # Environment variables template
-├── api.http                    # HTTP requests for testing
-├── COMMITS.md                  # Git commit guidelines
-├── pyproject.toml              # Project configuration and dependencies
-├── README.md                   # Project documentation
-├── ruff.toml                   # Ruff linter configuration
-├── uv.lock                     # UV dependency lock file
-├── LICENSE.md                  # Project license
 ├── src/                        # Source code
-│   ├── main.py                 # FastAPI application entry point
-│   ├── config.py               # Application configuration
-│   ├── health.py               # Health check logic
-│   ├── logger.py               # Logging configuration
-│   ├── middlewares/            # Application middlewares
-│   │   └── access_log_middleware.py # Access logging middleware
+│   ├── api/                    # API-related code
+│   │   ├── middlewares/        # Application middlewares
+│   │   │   └── access_log_middleware.py # Access logging middleware
+│   │   └── health.py           # Health check logic
 │   ├── modules/                # Feature modules (domain-driven)
 │   │   └── resources/          # Resources feature module
 │   │       ├── application/    # Application layer (use cases)
@@ -103,55 +93,64 @@ These are some of the main technologies used in this project:
 │   │       │   ├── api.py      # Resource API endpoints
 │   │       │   └── dtos.py     # Data transfer objects
 │   │       └── di.py           # Dependency injection configuration
-│   └── shared/                 # Shared utilities and common code
-│       ├── application/        # Shared application layer
-│       │   └── interfaces/     # Shared interfaces
-│       │       ├── base.py     # Base interfaces
-│       │       └── instrumentation.py # Instrumentation interfaces
-│       ├── domain/             # Shared domain layer
-│       │   ├── entity.py       # Entity base class
-│       │   ├── error_codes.py  # Shared error codes
-│       │   ├── exceptions.py   # Shared exception classes
-│       │   ├── value_object.py # Value object base class
-│       │   └── helpers/        # Domain helpers
-│       │       └── odata_helper.py # OData query helper
-│       ├── infrastructure/     # Shared infrastructure
-│       │   ├── db.py           # Database connection utilities
-│       │   └── persistence/    # Shared persistence
-│       │       ├── models/     # Shared models
-│       │       └── repositories/ # Shared repositories
-│       ├── presentation/       # Shared presentation layer
-│       │   ├── api.py          # Shared API routes (e.g., health check)
-│       │   ├── dtos.py         # Base DTO classes
-│       │   └── responses.py    # Response utilities
-│       └── utils/              # Shared utility functions
-│           └── uuid_tools.py   # UUID utility functions
+│   ├── shared/                 # Shared utilities and common code
+│   │   ├── application/        # Shared application layer
+│   │   │   └── interfaces/     # Shared interfaces
+│   │   │       ├── base.py     # Base interfaces
+│   │   │       └── instrumentation.py # Instrumentation interfaces
+│   │   ├── domain/             # Shared domain layer
+│   │   │   ├── bases/          # Base classes
+│   │   │   │   ├── entity.py   # Entity base class
+│   │   │   │   └── value_object.py # Value object base class
+│   │   │   ├── error_codes.py  # Shared error codes
+│   │   │   └── exceptions.py   # Shared exception classes
+│   │   ├── helpers/            # Shared helper functions
+│   │   │   └── odata_helper.py # OData query helper
+│   │   ├── infrastructure/     # Shared infrastructure
+│   │   │   └── db.py           # Database connection utilities
+│   │   ├── presentation/       # Shared presentation layer
+│   │   │   ├── api.py          # Shared API routes (e.g., health check)
+│   │   │   ├── dtos.py         # Base DTO classes
+│   │   │   └── responses.py    # Response utilities
+│   │   └── utils/              # Shared utility functions
+│   │       └── uuid_tools.py   # UUID utility functions
+│   ├── config.py               # Application configuration
+│   ├── logger.py               # Logging configuration
+│   └── main.py                 # FastAPI application entry point
 ├── tests/                      # Tests directory
-│   ├── conftest.py            # Pytest global fixtures
-│   ├── resources/             # Resource module tests
-│   │   ├── application/       # Application layer tests
+│   ├── conftest.py             # Pytest global fixtures
+│   ├── resources/              # Resource module tests
+│   │   ├── application/        # Application layer tests
 │   │   │   ├── test_create_resource.py
 │   │   │   ├── test_delete_resource.py
 │   │   │   ├── test_get_resource.py
 │   │   │   ├── test_list_resources.py
 │   │   │   └── test_update_resource.py
-│   │   ├── domain/            # Domain layer tests
+│   │   ├── domain/             # Domain layer tests
 │   │   │   ├── conftest.py
 │   │   │   └── test_collections.py
-│   │   ├── infrastructure/    # Infrastructure layer tests
-│   │   │   └── persistence/   # Persistence layer tests
+│   │   ├── infrastructure/     # Infrastructure layer tests
+│   │   │   └── persistence/    # Persistence layer tests
 │   │   │       └── repositories/ # Repository tests
 │   │   │           └── test_sqlite_resource_repository.py
-│   │   └── presentation/      # Presentation layer tests
+│   │   └── presentation/       # Presentation layer tests
 │   │       ├── test_create_resource.py
 │   │       ├── test_delete_resource.py
 │   │       ├── test_get_resource.py
 │   │       ├── test_list_resources.py
 │   │       └── test_update_resource.py
-│   └── shared/                # Shared tests
-│       └── presentation/      # Shared presentation tests
-│           └── api/           # API tests
+│   └── shared/                 # Shared tests
+│       └── presentation/       # Shared presentation tests
+│           └── api/            # API tests
 │               └── test_health.py # Health endpoint tests
+├── .env.example                # Environment variables template
+├── api.http                    # Some HTTP requests for testing
+├── COMMITS.md                  # Git commit guidelines
+├── LICENSE.md                  # Project license
+├── pyproject.toml              # Project configuration and dependencies
+├── README.md                   # Project documentation
+├── ruff.toml                   # Ruff linter configuration
+└── uv.lock                     # UV dependency lock file
 ```
 
 ## 🛠️ Development Setup
@@ -250,7 +249,7 @@ This project structure provides:
 
 1. Check the [commits guidelines](COMMITS.md).
 2. Follow the existing architecture patterns.
-3. Add tests for new functionality.
+3. Add tests for new functionality using `pytest`.
 4. Use type hints throughout.
 5. Run linting with `ruff` before committing.
 
