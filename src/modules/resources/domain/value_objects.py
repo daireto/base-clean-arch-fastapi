@@ -3,8 +3,8 @@ from urllib.parse import urlparse
 import validators
 
 from modules.resources.domain.exceptions import ResourceTypeNotSupportedError
+from shared.domain.bases.value_object import ValueObject
 from shared.domain.exceptions import InvalidURLError
-from shared.domain.value_object import ValueObject
 
 
 class ResourceType(ValueObject[str]):
