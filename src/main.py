@@ -9,9 +9,9 @@ from fastapi.responses import ORJSONResponse
 from fastapi.utils import is_body_allowed_for_status_code
 from starlette.responses import JSONResponse
 
+from api.middlewares.access_log_middleware import AccessLogMiddleware
 from config import settings
 from logger import get_logger, global_app_logger, setup_log_rotation
-from middlewares.access_log_middleware import AccessLogMiddleware
 from modules.resources.infrastructure.persistence.models.sqlite import (
     SQLiteResourcesBaseModel,
 )

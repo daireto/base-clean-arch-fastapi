@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
+from dotenv import find_dotenv
 from pydantic import Secret
 from pydantic_settings import BaseSettings
 
@@ -40,6 +41,11 @@ class _Settings(BaseSettings):
     @property
     def redoc_url(self) -> str:
         return f'{self.scheme}://localhost:{self.port}/redoc'
+
+    class Config:
+        env_file = find_dotenv()
+        env_file_encoding = 'utf-8'
+        case_sensitive = False
 
 
 @lru_cache
