@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -8,7 +9,7 @@ from shared.domain.error_codes import ErrorCodes
 class ErrorDetail(BaseModel):
     code: str
     message: str
-    extra: dict | None = None
+    extra: dict[str, Any] | None = None
 
 
 class DomainError(Exception, ABC):
