@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
-from shared.domain.helpers.odata_helper import ODataHelper
+from shared.helpers.odata_helper import ODataHelper
 
 T = TypeVar('T', bound='ResponseDTO')
 
