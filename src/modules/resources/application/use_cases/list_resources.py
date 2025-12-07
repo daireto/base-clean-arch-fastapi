@@ -8,7 +8,7 @@ from modules.resources.infrastructure.instrumentation.use_cases.list_resources i
     ListResourcesInstrumentation,
 )
 from shared.application.interfaces.base import CommandHandler
-from shared.domain.helpers.odata_helper import ODataHelper
+from shared.helpers.odata_helper import ODataHelper
 
 
 @dataclass
