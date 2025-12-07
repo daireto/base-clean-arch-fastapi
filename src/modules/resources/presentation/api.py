@@ -26,9 +26,9 @@ from modules.resources.presentation.dtos import (
     CreateResourceRequestDTO,
     ResourceResponseDTO,
 )
-from shared.domain.helpers.odata_helper import ODataHelper
+from shared.helpers.odata_helper import ODataHelper
 from shared.presentation.dtos import PaginatedResponseDTO
-from shared.presentation.responses import EmptyResponse
+from shared.presentation.responses import NoContent
 from shared.utils.uuid_tools import uuid_from_string
 
 router = APIRouter()
@@ -100,5 +100,5 @@ async def delete_resource(
 ) -> Response:
     command = DeleteResourceCommand(id=uuid_from_string(id_))
     if result := await DeleteResourceHandler(repo).handle(command):
-        return EmptyResponse()
+        return NoContent()
     raise result.unwrap_error()
