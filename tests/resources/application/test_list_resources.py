@@ -7,7 +7,7 @@ from modules.resources.application.use_cases.list_resources import (
 )
 from modules.resources.domain.entities import Resource
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from shared.domain.helpers.odata_helper import ODataHelper
+from shared.helpers.odata_helper import ODataHelper
 
 
 @pytest.mark.asyncio

@@ -11,7 +11,7 @@ from modules.resources.infrastructure.persistence.models.sqlite import (
 from modules.resources.infrastructure.persistence.repositories.sqlite import (
     SQLiteResourceRepository,
 )
-from shared.domain.helpers.odata_helper import ODataHelper
+from shared.helpers.odata_helper import ODataHelper
 from shared.utils.uuid_tools import empty_uuid
 
 mock_conn = DBConnection('sqlite+aiosqlite:///:memory:', echo=False)
