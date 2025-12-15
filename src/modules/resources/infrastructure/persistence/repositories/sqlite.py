@@ -7,29 +7,29 @@ from sqlactive import execute
 from modules.resources.domain.entities import Resource
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from modules.resources.infrastructure.persistence.models.sqlite import (
-    SQLiteResourceModel,
-    SQLiteResourcesBaseModel,
+    BaseModel,
+    ResourceModel,
 )
 
 
 class SQLiteResourceRepository(ResourceRepositoryABC):
     async def get_by_id(self, id_: UUID) -> Resource | None:
-        resource = await SQLiteResourceModel.get(id_)
+        resource = await ResourceModel.get(id_)
         return resource.to_entity() if resource else None
 
     async def all(self, odata_options: ODataQueryOptions) -> list[Resource]:
-        query = apply_to_sqlalchemy_query(odata_options, SQLiteResourceModel)
-        result = await execute(query, SQLiteResourcesBaseModel)
+        query = apply_to_sqlalchemy_query(odata_options, ResourceModel)
+        result = await execute(query, BaseModel)
         resources = result.scalars().all()
         return [resource.to_entity() for resource in resources]
 
     async def create(self, resource: Resource) -> Resource:
-        model = SQLiteResourceModel.from_entity(resource)
+        model = ResourceModel.from_entity(resource)
         await model.save()
         return model.to_entity()
 
     async def update(self, resource: Resource) -> Resource | None:
-        model = await SQLiteResourceModel.get(resource.id)
+        model = await ResourceModel.get(resource.id)
         if not model:
             return None
         model.name = resource.name
@@ -39,7 +39,7 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
         return model.to_entity()
 
     async def delete(self, id_: UUID) -> bool:
-        resource = await SQLiteResourceModel.get(id_)
+        resource = await ResourceModel.get(id_)
         if not resource:
             return False
         await resource.delete()
@@ -47,7 +47,7 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
 
     async def count(self, odata_options: ODataQueryOptions | None = None) -> int:
         if odata_options:
-            query = apply_to_sqlalchemy_query(odata_options, SQLiteResourceModel)
-            result = await execute(query, SQLiteResourcesBaseModel)
+            query = apply_to_sqlalchemy_query(odata_options, ResourceModel)
+            result = await execute(query, BaseModel)
             return result.scalar_one()
-        return await SQLiteResourceModel.count()
+        return await ResourceModel.count()

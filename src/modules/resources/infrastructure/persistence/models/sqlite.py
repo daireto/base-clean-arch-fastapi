@@ -7,11 +7,11 @@ from modules.resources.domain.entities import Resource
 from modules.resources.domain.value_objects import ResourceType, ResourceUrl
 
 
-class SQLiteResourcesBaseModel(ActiveRecordBaseModel):
+class BaseModel(ActiveRecordBaseModel):
     __abstract__ = True
 
 
-class SQLiteResourceModel(SQLiteResourcesBaseModel):
+class ResourceModel(BaseModel):
     __tablename__ = 'resources'
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
@@ -30,7 +30,7 @@ class SQLiteResourceModel(SQLiteResourcesBaseModel):
         )
 
     @classmethod
-    def from_entity(cls, entity: Resource) -> 'SQLiteResourceModel':
+    def from_entity(cls, entity: Resource) -> 'ResourceModel':
         return cls(
             id=entity.id,
             name=entity.name,
