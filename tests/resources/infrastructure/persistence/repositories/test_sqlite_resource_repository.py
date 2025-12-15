@@ -5,8 +5,8 @@ from sqlactive import DBConnection
 
 from modules.resources.domain.entities import Resource
 from modules.resources.infrastructure.persistence.models.sqlite import (
-    SQLiteResourceModel,
-    SQLiteResourcesBaseModel,
+    BaseModel,
+    ResourceModel,
 )
 from modules.resources.infrastructure.persistence.repositories.sqlite import (
     SQLiteResourceRepository,
@@ -19,15 +19,15 @@ mock_conn = DBConnection('sqlite+aiosqlite:///:memory:', echo=False)
 
 @pytest_asyncio.fixture(autouse=True)
 async def setup_and_clean_db():
-    await mock_conn.init_db(SQLiteResourcesBaseModel)
+    await mock_conn.init_db(BaseModel)
     yield
     async with mock_conn.async_engine.begin() as conn:
-        await conn.run_sync(SQLiteResourcesBaseModel.metadata.drop_all)
+        await conn.run_sync(BaseModel.metadata.drop_all)
 
 
 @pytest_asyncio.fixture
-async def resource_model() -> SQLiteResourceModel:
-    return await SQLiteResourceModel.from_entity(
+async def resource_model() -> ResourceModel:
+    return await ResourceModel.from_entity(
         Resource.Builder()
         .with_name('Random Image')
         .with_url('https://example.com')
@@ -37,16 +37,16 @@ async def resource_model() -> SQLiteResourceModel:
 
 
 @pytest_asyncio.fixture
-async def resource_models() -> list[SQLiteResourceModel]:
+async def resource_models() -> list[ResourceModel]:
     return [
-        await SQLiteResourceModel.from_entity(
+        await ResourceModel.from_entity(
             Resource.Builder()
             .with_name('Random Image')
             .with_url('https://example.com')
             .with_type('image')
             .build()
         ).save(),
-        await SQLiteResourceModel.from_entity(
+        await ResourceModel.from_entity(
             Resource.Builder()
             .with_name('Random Image')
             .with_url('https://example.org')
@@ -59,7 +59,7 @@ async def resource_models() -> list[SQLiteResourceModel]:
 @pytest.mark.asyncio
 class TestSQLiteResourcesRepository:
     async def test_get_by_id_returns_resource_details_when_resource_exists(
-        self, resource_model: SQLiteResourceModel
+        self, resource_model: ResourceModel
     ):
         # Act
         resource = await SQLiteResourceRepository().get_by_id(resource_model.id)
@@ -78,7 +78,7 @@ class TestSQLiteResourcesRepository:
         assert resource is None
 
     async def test_all_returns_all_requested_resources(
-        self, resource_models: list[SQLiteResourceModel]
+        self, resource_models: list[ResourceModel]
     ):
         # Act
         resources = await SQLiteResourceRepository().all(
@@ -99,7 +99,7 @@ class TestSQLiteResourcesRepository:
             .with_type('image')
             .build()
         )
-        resource = await SQLiteResourceModel.one()
+        resource = await ResourceModel.one()
 
         # Assert
         assert resource.name == 'Random Image'
@@ -108,7 +108,7 @@ class TestSQLiteResourcesRepository:
         assert resource.created_at == resource.updated_at
 
     async def test_update_returns_resource_details_after_updating_resource(
-        self, resource_model: SQLiteResourceModel
+        self, resource_model: ResourceModel
     ):
         # Act
         resource = await SQLiteResourceRepository().update(
@@ -138,14 +138,14 @@ class TestSQLiteResourcesRepository:
         assert resource is None
 
     async def test_delete_returns_true_after_deleting_resource(
-        self, resource_model: SQLiteResourceModel
+        self, resource_model: ResourceModel
     ):
         # Act
         deleted = await SQLiteResourceRepository().delete(resource_model.id)
 
         # Assert
         assert deleted
-        assert await SQLiteResourceModel.count() == 0
+        assert await ResourceModel.count() == 0
 
     async def test_delete_returns_false_when_resource_does_not_exist(self):
         # Act
@@ -155,7 +155,7 @@ class TestSQLiteResourcesRepository:
         assert not deleted
 
     async def test_count_returns_total_number_of_resources(
-        self, resource_models: list[SQLiteResourceModel]
+        self, resource_models: list[ResourceModel]
     ):
         # Act
         count = await SQLiteResourceRepository().count()
@@ -166,7 +166,9 @@ class TestSQLiteResourcesRepository:
     @pytest.mark.usefixtures('resource_models')
     async def test_count_returns_total_number_of_resources_matching_query(self):
         # Arrange
-        odata_helper = ODataHelper.get_from_query('$filter=url eq "https://example.com"')
+        odata_helper = ODataHelper.get_from_query(
+            '$filter=url eq "https://example.com"', max_top=100
+        )
 
         # Act
         count = await SQLiteResourceRepository().count(odata_helper.get_for_counting())
