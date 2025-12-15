@@ -18,7 +18,7 @@ class TestListResource:
         # Act
         result = await ListResourcesHandler(repo).handle(
             ListResourcesCommand(
-                odata=ODataHelper(ODataQueryOptions(top=10)),
+                odata=ODataHelper(ODataQueryOptions(top=10), max_top=100),
             ),
         )
 
@@ -39,7 +39,7 @@ class TestListResource:
         # Act
         result = await ListResourcesHandler(repo).handle(
             ListResourcesCommand(
-                odata=ODataHelper(ODataQueryOptions(top=limit)),
+                odata=ODataHelper(ODataQueryOptions(top=limit), max_top=100),
             ),
         )
 

@@ -1,7 +1,6 @@
 import pytest
 from odata_v4_query import ODataQueryOptions
 
-from config import settings
 from modules.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
@@ -25,7 +24,7 @@ class TestCreateResource:
             )
         )
         resources = await repo.all(
-            odata_options=ODataQueryOptions(top=settings.max_records_per_page),
+            odata_options=ODataQueryOptions(top=100),
         )
 
         # Assert
