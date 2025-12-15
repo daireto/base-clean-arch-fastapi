@@ -73,16 +73,20 @@ dependencies = [
     { name = "odata-v4-query" },
     { name = "orjson" },
     { name = "pydantic-settings" },
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
     { name = "python-json-logger" },
-    { name = "ruff" },
     { name = "simple-result" },
     { name = "sqlactive" },
     { name = "sqladmin", extra = ["full"] },
     { name = "structlog" },
     { name = "uvloop" },
     { name = "validators" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
 ]
 
 [package.metadata]
@@ -95,16 +99,20 @@ requires-dist = [
     { name = "odata-v4-query", specifier = "==0.4.1" },
     { name = "orjson", specifier = "==3.11.0" },
     { name = "pydantic-settings", specifier = "==2.11.0" },
-    { name = "pytest", specifier = "==8.4.1" },
-    { name = "pytest-asyncio", specifier = "==1.1.0" },
     { name = "python-json-logger", specifier = "==4.0.0" },
-    { name = "ruff", specifier = "==0.12.4" },
     { name = "simple-result", specifier = "==0.1.0" },
     { name = "sqlactive", specifier = "==0.3.6" },
-    { name = "sqladmin", extras = ["full"], specifier = ">=0.22.0" },
+    { name = "sqladmin", extras = ["full"], specifier = "==0.22.0" },
     { name = "structlog", specifier = "==25.4.0" },
     { name = "uvloop", specifier = "==0.21.0" },
     { name = "validators", specifier = "==0.35.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = "==8.4.1" },
+    { name = "pytest-asyncio", specifier = "==1.1.0" },
+    { name = "ruff", specifier = "==0.12.4" },
 ]
 
 [[package]]
