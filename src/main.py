@@ -13,7 +13,7 @@ from api.middlewares.access_log_middleware import AccessLogMiddleware
 from logger import get_logger, global_app_logger, setup_log_rotation
 from modules.resources.infrastructure.persistence.admin import ResourceAdmin
 from modules.resources.infrastructure.persistence.models.sqlite import (
-    BaseModel,
+    BaseModel as SQLiteResourcesBaseModel,
 )
 from modules.resources.presentation.api import router as resources_router
 from shared.infrastructure.db import conn, init_db
@@ -30,7 +30,7 @@ if settings.use_log_rotation:
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     global_app_logger.info('Starting app')
     base_models: list = [
-        BaseModel,
+        SQLiteResourcesBaseModel,
     ]
     try:
         await init_db(base_models)
@@ -39,7 +39,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     except Exception as e:
         global_app_logger.error('Error initializing database', exc_info=e)
     else:
-        await conn.close()
+        await conn.close(SQLiteResourcesBaseModel)
     global_app_logger.info('Stopping app')
 
 
