@@ -9,6 +9,7 @@ from pydantic_settings import BaseSettings
 class _Settings(BaseSettings):
     env: Literal['dev', 'lab', 'prod'] = 'dev'
     port: int = 8000
+    domain_name: str = 'localhost'
     debug: bool = False
     database_url: Secret[str] = Secret('sqlite+aiosqlite:///./test.db')
     max_records_per_page: int = 100
@@ -43,11 +44,23 @@ class _Settings(BaseSettings):
 
     @property
     def swagger_url(self) -> str:
-        return f'{self.scheme}://localhost:{self.port}/docs'
+        return f'{self.scheme}://{self.domain_name}:{self.port}/docs'
 
     @property
     def redoc_url(self) -> str:
-        return f'{self.scheme}://localhost:{self.port}/redoc'
+        return f'{self.scheme}://{self.domain_name}:{self.port}/redoc'
+
+    @property
+    def admin_url(self) -> str:
+        return f'{self.scheme}://{self.domain_name}:{self.port}/admin'
+
+    @property
+    def startup_msg(self) -> str:
+        return (
+            f'App started in {self.env} mode. Listening on port {self.port}.'
+            f' Docs available at {self.swagger_url} and {self.redoc_url}.'
+            f' Admin panel available at {self.admin_url}.'
+        )
 
     class Config:
         env_file = find_dotenv()
