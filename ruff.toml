@@ -33,6 +33,7 @@ ignore = [
     "PGH003",  # Use specific rule codes when ignoring type issues
     "PLR0913", # Too many arguments in function definition
     "S104",    # Possible binding to all interfaces
+    "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
     "TD002",   # Missing author in TODO
     "TD003",   # Missing issue link for this TODO
 ]
