@@ -11,9 +11,15 @@ from structlog.stdlib import BoundLogger
 
 
 class AccessLogMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app: ASGIApp, logger: BoundLogger) -> None:
+    def __init__(
+        self,
+        app: ASGIApp,
+        logger: BoundLogger,
+        excluded_path_prefixes: list[str] | None = None,
+    ) -> None:
         super().__init__(app)
         self._logger = logger
+        self._excluded_path_prefixes = tuple(excluded_path_prefixes or [])
 
     async def dispatch(
         self,
@@ -44,9 +50,15 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
         response: Response | None = None,
         exception: Exception | None = None,
     ) -> None:
+        if request.url.path.startswith(self._excluded_path_prefixes):
+            return
+
         status_code = (
             response.status_code if response else status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+        if status_code == status.HTTP_404_NOT_FOUND and not exception:
+            return
+
         request_failed = exception or status_code >= status.HTTP_400_BAD_REQUEST
         self._logger.log(
             logging.ERROR if request_failed else logging.INFO,
