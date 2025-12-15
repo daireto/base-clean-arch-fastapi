@@ -1,19 +1,17 @@
 from odata_v4_query import ODataQueryOptions, ODataQueryParser
 
-from config import settings
-
 
 class ODataHelper:
-    def __init__(self, odata_options: ODataQueryOptions) -> None:
+    def __init__(self, odata_options: ODataQueryOptions, max_top: int) -> None:
         self._odata_options = odata_options
-        self._max_top = settings.max_records_per_page
+        self._max_top = max_top
         self._sanitize()
 
     @classmethod
-    def get_from_query(cls, query_string: str) -> 'ODataHelper':
+    def get_from_query(cls, query_string: str, max_top: int) -> 'ODataHelper':
         parser = ODataQueryParser()
         odata_options = parser.parse_query_string(query_string)
-        return cls(odata_options)
+        return cls(odata_options, max_top)
 
     def get(self) -> ODataQueryOptions:
         return self._odata_options

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, Response
 
+from api.config import settings
 from modules.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
@@ -51,7 +52,7 @@ async def list_resources(
     request: Request,
     repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
 ) -> PaginatedResponseDTO[ResourceResponseDTO]:
-    odata = ODataHelper.get_from_query(request.url.query)
+    odata = ODataHelper.get_from_query(request.url.query, settings.max_records_per_page)
     command = ListResourcesCommand(
         odata=odata,
     )
