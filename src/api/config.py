@@ -13,6 +13,13 @@ class _Settings(BaseSettings):
     database_url: Secret[str] = Secret('sqlite+aiosqlite:///./test.db')
     max_records_per_page: int = 100
     logs_path: str = './.logs/app.log'
+    access_log_excluded_path_prefixes: list[str] = [
+        '/openapi.json',
+        '/docs',
+        '/redoc',
+        '/health',
+        '/admin',
+    ]
 
     @property
     def is_dev(self) -> bool:
