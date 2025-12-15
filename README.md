@@ -35,6 +35,7 @@ It also implements other patterns and practices, such as:
 These are some of the main technologies used in this project:
 
 - **FastAPI** - Web framework for building APIs.
+- **SQLAdmin** - Admin interface for database management.
 - **SQLActive** - ActiveRecord pattern for database operations.
 - **SQLite** - Database (via aiosqlite for async operations).
 - **Lagom** - Dependency injection container.
@@ -56,6 +57,7 @@ These are some of the main technologies used in this project:
 │   ├── api/                    # API-related code
 │   │   ├── middlewares/        # Application middlewares
 │   │   │   └── access_log_middleware.py # Access logging middleware
+│   │   ├── config.py           # Application configuration
 │   │   └── health.py           # Health check logic
 │   ├── modules/                # Feature modules (domain-driven)
 │   │   └── resources/          # Resources feature module
@@ -83,6 +85,7 @@ These are some of the main technologies used in this project:
 │   │       │   │       ├── list_resources.py
 │   │       │   │       └── update_resource.py
 │   │       │   └── persistence/ # Persistence implementations
+│   │       │       ├── admin.py        # SQLAdmin view for resources
 │   │       │       ├── models/         # Database models
 │   │       │       │   ├── mock.py     # Mock models for testing
 │   │       │       │   └── sqlite.py   # SQLite database models
@@ -114,7 +117,6 @@ These are some of the main technologies used in this project:
 │   │   │   └── responses.py    # Response utilities
 │   │   └── utils/              # Shared utility functions
 │   │       └── uuid_tools.py   # UUID utility functions
-│   ├── config.py               # Application configuration
 │   ├── logger.py               # Logging configuration
 │   └── main.py                 # FastAPI application entry point
 ├── tests/                      # Tests directory
@@ -180,8 +182,11 @@ Run the application with:
 uv run main.py
 ```
 
-The API will be available at `http://127.0.0.1:$PORT/`. Replace `$PORT` with the
-port number you configured in the `.env` file (see the configuration section below).
+The API will be available at `http://$DOMAIN_NAME:$PORT/`.
+
+Replace `$DOMAIN_NAME` and `$PORT` with the domain name or IP address of the
+server and the port number you configured in the `.env` file respectively
+(see the configuration section below).
 
 ## 🔧 Configuration
 
@@ -210,10 +215,14 @@ LOGS_PATH=./.logs/app.log
 
 ## 📚 API Documentation
 
-- **Swagger UI**: `http://127.0.0.1:$PORT/docs`
-- **ReDoc**: `http://127.0.0.1:$PORT/redoc`
+- **Swagger UI**: `http://$DOMAIN_NAME:$PORT/docs`
+- **ReDoc**: `http://$DOMAIN_NAME:$PORT/redoc`
 
 Replace `$PORT` with the port number you configured in the `.env` file.
+
+## ⚙️ Admin Interface
+
+- **Admin**: `http://$DOMAIN_NAME:$PORT/admin`
 
 ## 🧪 Testing & Linting
 
