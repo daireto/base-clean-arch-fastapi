@@ -67,9 +67,9 @@ source = { virtual = "." }
 dependencies = [
     { name = "aiosqlite" },
     { name = "asgi-correlation-id" },
+    { name = "dishka" },
     { name = "fastapi", extra = ["standard"] },
     { name = "httpx" },
-    { name = "lagom" },
     { name = "odata-v4-query" },
     { name = "orjson" },
     { name = "pydantic-settings" },
@@ -93,15 +93,15 @@ dev = [
 requires-dist = [
     { name = "aiosqlite", specifier = "==0.21.0" },
     { name = "asgi-correlation-id", specifier = "==4.3.4" },
+    { name = "dishka", specifier = "==1.9.1" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.119.0" },
     { name = "httpx", specifier = "==0.28.1" },
-    { name = "lagom", specifier = "==2.7.7" },
     { name = "odata-v4-query", specifier = "==0.4.1" },
     { name = "orjson", specifier = "==3.11.0" },
     { name = "pydantic-settings", specifier = "==2.11.0" },
     { name = "python-json-logger", specifier = "==4.0.0" },
     { name = "simple-result", specifier = "==0.1.0" },
-    { name = "sqlactive", specifier = "==0.3.6" },
+    { name = "sqlactive", specifier = "==0.4.0" },
     { name = "sqladmin", extras = ["full"], specifier = "==0.22.0" },
     { name = "structlog", specifier = "==25.4.0" },
     { name = "uvloop", specifier = "==0.21.0" },
@@ -155,6 +155,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/98/97/06afe62762c9a8a86af0cfb7bfdab22a43ad17138b07af5b1a58442690a2/deprecated-1.2.18.tar.gz", hash = "sha256:422b6f6d859da6f2ef57857761bfb392480502a64c3028ca9bbe86085d72115d", size = 2928744, upload-time = "2025-01-27T10:46:25.7Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6e/c6/ac0b6c1e2d138f1002bcf799d330bd6d85084fece321e662a14223794041/Deprecated-1.2.18-py2.py3-none-any.whl", hash = "sha256:bd5011788200372a32418f888e326a09ff80d0214bd961147cfed01b5c018eec", size = 9998, upload-time = "2025-01-27T10:46:09.186Z" },
+]
+
+[[package]]
+name = "dishka"
+version = "1.9.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b9/97/18d4a9bd44f6baa975cd8d54ed3a1a86b341a43c9c077e647d351c9d4573/dishka-1.9.1.tar.gz", hash = "sha256:973f19dc65160a97370181106764ae076052af4489e94b0cedb3eb4e47fe13bf", size = 274962, upload-time = "2026-03-08T09:43:47.298Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/33/98/c8f80be83fbd92f5f9d4bdb5d619a9c9901fb1523c0b02a448b942e532e6/dishka-1.9.1-py3-none-any.whl", hash = "sha256:5080a46bf40bd403aee396aac81f999f679078655f9a6f2062111d62e94e7b18", size = 114327, upload-time = "2026-03-08T09:43:46.097Z" },
 ]
 
 [[package]]
@@ -431,34 +443,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz", hash = "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d", size = 245115, upload-time = "2025-03-05T20:05:02.478Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67", size = 134899, upload-time = "2025-03-05T20:05:00.369Z" },
-]
-
-[[package]]
-name = "lagom"
-version = "2.7.7"
-source = { registry = "https://pypi.org/simple" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/2b/e1/f7a79a312feb5aeb02829f8cccf1815d727b58fdbc07e61aa0a7bc1b2634/lagom-2.7.7-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:09a825e3be03b29120327d8883ad5a2d9fd415c24e4ac72c3ced24ebe100c205", size = 145687, upload-time = "2025-07-16T11:18:28.504Z" },
-    { url = "https://files.pythonhosted.org/packages/d1/b0/bcb503f15247cccb1fd29d9d07499a0475b03b1bad7d79143d96cdfa6ae2/lagom-2.7.7-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:26a0565ead382a74bf2368a6b313302214829a48f6f7014f01fafdc5df2f5803", size = 260564, upload-time = "2025-07-16T11:20:54.317Z" },
-    { url = "https://files.pythonhosted.org/packages/b8/8e/a014759694082ad10621671ac18930773803a8904f8714700b0ae8392644/lagom-2.7.7-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:5f34d83bf571e4cae1c0631a7a12026685c1055c2988d1524bc60efe5e935d5e", size = 261761, upload-time = "2025-07-16T11:20:56.121Z" },
-    { url = "https://files.pythonhosted.org/packages/2f/8d/e31a288c67395878e3cac1cde9c254157e14d871691342c9a0b9ce3e6e0b/lagom-2.7.7-cp310-cp310-win32.whl", hash = "sha256:11e513fb2bf7459204c714c361187f3dc441570fe5d4f255676b53877614d152", size = 108471, upload-time = "2025-07-16T11:25:34.882Z" },
-    { url = "https://files.pythonhosted.org/packages/f7/e3/f180fc365a046596426120ff99c7949d40893e6efd36014302cc48131e2a/lagom-2.7.7-cp310-cp310-win_amd64.whl", hash = "sha256:e68c275b7ecd212502089981f1688808587408fb1349fa896f8ca5518bc51ba7", size = 119244, upload-time = "2025-07-16T11:25:36.003Z" },
-    { url = "https://files.pythonhosted.org/packages/d3/8f/2f4b9e80dd95c5dbf482613b1cba1b5f4b6fce7f89de70abf6e753ae9162/lagom-2.7.7-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:c5035aa948b5b3fcea4ee89cac5a1aa143506f19b37c3e97d5a34ced6e9ed992", size = 143697, upload-time = "2025-07-16T11:18:29.935Z" },
-    { url = "https://files.pythonhosted.org/packages/8b/54/833793d3854f497fec5077d7f8b2d13e875120b99d61bf4f83f13f996010/lagom-2.7.7-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ff5c3312221b69b5ea629d8f3f29563c281d76c23ec0266cbf1a6e898e6ad224", size = 258353, upload-time = "2025-07-16T11:20:57.679Z" },
-    { url = "https://files.pythonhosted.org/packages/c8/18/48c44c4676f4eecf0a03c11d5451a73881e479a3244f50d985392333bcde/lagom-2.7.7-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:46f2b5b3e8533df6b7de28e21278810796e5f76b83e140db412cdf15b389ee1d", size = 260086, upload-time = "2025-07-16T11:20:59.166Z" },
-    { url = "https://files.pythonhosted.org/packages/cb/18/b6217e44c41de252debb3ed91c95f5cce375514cd534c80c099e9348dee1/lagom-2.7.7-cp311-cp311-win32.whl", hash = "sha256:063b323c7105665a38f0ca7959f1abcae7ad88b74c02de3b63674e05258f24ca", size = 108247, upload-time = "2025-07-16T11:25:37.33Z" },
-    { url = "https://files.pythonhosted.org/packages/c5/04/f6266add9d53d7b4d1e5ff0353278c4eca01dd8e114c7252484e98970978/lagom-2.7.7-cp311-cp311-win_amd64.whl", hash = "sha256:11dfb34dc6af203cb82f299be18c78d9beccbc6bad7c18d3577db07f2be43f6b", size = 118878, upload-time = "2025-07-16T11:25:38.434Z" },
-    { url = "https://files.pythonhosted.org/packages/22/a3/8b40307154c1927bafba5af32c116a64e39d6e711172a645df73731c1fcf/lagom-2.7.7-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:57031a288cbd549fc26b4107f1f1fabba1f01632d20de197389ec0948b2d0726", size = 143994, upload-time = "2025-07-16T11:18:30.975Z" },
-    { url = "https://files.pythonhosted.org/packages/f8/d5/e777b855cc18efaac122f4c399792adb6f9f0c3d430f7fd019e6d2a9c8f9/lagom-2.7.7-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:abeab675e4d3d505254b6eeb9665aa90e79e60f4adc5cc05c2082b0ac899bad4", size = 264618, upload-time = "2025-07-16T11:21:00.266Z" },
-    { url = "https://files.pythonhosted.org/packages/28/7a/150954b020b117bff552bef7eb8bc131d312c405e3a092c952882a4d12d6/lagom-2.7.7-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:e3b54f06ff474a2c82e02c3fbc17a5cd38581560885933c56422d2524a533079", size = 266208, upload-time = "2025-07-16T11:21:01.477Z" },
-    { url = "https://files.pythonhosted.org/packages/48/be/4c991a640589549ea656a4f0d66331681ff61e8717f061801fd038603db8/lagom-2.7.7-cp312-cp312-win32.whl", hash = "sha256:e336733b7fad9397081e736ca3dc3e35b70cc8df11f63df38053921760acf6a7", size = 109315, upload-time = "2025-07-16T11:25:39.632Z" },
-    { url = "https://files.pythonhosted.org/packages/85/fe/c49537b53a593d18c17c7576cbd844dddb258151373df6f8382bd02a79c4/lagom-2.7.7-cp312-cp312-win_amd64.whl", hash = "sha256:45874bcb18f08ad92d2356d19ca7c374658b51e68e91ce25885396ee832104b7", size = 119548, upload-time = "2025-07-16T11:25:40.411Z" },
-    { url = "https://files.pythonhosted.org/packages/6d/c8/97b6a333d27c87a5c0973e40ed2cc51d0020166e940b48113b5a32fa52e1/lagom-2.7.7-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:36961c52a8debcc122ebc5caece4bdca7cf6c1cdf07159e17b84913259b386bd", size = 143912, upload-time = "2025-07-16T11:18:31.78Z" },
-    { url = "https://files.pythonhosted.org/packages/87/ce/13bc7a3175d22abbf31729e0fc13a98a15e91bda3a750ac1fe8826edb242/lagom-2.7.7-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a446273396437774a3defff5a9baa4e0d88c9bad4e9cf318d98748005f5a6c57", size = 263228, upload-time = "2025-07-16T11:21:05.066Z" },
-    { url = "https://files.pythonhosted.org/packages/f0/ef/032329df600bf41fa030b88898425643ae3965e747bf39e34123a05b2ea5/lagom-2.7.7-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:0d8f734641a75c4c7ce632f60fd6a65850a3a55d02938acc6d9348812741a167", size = 264973, upload-time = "2025-07-16T11:21:06.189Z" },
-    { url = "https://files.pythonhosted.org/packages/3c/49/b50df0a63035a17e63cdccb14d2274acb0dda39a0f760c9e1679676fa570/lagom-2.7.7-cp313-cp313-win32.whl", hash = "sha256:348c324cac8ad79d670c38b8d1b4de36280032963abd5127e9abce5f396583f5", size = 109265, upload-time = "2025-07-16T11:25:41.439Z" },
-    { url = "https://files.pythonhosted.org/packages/6d/78/a3901039ee8a3a490836234598aefa62f60a051d6418ff2603435b9df4e7/lagom-2.7.7-cp313-cp313-win_amd64.whl", hash = "sha256:f3ec6675496579c67057884b6b33cef56eb7867b6a98d500bbbe70cd7071f921", size = 119608, upload-time = "2025-07-16T11:25:42.54Z" },
-    { url = "https://files.pythonhosted.org/packages/42/f1/300cdc600fd5a0a3e829db532d23758b0c4d4ccf031c1fec91245aded366/lagom-2.7.7-py3-none-any.whl", hash = "sha256:704b52f5b028eec84344fb14164c24cec4853c1b699b2cc008b356a7ebc9c8a9", size = 36924, upload-time = "2025-07-16T11:10:24.036Z" },
 ]
 
 [[package]]
@@ -1133,16 +1117,16 @@ wheels = [
 
 [[package]]
 name = "sqlactive"
-version = "0.3.6"
+version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "deprecated" },
     { name = "sqlalchemy" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9e/6d/6b9da0fd73f0c4d923f1f2c8655e7650149ce6851cd31fae740093825c60/sqlactive-0.3.6.tar.gz", hash = "sha256:73a4ee6bcd48591b9eb2af13ea3309f810bf861f0b97d5d4a486d5ae2b94e002", size = 57968, upload-time = "2025-06-06T03:58:51.783Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3b/94/abc37950103d911274e2ff3d2cbb13578ec8d5e73aa0958bf5f1c6ce2b8a/sqlactive-0.4.0.tar.gz", hash = "sha256:543008ff1db759208a9bf15de337476588d055f7e3ce6533c40fcee2277c8016", size = 57734, upload-time = "2026-03-23T04:18:36.024Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/af/49/4ade421686f463248f0a10932ba5128ae6f904851813ce4c83dd20a70554/sqlactive-0.3.6-py3-none-any.whl", hash = "sha256:568f9070351704ece77a861efac91371a31c700c13cac91565c749f90370c5a3", size = 49707, upload-time = "2025-06-06T03:58:50.409Z" },
+    { url = "https://files.pythonhosted.org/packages/26/6b/05ad1d5e31fdf66481ed468c9f5945d11d0cb68908eeb80699a13859101a/sqlactive-0.4.0-py3-none-any.whl", hash = "sha256:337836cd23db692e22d508f5330191ec318b48e376526a74a56b6069dba13e9e", size = 49342, upload-time = "2026-03-23T04:18:34.592Z" },
 ]
 
 [[package]]
