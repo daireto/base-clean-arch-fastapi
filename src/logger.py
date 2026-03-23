@@ -64,11 +64,13 @@ def get_logger(
     logger = structlog.get_logger(name)
     logger.setLevel(level)
     logger.handlers.clear()
+
     if handlers:
         for handler in handlers:
             logger.addHandler(handler)
     else:
         logger.addHandler(default_stream_handler)
+
     return logger
 
 
@@ -86,8 +88,10 @@ def setup_log_rotation(
         maxBytes=max_bytes,
         backupCount=backup_count,
     )
+
     if formatter:
         file_handler.setFormatter(formatter)
+
     for logger in loggers:
         if isinstance(logger, str):
             get_logger(logger).addHandler(file_handler)
@@ -127,6 +131,7 @@ def log_decorator(  # noqa: ANN201
         def wrapper(*args, **kwargs) -> Any:
             if on_start_msg:
                 logger.info(on_start_msg)
+
             try:
                 result = func(*args, **kwargs)
                 if on_end_msg:
@@ -135,6 +140,7 @@ def log_decorator(  # noqa: ANN201
                 if on_error_msg:
                     logger.exception(on_error_msg, exc_info=e)
                 raise
+
             return result
 
         return wrapper
@@ -153,6 +159,7 @@ def async_log_decorator(  # noqa: ANN201
         async def wrapper(*args, **kwargs) -> Any:
             if on_start_msg:
                 logger.info(on_start_msg)
+
             try:
                 result = await func(*args, **kwargs)
                 if on_end_msg:
@@ -161,6 +168,7 @@ def async_log_decorator(  # noqa: ANN201
                 if on_error_msg:
                     logger.exception(on_error_msg, exc_info=e)
                 raise
+
             return result
 
         return wrapper
