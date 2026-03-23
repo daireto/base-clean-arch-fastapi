@@ -2,14 +2,15 @@ import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from main import app
 from modules.resources.domain.entities import Resource
 from shared.utils.uuid_tools import empty_uuid
 
 
 class TestUpdateResource:
     def test_returns_200_with_resource_details_after_updating_resource(
-        self, resource: Resource
+        self,
+        resource: Resource,
+        client: TestClient,
     ):
         # Arrange
         data = {
@@ -19,8 +20,7 @@ class TestUpdateResource:
         }
 
         # Act
-        with TestClient(app) as client:
-            response = client.put(f'/resources/{resource.id}', json=data)
+        response = client.put(f'/resources/{resource.id}', json=data)
         response_content = response.json()
 
         # Assert
@@ -30,7 +30,32 @@ class TestUpdateResource:
         assert response_content['resource']['url'] == data['url']
         assert response_content['resource']['type'] == data['type']
 
-    def test_returns_400_when_resource_url_is_invalid(self, resource: Resource):
+    @pytest.mark.usefixtures('repo')
+    def test_returns_200_with_resource_details_after_creating_resource_when_it_does_not_exist(
+        self,
+        client: TestClient,
+    ):
+        # Arrange
+        data = {
+            'name': 'Random Image',
+            'url': 'https://example.com/',
+            'type': 'image',
+        }
+
+        # Act
+        response = client.put(f'/resources/{empty_uuid()}', json=data)
+
+        # Assert
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json()['resource']['name'] == data['name']
+        assert response.json()['resource']['url'] == data['url']
+        assert response.json()['resource']['type'] == data['type']
+
+    def test_returns_422_when_resource_url_is_invalid(
+        self,
+        resource: Resource,
+        client: TestClient,
+    ):
         # Arrange
         data = {
             'name': 'Random Image',
@@ -39,41 +64,25 @@ class TestUpdateResource:
         }
 
         # Act
-        with TestClient(app) as client:
-            response = client.put(f'/resources/{resource.id}', json=data)
+        response = client.put(f'/resources/{resource.id}', json=data)
 
         # Assert
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
-    def test_returns_400_when_resource_type_is_not_supported(self, resource: Resource):
-        # Arrange
-        data = {
-            'name': 'Random Image',
-            'url': 'https://example.com',
-            'type': 'not-a-valid-type',
-        }
-
-        # Act
-        with TestClient(app) as client:
-            response = client.put(f'/resources/{resource.id}', json=data)
-
-        # Assert
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-
-    @pytest.mark.usefixtures('repo')
-    def test_returns_404_when_resource_does_not_exist(
+    def test_returns_422_when_resource_type_is_not_supported(
         self,
+        resource: Resource,
+        client: TestClient,
     ):
         # Arrange
         data = {
             'name': 'Random Image',
-            'url': 'https://example.com',
-            'type': 'image',
+            'url': 'https://example.com/',
+            'type': 'not-a-valid-type',
         }
 
         # Act
-        with TestClient(app) as client:
-            response = client.put(f'/resources/{empty_uuid()}', json=data)
+        response = client.put(f'/resources/{resource.id}', json=data)
 
         # Assert
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

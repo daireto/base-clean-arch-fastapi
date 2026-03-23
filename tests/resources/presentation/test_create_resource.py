@@ -2,12 +2,13 @@ import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from main import app
-
 
 @pytest.mark.usefixtures('repo')
 class TestCreateResource:
-    def test_returns_200_with_resource_details_after_creating_resource(self):
+    def test_returns_200_with_resource_details_after_creating_resource(
+        self,
+        client: TestClient,
+    ):
         # Arrange
         data = {
             'name': 'Random Image',
@@ -16,8 +17,7 @@ class TestCreateResource:
         }
 
         # Act
-        with TestClient(app) as client:
-            response = client.post('/resources/', json=data)
+        response = client.post('/resources/', json=data)
         response_content = response.json()
 
         # Assert
@@ -26,7 +26,7 @@ class TestCreateResource:
         assert response_content['resource']['url'] == data['url']
         assert response_content['resource']['type'] == data['type']
 
-    def test_returns_400_when_resource_url_is_invalid(self):
+    def test_returns_422_when_resource_url_is_invalid(self, client: TestClient):
         # Arrange
         data = {
             'name': 'Random Image',
@@ -35,23 +35,21 @@ class TestCreateResource:
         }
 
         # Act
-        with TestClient(app) as client:
-            response = client.post('/resources/', json=data)
+        response = client.post('/resources/', json=data)
 
         # Assert
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
-    def test_returns_400_when_resource_type_is_not_supported(self):
+    def test_returns_422_when_resource_type_is_not_supported(self, client: TestClient):
         # Arrange
         data = {
             'name': 'Random Image',
-            'url': 'https://example.com',
+            'url': 'https://example.com/',
             'type': 'not-a-valid-type',
         }
 
         # Act
-        with TestClient(app) as client:
-            response = client.post('/resources/', json=data)
+        response = client.post('/resources/', json=data)
 
         # Assert
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

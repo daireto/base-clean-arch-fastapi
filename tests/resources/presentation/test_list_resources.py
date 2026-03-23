@@ -2,17 +2,17 @@ import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from main import app
 from modules.resources.domain.entities import Resource
 
 
 class TestListResources:
     def test_returns_200_with_all_resources_when_no_query_params_are_provided(
-        self, resources: list[Resource]
+        self,
+        resources: list[Resource],
+        client: TestClient,
     ):
         # Act
-        with TestClient(app) as client:
-            response = client.get('/resources/')
+        response = client.get('/resources/')
         response_content = response.json()
         retrieved_resources = response_content['items']
 
@@ -26,13 +26,13 @@ class TestListResources:
     @pytest.mark.usefixtures('resources')
     def test_returns_200_with_limited_resources_returned_when_top_param_is_provided(
         self,
+        client: TestClient,
     ):
         # Arrange
         limit = 1
 
         # Act
-        with TestClient(app) as client:
-            response = client.get(f'/resources/?$top={limit}')
+        response = client.get(f'/resources/?$top={limit}')
         response_content = response.json()
         retrieved_resources = response_content['items']
 
@@ -41,14 +41,16 @@ class TestListResources:
         assert len(retrieved_resources) == limit
 
     @pytest.mark.usefixtures('resources')
-    def test_returns_200_with_skipped_resources_when_skip_param_is_provided(self):
+    def test_returns_200_with_skipped_resources_when_skip_param_is_provided(
+        self,
+        client: TestClient,
+    ):
         # Arrange
         skip = 1
         expected_resources = 1
 
         # Act
-        with TestClient(app) as client:
-            response = client.get(f'/resources/?$skip={skip}')
+        response = client.get(f'/resources/?$skip={skip}')
         response_content = response.json()
         retrieved_resources = response_content['items']
 
@@ -59,14 +61,14 @@ class TestListResources:
     @pytest.mark.usefixtures('resources')
     def test_returns_200_with_skipped_limited_resources_when_page_param_is_provided(
         self,
+        client: TestClient,
     ):
         # Arrange
         page = 2
         page_size = 1
 
         # Act
-        with TestClient(app) as client:
-            response = client.get(f'/resources/?$page={page}&$top={page_size}')
+        response = client.get(f'/resources/?$page={page}&$top={page_size}')
         response_content = response.json()
         retrieved_resources = response_content['items']
 
