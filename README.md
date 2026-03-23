@@ -54,31 +54,39 @@ These are some of the main technologies used in this project:
 ```
 .
 ├── src/                        # Source code
-│   ├── api/                    # API-related code
-│   │   ├── middlewares/        # Application middlewares
-│   │   │   └── access_log_middleware.py # Access logging middleware
+│   ├── app/                    # Application setup and API wiring
+│   │   ├── app.py              # FastAPI app factory and setup
 │   │   ├── config.py           # Application configuration
-│   │   └── health.py           # Health check logic
+│   │   ├── exception_handlers.py # Global exception handlers
+│   │   ├── health.py           # Health check logic
+│   │   ├── logger.py           # Logging configuration
+│   │   └── middlewares/        # Application middlewares
+│   │       └── access_log_middleware.py # Access logging middleware
+│   ├── main.py                 # FastAPI application entry point
 │   ├── modules/                # Feature modules (domain-driven)
 │   │   └── resources/          # Resources feature module
 │   │       ├── application/    # Application layer (use cases)
 │   │       │   └── use_cases/  # Use case implementations
+│   │       │       ├── __init__.py
 │   │       │       ├── create_resource.py
 │   │       │       ├── delete_resource.py
 │   │       │       ├── get_resource.py
 │   │       │       ├── list_resources.py
 │   │       │       └── update_resource.py
+│   │       ├── di.py           # Dependency injection configuration
 │   │       ├── domain/         # Domain layer
+│   │       │   ├── collections.py      # Domain collections
 │   │       │   ├── entities.py         # Domain entities
+│   │       │   ├── enums.py            # Domain enums
 │   │       │   ├── error_codes.py      # Domain-specific error codes
 │   │       │   ├── exceptions.py       # Domain-specific exceptions
-│   │       │   ├── value_objects.py    # Value objects
-│   │       │   ├── collections.py      # Domain collections
 │   │       │   └── interfaces/         # Repository interfaces
 │   │       │       └── repositories.py
+│   │       │   └── value_objects.py    # Value objects
 │   │       ├── infrastructure/ # Infrastructure layer
 │   │       │   ├── instrumentation/ # Use case instrumentation/decorators
 │   │       │   │   └── use_cases/
+│   │       │   │       ├── __init__.py
 │   │       │   │       ├── create_resource.py
 │   │       │   │       ├── delete_resource.py
 │   │       │   │       ├── get_resource.py
@@ -87,23 +95,26 @@ These are some of the main technologies used in this project:
 │   │       │   └── persistence/ # Persistence implementations
 │   │       │       ├── admin.py        # SQLAdmin view for resources
 │   │       │       ├── models/         # Database models
+│   │       │       │   ├── __init__.py
 │   │       │       │   ├── mock.py     # Mock models for testing
 │   │       │       │   └── sqlite.py   # SQLite database models
 │   │       │       └── repositories/   # Repository implementations
+│   │       │           ├── __init__.py
 │   │       │           ├── mock.py     # Mock repository for testing
 │   │       │           └── sqlite.py   # SQLite repository implementation
 │   │       ├── presentation/   # Presentation layer (API)
 │   │       │   ├── api.py      # Resource API endpoints
 │   │       │   └── dtos.py     # Data transfer objects
-│   │       └── di.py           # Dependency injection configuration
 │   ├── shared/                 # Shared utilities and common code
 │   │   ├── application/        # Shared application layer
 │   │   │   └── interfaces/     # Shared interfaces
 │   │   │       ├── base.py     # Base interfaces
 │   │   │       └── instrumentation.py # Instrumentation interfaces
+│   │   ├── di.py               # Shared dependency injection config
 │   │   ├── domain/             # Shared domain layer
 │   │   │   ├── bases/          # Base classes
 │   │   │   │   ├── entity.py   # Entity base class
+│   │   │   │   ├── error.py    # Base error model
 │   │   │   │   └── value_object.py # Value object base class
 │   │   │   ├── error_codes.py  # Shared error codes
 │   │   │   └── exceptions.py   # Shared exception classes
@@ -117,8 +128,6 @@ These are some of the main technologies used in this project:
 │   │   │   └── responses.py    # Response utilities
 │   │   └── utils/              # Shared utility functions
 │   │       └── uuid_tools.py   # UUID utility functions
-│   ├── logger.py               # Logging configuration
-│   └── main.py                 # FastAPI application entry point
 ├── tests/                      # Tests directory
 │   ├── conftest.py             # Pytest global fixtures
 │   ├── resources/              # Resource module tests
@@ -134,6 +143,7 @@ These are some of the main technologies used in this project:
 │   │   ├── infrastructure/     # Infrastructure layer tests
 │   │   │   └── persistence/    # Persistence layer tests
 │   │   │       └── repositories/ # Repository tests
+│   │   │           ├── conftest.py
 │   │   │           └── test_sqlite_resource_repository.py
 │   │   └── presentation/       # Presentation layer tests
 │   │       ├── test_create_resource.py
@@ -146,11 +156,13 @@ These are some of the main technologies used in this project:
 │           └── api/            # API tests
 │               └── test_health.py # Health endpoint tests
 ├── .env.example                # Environment variables template
-├── api.http                    # Some HTTP requests for testing
+├── .gitignore                  # Git ignored files
+├── .python-version             # Python version for tooling
 ├── COMMITS.md                  # Git commit guidelines
 ├── LICENSE.md                  # Project license
-├── pyproject.toml              # Project configuration and dependencies
 ├── README.md                   # Project documentation
+├── api.http                    # Some HTTP requests for testing
+├── pyproject.toml              # Project configuration and dependencies
 ├── ruff.toml                   # Ruff linter configuration
 └── uv.lock                     # UV dependency lock file
 ```
@@ -202,7 +214,7 @@ Example `.env` file:
 ENV=dev
 PORT=8000
 DEBUG=True
-DATABASE_URL=sqlite+aiosqlite:///./test.db
+DATABASE_URL=sqlite+aiosqlite:///./.test.db
 MAX_RECORDS_PER_PAGE=100
 LOGS_PATH=./.logs/app.log
 ```
