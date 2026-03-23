@@ -15,6 +15,3 @@ class UpdateResourceInstrumentation(Instrumentation):
 
     def error(self, error: Exception) -> None:
         super().error('Error updating resource', error)
-
-    def not_found(self, resource: Resource) -> None:
-        super().not_found('Resource not found', resource_id=resource.id)

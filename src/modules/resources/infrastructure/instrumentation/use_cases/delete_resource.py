@@ -16,6 +16,3 @@ class DeleteResourceInstrumentation(Instrumentation):
 
     def error(self, error: Exception) -> None:
         super().error('Error deleting resource', error)
-
-    def not_found(self, id_: UUID) -> None:
-        super().not_found('Resource not found', resource_id=id_)
