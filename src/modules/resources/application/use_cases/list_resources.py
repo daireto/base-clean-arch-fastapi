@@ -30,11 +30,13 @@ class ListResourcesHandler(CommandHandler):
         command: ListResourcesCommand,
     ) -> Result[ResourceCollection, Exception]:
         self._instrumentation.before()
+
         try:
             resources = await self._resource_repository.all(command.odata.get())
         except Exception as error:
             self._instrumentation.error(error)
             return Err(error)
+
         self._instrumentation.after(resources)
         return Ok(ResourceCollection(resources))
 
@@ -43,6 +45,7 @@ class ListResourcesHandler(CommandHandler):
         command: ListResourcesCommand,
     ) -> Result[ResourceCollection, Exception]:
         self._instrumentation.before()
+
         try:
             resources = await self._resource_repository.all(command.odata.get())
             total = await self._resource_repository.count(
@@ -51,5 +54,6 @@ class ListResourcesHandler(CommandHandler):
         except Exception as error:
             self._instrumentation.error(error)
             return Err(error)
+
         self._instrumentation.after(resources)
         return Ok(ResourceCollection(resources, total))

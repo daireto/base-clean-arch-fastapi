@@ -33,14 +33,16 @@ class CreateResourceHandler(CommandHandler):
     ) -> Result[Resource, Exception]:
         resource = Resource(
             name=command.name,
-            url=ResourceUrl(value=command.url),
-            type=ResourceType(value=command.type),
+            url=ResourceUrl(value=command.url),  # type: ignore
+            type=ResourceType(value=command.type),  # type: ignore
         )
         self._instrumentation.before(resource)
+
         try:
             created = await self._resource_repository.create(resource)
         except Exception as error:
             self._instrumentation.error(error)
             return Err(error)
+
         self._instrumentation.after(created)
         return Ok(created)

@@ -28,13 +28,16 @@ class GetResourceHandler(CommandHandler):
 
     async def handle(self, command: GetResourceCommand) -> Result[Resource, Exception]:
         self._instrumentation.before(command.id)
+
         try:
             resource = await self._resource_repository.get_by_id(command.id)
         except Exception as error:
             self._instrumentation.error(error)
             return Err(error)
+
         if not resource:
             self._instrumentation.not_found(command.id)
             return Err(ResourceNotFoundError(command.id))
+
         self._instrumentation.after(resource)
         return Ok(resource)
