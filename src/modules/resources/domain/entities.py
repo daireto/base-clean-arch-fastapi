@@ -11,7 +11,7 @@ class Resource(Entity):
 
     @property
     def url_value(self) -> str:
-        return self.url.value
+        return str(self.url.value)
 
     @property
     def type_value(self) -> str:
@@ -21,10 +21,10 @@ class Resource(Entity):
         self.name = name
 
     def set_url(self, url: str) -> None:
-        self.url = ResourceUrl(value=url)
+        self.url = ResourceUrl(value=url)  # type: ignore
 
     def set_type(self, type_: str) -> None:
-        self.type = ResourceType(value=type_)
+        self.type = ResourceType(value=type_)  # type: ignore
 
     class Builder(Entity.Builder):
         def __init__(self) -> None:
@@ -50,7 +50,7 @@ class Resource(Entity):
                 {
                     'id': self._id,
                     'name': self._name,
-                    'url': ResourceUrl(value=self._url) if self._url else None,
-                    'type': ResourceType(value=self._type) if self._type else None,
+                    'url': ResourceUrl(value=self._url) if self._url else None,  # type: ignore
+                    'type': ResourceType(value=self._type) if self._type else None,  # type: ignore
                 }
             )

@@ -1,31 +1,16 @@
 from uuid import UUID
 
-from modules.resources.domain.error_codes import ErrorCodes
-from shared.domain.exceptions import ErrorDetail, InvalidInputError, NotFoundError
+from modules.resources.domain.error_codes import ErrorCode
+from shared.domain.bases.error import Error
 
 
-class ResourceNotFoundError(NotFoundError):
+class ResourceNotFoundError(Error):
     def __init__(self, id_: UUID) -> None:
         self.id = id_
         super().__init__(
-            detail=ErrorDetail(
-                code=ErrorCodes.RESOURCE_NOT_FOUND,
-                message='Resource not found',
-                extra={'resource_id': id_},
-            ),
-        )
-
-
-class ResourceTypeNotSupportedError(InvalidInputError):
-    def __init__(self, type_: str, supported_types: list[str]) -> None:
-        self.type = type_
-        super().__init__(
-            detail=ErrorDetail(
-                code=ErrorCodes.RESOURCE_TYPE_NOT_SUPPORTED,
-                message=(
-                    f'Resource type not supported,'
-                    f' supported types are: {", ".join(supported_types)}'
-                ),
-                extra={'resource_type': type_},
-            ),
+            status=404,
+            title='Resource Not Found',
+            detail='The resource was not found.',
+            code=ErrorCode.RESOURCE_NOT_FOUND,
+            extra={'resource_id': id_},
         )

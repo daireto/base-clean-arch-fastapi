@@ -59,4 +59,6 @@ class ResourceCollection(list[Resource]):
         return ResourceCollection(sorted(self, key=lambda resource: resource.name))
 
     def sort_by_created_at(self) -> 'ResourceCollection':
-        return ResourceCollection(sorted(self, key=lambda resource: resource.created_at))
+        return ResourceCollection(
+            sorted(self, key=lambda resource: resource.created_at)
+        )
