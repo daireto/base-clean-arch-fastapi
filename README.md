@@ -20,7 +20,7 @@ module having its own directory containing all the necessary layers.
 It also implements other patterns and practices, such as:
 
 - **Builder Pattern** for entity creation.
-- **Dependency Injection** (via Lagom).
+- **Inversion of Control (IoC)** (via Dishka).
 - **Data Transfer Objects** (DTOs) for request and response payloads.
 - **Value Objects** for data validation.
 - **Result Pattern** for handling operation outcomes.
@@ -38,7 +38,7 @@ These are some of the main technologies used in this project:
 - **SQLAdmin** - Admin interface for database management.
 - **SQLActive** - ActiveRecord pattern for database operations.
 - **SQLite** - Database (via aiosqlite for async operations).
-- **Lagom** - Dependency injection container.
+- **Dishka** - Inversion of Control (IoC) container.
 - **Pydantic** - Data validation and settings management.
 - **Orjson** - Fast JSON serialization.
 - **Uvloop** - High-performance event loop.
