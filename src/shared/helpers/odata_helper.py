@@ -26,6 +26,7 @@ class ODataHelper:
     def get_skip(self) -> int:
         if self._odata_options.page:
             return (self._odata_options.page - 1) * self.get_top()
+
         return self._odata_options.skip or 0
 
     def get_top(self) -> int:
