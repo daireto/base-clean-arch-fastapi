@@ -23,8 +23,8 @@ class ResourceModel(BaseModel):
         return Resource(
             id=self.id,
             name=self.name,
-            url=ResourceUrl(value=self.url),
-            type=ResourceType(value=self.type),
+            url=ResourceUrl(value=self.url),  # type: ignore
+            type=ResourceType(value=self.type),  # type: ignore
             created_at=self.created_at.timestamp(),
             updated_at=self.updated_at.timestamp(),
         )
