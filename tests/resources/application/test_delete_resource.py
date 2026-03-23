@@ -5,7 +5,6 @@ from modules.resources.application.use_cases.delete_resource import (
     DeleteResourceHandler,
 )
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.exceptions import ResourceNotFoundError
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from shared.utils.uuid_tools import empty_uuid
 
@@ -16,13 +15,17 @@ class TestDeleteResource:
         self, repo: ResourceRepositoryABC, resource: Resource
     ):
         # Act
-        await DeleteResourceHandler(repo).handle(DeleteResourceCommand(id=resource.id))
+        result = await DeleteResourceHandler(repo).handle(
+            DeleteResourceCommand(id=resource.id)
+        )
         resources_count = await repo.count()
 
         # Assert
+        assert result
+        assert result.value is None
         assert not resources_count
 
-    async def test_fails_when_resource_does_not_exist(
+    async def test_returns_none_when_deleting_resource_that_does_not_exist(
         self, repo: ResourceRepositoryABC
     ):
         # Act
@@ -31,5 +34,5 @@ class TestDeleteResource:
         )
 
         # Assert
-        assert not result
-        assert isinstance(result.error, ResourceNotFoundError)
+        assert result
+        assert result.value is None

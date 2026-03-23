@@ -1,13 +1,12 @@
 import pytest
 from odata_v4_query import ODataQueryOptions
+from pydantic import ValidationError
 
 from modules.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
 )
-from modules.resources.domain.exceptions import ResourceTypeNotSupportedError
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from shared.domain.exceptions import InvalidURLError
 
 
 @pytest.mark.asyncio
@@ -19,7 +18,7 @@ class TestCreateResource:
         await CreateResourceHandler(repo).handle(
             CreateResourceCommand(
                 name='Random Image',
-                url='https://example.com',
+                url='https://example.com/',
                 type='image',
             )
         )
@@ -29,13 +28,13 @@ class TestCreateResource:
 
         # Assert
         assert len(resources) == 1
-        assert resources[0].url == 'https://example.com'
+        assert str(resources[0].url) == 'https://example.com/'
 
     async def test_raises_when_resource_url_is_invalid(
         self, repo: ResourceRepositoryABC
     ):
         # Assert
-        with pytest.raises(InvalidURLError):
+        with pytest.raises(ValidationError):
             await CreateResourceHandler(repo).handle(
                 CreateResourceCommand(
                     name='Random Image',
@@ -48,11 +47,11 @@ class TestCreateResource:
         self, repo: ResourceRepositoryABC
     ):
         # Assert
-        with pytest.raises(ResourceTypeNotSupportedError):
+        with pytest.raises(ValidationError):
             await CreateResourceHandler(repo).handle(
                 CreateResourceCommand(
                     name='Random Image',
-                    url='https://example.com',
+                    url='https://example.com/',
                     type='not-a-valid-type',
                 )
             )

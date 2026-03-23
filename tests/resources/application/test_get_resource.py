@@ -24,7 +24,7 @@ class TestGetResource:
         assert result
         resource = result.unwrap_value()
         assert resource.name == 'Random Image'
-        assert resource.url == 'https://example.com'
+        assert str(resource.url) == 'https://example.com/'
         assert resource.type == 'image'
 
     async def test_fails_when_resource_does_not_exist(

@@ -26,8 +26,8 @@ class TestListResource:
         assert result
         listed_resources = result.unwrap_value()
         assert len(listed_resources) == len(resources)
-        assert listed_resources[0].url == 'https://example.com'
-        assert listed_resources[1].url == 'https://example.org'
+        assert str(listed_resources[0].url) == 'https://example.com/'
+        assert str(listed_resources[1].url) == 'https://example.org/'
 
     @pytest.mark.usefixtures('resources')
     async def test_returns_only_requested_number_of_resources(
@@ -47,4 +47,4 @@ class TestListResource:
         assert result
         listed_resources = result.unwrap_value()
         assert len(listed_resources) == limit
-        assert listed_resources[0].url == 'https://example.com'
+        assert str(listed_resources[0].url) == 'https://example.com/'
