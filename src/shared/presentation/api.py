@@ -1,8 +1,9 @@
+from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter
 
-from api.health import ServerHealthResponse, server_health
+from app.health import ServerHealthResponse, server_health
 
-router = APIRouter()
+router = APIRouter(route_class=DishkaRoute)
 
 
 @router.get('/health')

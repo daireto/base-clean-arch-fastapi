@@ -1,6 +1,8 @@
+from dishka import FromDishka
+from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Request, Response
 
-from api.config import settings
+from app.config import settings
 from modules.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
@@ -21,7 +23,6 @@ from modules.resources.application.use_cases.update_resource import (
     UpdateResourceCommand,
     UpdateResourceHandler,
 )
-from modules.resources.di import deps
 from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
 from modules.resources.presentation.dtos import (
     CreateResourceRequestDTO,
@@ -32,47 +33,53 @@ from shared.presentation.dtos import PaginatedResponseDTO
 from shared.presentation.responses import NoContent
 from shared.utils.uuid_tools import uuid_from_string
 
-router = APIRouter()
+router = APIRouter(route_class=DishkaRoute)
 
 
 @router.get('/resources/{id_}')
 async def get_resource(
     id_: str,
-    repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
+    repo: FromDishka[ResourceRepositoryABC],
 ) -> ResourceResponseDTO:
     uuid_id = uuid_from_string(id_)
     command = GetResourceCommand(id=uuid_id)
+
     if result := await GetResourceHandler(repo).handle(command):
         return ResourceResponseDTO.from_entity(result.unwrap_value())
+
     raise result.unwrap_error()
 
 
 @router.get('/resources/')
 async def list_resources(
     request: Request,
-    repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
+    repo: FromDishka[ResourceRepositoryABC],
 ) -> PaginatedResponseDTO[ResourceResponseDTO]:
     odata = ODataHelper.get_from_query(request.url.query, settings.max_records_per_page)
     command = ListResourcesCommand(
         odata=odata,
     )
+
     if result := await ListResourcesHandler(repo).handle_with_count(command):
         resources = result.unwrap_value()
         items = ResourceResponseDTO.from_entities(resources)
         return PaginatedResponseDTO.from_odata_query_result(
             resources.total_stored, items, odata
         )
+
     raise result.unwrap_error()
 
 
 @router.post('/resources/')
 async def create_resource(
     dto: CreateResourceRequestDTO,
-    repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
+    repo: FromDishka[ResourceRepositoryABC],
 ) -> ResourceResponseDTO:
     command = CreateResourceCommand(name=dto.name, url=dto.url, type=dto.type)
+
     if result := await CreateResourceHandler(repo).handle(command):
         return ResourceResponseDTO.from_entity(result.unwrap_value())
+
     raise result.unwrap_error()
 
 
@@ -80,7 +87,7 @@ async def create_resource(
 async def update_resource(
     id_: str,
     dto: CreateResourceRequestDTO,
-    repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
+    repo: FromDishka[ResourceRepositoryABC],
 ) -> ResourceResponseDTO:
     uuid_id = uuid_from_string(id_)
     command = UpdateResourceCommand(
@@ -89,17 +96,21 @@ async def update_resource(
         url=dto.url,
         type=dto.type,
     )
+
     if result := await UpdateResourceHandler(repo).handle(command):
         return ResourceResponseDTO.from_entity(result.unwrap_value())
+
     raise result.unwrap_error()
 
 
 @router.delete('/resources/{id_}')
 async def delete_resource(
     id_: str,
-    repo: ResourceRepositoryABC = deps.depends(ResourceRepositoryABC),
+    repo: FromDishka[ResourceRepositoryABC],
 ) -> Response:
     command = DeleteResourceCommand(id=uuid_from_string(id_))
+
     if result := await DeleteResourceHandler(repo).handle(command):
         return NoContent()
+
     raise result.unwrap_error()
