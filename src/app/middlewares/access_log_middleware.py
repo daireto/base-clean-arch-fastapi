@@ -27,6 +27,7 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
         call_next: RequestResponseEndpoint,
     ) -> Response:
         start_time = time.time()
+
         try:
             response = await call_next(request)
         except Exception as e:
@@ -36,11 +37,13 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
                 exception=e,
             )
             raise
+
         await self.__access_log(
             request=request,
             duration_ms=(time.time() - start_time) * 1000,
             response=response,
         )
+
         return response
 
     async def __access_log(

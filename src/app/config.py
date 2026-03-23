@@ -3,10 +3,16 @@ from typing import Literal
 
 from dotenv import find_dotenv
 from pydantic import Secret
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class _Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=find_dotenv(),
+        env_file_encoding='utf-8',
+        case_sensitive=False,
+    )
+
     env: Literal['dev', 'lab', 'prod'] = 'dev'
     port: int = 8000
     domain_name: str = 'localhost'
@@ -61,11 +67,6 @@ class _Settings(BaseSettings):
             f' Docs available at {self.swagger_url} and {self.redoc_url}.'
             f' Admin panel available at {self.admin_url}.'
         )
-
-    class Config:
-        env_file = find_dotenv()
-        env_file_encoding = 'utf-8'
-        case_sensitive = False
 
 
 @lru_cache
