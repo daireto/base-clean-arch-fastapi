@@ -1,4 +1,3 @@
-import asyncio
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -25,12 +24,22 @@ from shared.presentation.api import router as shared_router
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     global_app_logger.info('Starting app')
+
+    container: AsyncContainer | None = app.state.dishka_container
+
+    if app.state.enable_admin and container is not None:
+        await register_admin(app, container)
+
     global_app_logger.info(settings.startup_msg)
 
     yield
 
-    await app.state.dishka_container.close()
     global_app_logger.info('Stopping app')
+
+    if container is not None:
+        await container.close()
+
+    global_app_logger.info('App stopped')
 
 
 def register_routers(app: FastAPI) -> None:
@@ -54,8 +63,8 @@ def register_middlewares(app: FastAPI) -> None:
     )
 
 
-def register_admin(app: FastAPI, container: AsyncContainer) -> None:
-    conn = asyncio.run(container.get(DBConnection))
+async def register_admin(app: FastAPI, container: AsyncContainer) -> None:
+    conn = await container.get(DBConnection)
     admin = Admin(app, session_maker=conn.async_sessionmaker)
     admin.add_view(ResourceAdmin)
 
@@ -68,6 +77,9 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    app.state.enable_admin = False
+    app.state.dishka_container = None
+
     register_routers(app)
     register_middlewares(app)
 
@@ -77,13 +89,13 @@ def create_app() -> FastAPI:
 def create_production_app() -> FastAPI:
     app = create_app()
 
+    app.state.enable_admin = True
+
     container = make_async_container(
         resources_provider,
         DBConnectionProvider(),
         FastapiProvider(),
     )
     setup_dishka(container, app)
-
-    register_admin(app, container)
 
     return app
