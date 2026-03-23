@@ -1,13 +1,10 @@
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from main import app
 
-
-def test_returns_200_with_health_details():
+def test_returns_200_with_health_details(client: TestClient):
     # Act
-    with TestClient(app) as client:
-        response = client.get('/health')
+    response = client.get('/health')
     health = response.json()
 
     # Assert
