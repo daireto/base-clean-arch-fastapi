@@ -17,7 +17,7 @@ class _Settings(BaseSettings):
     port: int = 8000
     domain_name: str = 'localhost'
     debug: bool = False
-    database_url: Secret[str] = Secret('sqlite+aiosqlite:///./test.db')
+    database_url: Secret[str] = Secret('sqlite+aiosqlite:///./.test.db')
     max_records_per_page: int = 100
     logs_path: str = './.logs/app.log'
     access_log_excluded_path_prefixes: list[str] = [
