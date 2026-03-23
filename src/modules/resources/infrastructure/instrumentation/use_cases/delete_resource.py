@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from logger import get_app_logger
+from app.logger import get_app_logger
 from shared.application.interfaces.instrumentation import Instrumentation
 
 

@@ -6,7 +6,7 @@ from fastapi.utils import is_body_allowed_for_status_code
 from pydantic import ValidationError
 from starlette.responses import JSONResponse
 
-from logger import global_app_logger
+from app.logger import global_app_logger
 from shared.domain.bases.error import Error, ValidationErrorDetail
 from shared.domain.error_codes import ErrorCode
 

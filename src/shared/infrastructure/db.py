@@ -1,7 +1,7 @@
 from sqlactive import DBConnection
 
 from app.config import settings
-from logger import get_logger
+from app.logger import get_logger
 from modules.resources.infrastructure.persistence.models.sqlite import (
     BaseModel as SQLiteResourcesBaseModel,
 )

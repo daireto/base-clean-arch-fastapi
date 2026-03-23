@@ -1,4 +1,4 @@
-from logger import get_app_logger
+from app.logger import get_app_logger
 from modules.resources.domain.entities import Resource
 from shared.application.interfaces.instrumentation import Instrumentation
 
