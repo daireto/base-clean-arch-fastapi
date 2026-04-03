@@ -6,4 +6,4 @@ GET http://localhost:8000/health
 
 ###
 
-GET http://localhost:8000/resources/
+GET http://localhost:8000/resources
