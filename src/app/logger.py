@@ -81,6 +81,9 @@ def setup_log_rotation(
     backup_count: int = 5,
     formatter: logging.Formatter | None = None,
 ) -> None:
+    if 'pytest' in sys.modules:
+        return
+
     path = Path(filepath)
     path.parent.mkdir(parents=True, exist_ok=True)
     file_handler = RotatingFileHandler(
