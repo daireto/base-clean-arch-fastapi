@@ -6,6 +6,8 @@ from dishka import AsyncContainer, make_async_container
 from dishka.integrations.fastapi import FastapiProvider, setup_dishka
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import ORJSONResponse
 from sqlactive import DBConnection
 from sqladmin import Admin
@@ -14,6 +16,7 @@ from app.config import settings
 from app.exception_handlers import exception_handlers
 from app.logger import get_logger, global_app_logger
 from app.middlewares.access_log_middleware import AccessLogMiddleware
+from app.middlewares.rate_limit_middleware import RateLimitMiddleware
 from modules.resources.di import provider as resources_provider
 from modules.resources.infrastructure.persistence.admin import ResourceAdmin
 from modules.resources.presentation.api import router as resources_router
@@ -55,12 +58,24 @@ def register_middlewares(app: FastAPI) -> None:
         allow_headers=['X-Requested-With', 'X-Request-ID'],
         expose_headers=['X-Request-ID'],
     )
+    app.add_middleware(
+        TrustedHostMiddleware,
+        allowed_hosts=['*'],
+    )
     app.add_middleware(CorrelationIdMiddleware)
     app.add_middleware(
         AccessLogMiddleware,
         logger=get_logger('access'),
         excluded_path_prefixes=settings.access_log_excluded_path_prefixes,
     )
+    app.add_middleware(
+        RateLimitMiddleware,
+        limit_string=settings.rate_limit_string,
+        storage_uri=settings.rate_limit_storage_uri.get_secret_value(),
+    )
+
+    if not settings.is_dev:
+        app.add_middleware(HTTPSRedirectMiddleware)
 
 
 async def register_admin(app: FastAPI, container: AsyncContainer) -> None:
