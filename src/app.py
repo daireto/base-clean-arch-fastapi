@@ -12,37 +12,16 @@ from fastapi.responses import ORJSONResponse
 from sqlactive import DBConnection
 from sqladmin import Admin
 
-from app.config import settings
-from app.exception_handlers import exception_handlers
-from app.logger import get_logger, global_app_logger
-from app.middlewares.access_log_middleware import AccessLogMiddleware
-from app.middlewares.rate_limit_middleware import RateLimitMiddleware
+from config import settings
+from logger import get_logger, setup_app_logger
+from middlewares.access_log_middleware import AccessLogMiddleware
+from middlewares.rate_limit_middleware import RateLimitMiddleware
 from modules.resources.di import provider as resources_provider
 from modules.resources.infrastructure.persistence.admin import ResourceAdmin
 from modules.resources.presentation.api import router as resources_router
 from shared.di import DBConnectionProvider
 from shared.presentation.api import router as shared_router
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    global_app_logger.info('Starting app')
-
-    container: AsyncContainer | None = app.state.dishka_container
-
-    if app.state.enable_admin and container is not None:
-        await register_admin(app, container)
-
-    global_app_logger.info(settings.startup_msg)
-
-    yield
-
-    global_app_logger.info('Stopping app')
-
-    if container is not None:
-        await container.close()
-
-    global_app_logger.info('App stopped')
+from shared.presentation.exception_handlers import exception_handlers
 
 
 def register_routers(app: FastAPI) -> None:
@@ -84,12 +63,38 @@ async def register_admin(app: FastAPI, container: AsyncContainer) -> None:
     admin.add_view(ResourceAdmin)
 
 
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    app.state.logger.info('Starting app')
+
+    container: AsyncContainer | None = app.state.dishka_container
+
+    if app.state.enable_admin and container is not None:
+        await register_admin(app, container)
+
+    app.state.logger.info(settings.startup_msg)
+
+    yield
+
+    app.state.logger.info('Stopping app')
+
+    if container is not None:
+        await container.close()
+
+    app.state.logger.info('App stopped')
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         debug=settings.debug,
         default_response_class=ORJSONResponse,
         exception_handlers=exception_handlers,
         lifespan=lifespan,
+    )
+
+    setup_app_logger(
+        app=app,
+        filepath=settings.logs_path if settings.use_log_rotation else None,
     )
 
     app.state.enable_admin = False
@@ -108,7 +113,10 @@ def create_production_app() -> FastAPI:
 
     container = make_async_container(
         resources_provider,
-        DBConnectionProvider(),
+        DBConnectionProvider(
+            logger=get_logger('db'),
+            database_url=settings.database_url,
+        ),
         FastapiProvider(),
     )
     setup_dishka(container, app)

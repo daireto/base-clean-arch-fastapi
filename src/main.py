@@ -1,13 +1,5 @@
-from app.app import create_production_app
-from app.config import settings
-from app.logger import global_app_logger, setup_log_rotation
-
-if settings.use_log_rotation:
-    setup_log_rotation(
-        loggers=[global_app_logger],
-        filepath=settings.logs_path,
-    )
-
+from app import create_production_app
+from config import settings
 
 app = create_production_app()
 
