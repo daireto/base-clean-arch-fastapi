@@ -8,7 +8,10 @@ from limits import RateLimitItem, WindowStats, parse_many
 from limits.aio.strategies import FixedWindowRateLimiter
 from limits.storage import StorageTypes, storage_from_string
 from starlette import status
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,
+    RequestResponseEndpoint,
+)
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 from starlette.types import ASGIApp
@@ -63,7 +66,8 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         app: ASGIApp,
         limit_string: str,
         storage_uri: str,
-        identifier: Callable[[Request | WebSocket], Awaitable[str]] | None = None,
+        identifier: Callable[[Request | WebSocket], Awaitable[str]]
+        | None = None,
         callback: Callable[[Request, RateLimitResult], Awaitable[Response]]
         | None = None,
         endpoint_limits: list[EndpointLimit] | None = None,
@@ -96,7 +100,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         identifier = await self._identifier(request)
 
-        if endpoint_limit_str := self._endpoint_limits.get(request.url.path.strip('/')):
+        if endpoint_limit_str := self._endpoint_limits.get(
+            request.url.path.strip('/')
+        ):
             rate_limits = self._parse_limit_string(endpoint_limit_str)
             result = await self._consume_rate_limits(rate_limits, identifier)
         else:
@@ -145,7 +151,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 ],
             )
 
-        name, remaining, reset_time = less_restrictive_limit_window or ('default', 0, 0)
+        name, remaining, reset_time = less_restrictive_limit_window or (
+            'default',
+            0,
+            0,
+        )
         return RateLimitResult(
             is_allowed=True,
             rate_limit=f'"{name}";r={remaining};t={reset_time}',
@@ -163,7 +173,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         result: RateLimitResult,
         rate_limits: list[RateLimitItem],
     ) -> None:
-        response.headers['RateLimit-Policy'] = self._get_rate_limit_policy(rate_limits)
+        response.headers['RateLimit-Policy'] = self._get_rate_limit_policy(
+            rate_limits
+        )
         response.headers['RateLimit-Limit'] = result.rate_limit
         if result.retry_after:
             response.headers['Retry-After'] = str(result.retry_after)

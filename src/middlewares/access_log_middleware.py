@@ -3,7 +3,10 @@ import time
 
 from asgi_correlation_id.context import correlation_id
 from starlette import status
-from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
+from starlette.middleware.base import (
+    BaseHTTPMiddleware,
+    RequestResponseEndpoint,
+)
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import ASGIApp
@@ -57,12 +60,16 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
             return
 
         status_code = (
-            response.status_code if response else status.HTTP_500_INTERNAL_SERVER_ERROR
+            response.status_code
+            if response
+            else status.HTTP_500_INTERNAL_SERVER_ERROR
         )
         if status_code == status.HTTP_404_NOT_FOUND and not exception:
             return
 
-        request_failed = exception or status_code >= status.HTTP_400_BAD_REQUEST
+        request_failed = (
+            exception or status_code >= status.HTTP_400_BAD_REQUEST
+        )
         self._logger.log(
             logging.ERROR if request_failed else logging.INFO,
             'Request failed' if request_failed else 'Request succeeded',
@@ -78,5 +85,5 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
             client_ip=request.client.host if request.client else None,
             user_agent=request.headers.get('user-agent'),
             referrer=request.headers.get('referer'),
-            exception=str(exception),
+            exception=str(exception) if exception else None,
         )
