@@ -1,12 +1,8 @@
-from app.logger import get_app_logger
 from modules.resources.domain.entities import Resource
-from shared.application.interfaces.instrumentation import Instrumentation
+from shared.application.instrumentation import Instrumentation
 
 
 class ListResourcesInstrumentation(Instrumentation):
-    def __init__(self) -> None:
-        super().__init__(logger=get_app_logger('resources.list'))
-
     def before(self) -> None:
         super().before('Listing resources')
 

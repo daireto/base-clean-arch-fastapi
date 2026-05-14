@@ -5,11 +5,14 @@ from simple_result import Err, Ok, Result
 
 from modules.resources.domain.entities import Resource
 from modules.resources.domain.exceptions import ResourceNotFoundError
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from modules.resources.infrastructure.instrumentation.use_cases.get_resource import (
     GetResourceInstrumentation,
 )
-from shared.application.interfaces.base import CommandHandler
+from shared.application.command_handler import CommandHandler
+from shared.application.instrumentation import NoInstrumentation
 
 
 @dataclass
@@ -24,9 +27,11 @@ class GetResourceHandler(CommandHandler):
         instrumentation: GetResourceInstrumentation | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or GetResourceInstrumentation()
+        self._instrumentation = instrumentation or NoInstrumentation()
 
-    async def handle(self, command: GetResourceCommand) -> Result[Resource, Exception]:
+    async def handle(
+        self, command: GetResourceCommand
+    ) -> Result[Resource, Exception]:
         self._instrumentation.before(command.id)
 
         try:

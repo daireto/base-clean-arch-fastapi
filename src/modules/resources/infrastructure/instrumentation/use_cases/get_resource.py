@@ -1,14 +1,10 @@
 from uuid import UUID
 
-from app.logger import get_app_logger
 from modules.resources.domain.entities import Resource
-from shared.application.interfaces.instrumentation import Instrumentation
+from shared.application.instrumentation import Instrumentation
 
 
 class GetResourceInstrumentation(Instrumentation):
-    def __init__(self) -> None:
-        super().__init__(logger=get_app_logger('resources.get'))
-
     def before(self, id_: UUID) -> None:
         super().before('Getting resource', resource_id=id_)
 

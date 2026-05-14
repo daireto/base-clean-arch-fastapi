@@ -3,11 +3,14 @@ from dataclasses import dataclass
 from simple_result import Err, Ok, Result
 
 from modules.resources.domain.collections import ResourceCollection
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from modules.resources.infrastructure.instrumentation.use_cases.list_resources import (
     ListResourcesInstrumentation,
 )
-from shared.application.interfaces.base import CommandHandler
+from shared.application.command_handler import CommandHandler
+from shared.application.instrumentation import NoInstrumentation
 from shared.helpers.odata_helper import ODataHelper
 
 
@@ -23,7 +26,7 @@ class ListResourcesHandler(CommandHandler):
         instrumentation: ListResourcesInstrumentation | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or ListResourcesInstrumentation()
+        self._instrumentation = instrumentation or NoInstrumentation()
 
     async def handle(
         self,
@@ -32,7 +35,9 @@ class ListResourcesHandler(CommandHandler):
         self._instrumentation.before()
 
         try:
-            resources = await self._resource_repository.all(command.odata.get())
+            resources = await self._resource_repository.all(
+                command.odata.get()
+            )
         except Exception as error:
             self._instrumentation.error(error)
             return Err(error)
@@ -47,7 +52,9 @@ class ListResourcesHandler(CommandHandler):
         self._instrumentation.before()
 
         try:
-            resources = await self._resource_repository.all(command.odata.get())
+            resources = await self._resource_repository.all(
+                command.odata.get()
+            )
             total = await self._resource_repository.count(
                 command.odata.get_for_counting()
             )

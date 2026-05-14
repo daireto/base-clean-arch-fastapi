@@ -4,12 +4,15 @@ from uuid import UUID
 from simple_result import Err, Ok, Result
 
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from modules.resources.domain.value_objects import ResourceType, ResourceUrl
 from modules.resources.infrastructure.instrumentation.use_cases.update_resource import (
     UpdateResourceInstrumentation,
 )
-from shared.application.interfaces.base import CommandHandler
+from shared.application.command_handler import CommandHandler
+from shared.application.instrumentation import NoInstrumentation
 
 
 @dataclass
@@ -27,7 +30,7 @@ class UpdateResourceHandler(CommandHandler):
         instrumentation: UpdateResourceInstrumentation | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or UpdateResourceInstrumentation()
+        self._instrumentation = instrumentation or NoInstrumentation()
 
     async def handle(
         self,
