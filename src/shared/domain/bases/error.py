@@ -16,7 +16,9 @@ class ValidationErrorDetail:
 
         for err in errors:
             pointer = cls.pydantic_loc_to_json_pointer(err['loc'])
-            members.append(ValidationErrorDetail(detail=err['msg'], pointer=pointer))
+            members.append(
+                ValidationErrorDetail(detail=err['msg'], pointer=pointer)
+            )
 
         return members
 
@@ -38,7 +40,9 @@ class Error(Exception):
     def __post_init__(self) -> None:
         super().__init__(self.detail)
 
-    def to_rfc_9457_dict(self, instance: str | None = None) -> dict[str, object]:
+    def to_rfc_9457_dict(
+        self, instance: str | None = None
+    ) -> dict[str, object]:
         return {
             'type': self.type,
             'title': self.title,

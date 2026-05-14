@@ -1,7 +1,7 @@
 from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter
 
-from app.health import ServerHealthResponse, server_health
+from health import ServerHealthResponse, server_health
 
 router = APIRouter(route_class=DishkaRoute)
 
