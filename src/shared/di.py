@@ -16,9 +16,10 @@ class DBConnectionProvider(Provider):
 
     @provide(scope=Scope.APP)
     async def get_db_connection(self) -> AsyncIterable[DBConnection]:
-        conn = await init_db(
-            logger=self.__logger,
-            database_url=self.__database_url,
-        )
+        self.__logger.info('Initializing database connection')
+        conn = await init_db(database_url=self.__database_url)
+        self.__logger.info('Database connection initialized')
         yield conn
+        self.__logger.info('Closing database connection')
         await conn.close()
+        self.__logger.info('Database connection closed')

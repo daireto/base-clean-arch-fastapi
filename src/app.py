@@ -13,7 +13,7 @@ from sqlactive import DBConnection
 from sqladmin import Admin
 
 from config import settings
-from logger import get_logger, setup_app_logger
+from logger import get_app_logger, get_logger, setup_app_logger
 from middlewares.access_log_middleware import AccessLogMiddleware
 from middlewares.rate_limit_middleware import RateLimitMiddleware
 from modules.resources.di import provider as resources_provider
@@ -114,7 +114,7 @@ def create_production_app() -> FastAPI:
     container = make_async_container(
         resources_provider,
         DBConnectionProvider(
-            logger=get_logger('db'),
+            logger=get_app_logger('db'),
             database_url=settings.database.url,
         ),
         FastapiProvider(),

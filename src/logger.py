@@ -22,9 +22,10 @@ class StreamHandler(logging.StreamHandler):
             self.setFormatter(formatter)
 
 
-default_stream_handler = StreamHandler(
-    formatter=JsonFormatter('%(timestamp)s %(logger)s %(level)s %(message)s')
+_default_json_formatter = JsonFormatter(
+    '%(timestamp)s %(logger)s %(level)s %(module)s %(lineno)d %(message)s'
 )
+_default_stream_handler = StreamHandler(formatter=_default_json_formatter)
 
 
 def add_correlation_id(
@@ -70,9 +71,12 @@ def get_logger(
         for handler in handlers:
             logger.addHandler(handler)
     else:
-        logger.addHandler(default_stream_handler)
+        logger.addHandler(_default_stream_handler)
 
     return logger
+
+
+_default_app_logger = get_logger(name='app', level=logging.INFO)
 
 
 def setup_log_rotation(
@@ -103,19 +107,6 @@ def setup_log_rotation(
             logger.addHandler(file_handler)
 
 
-_default_app_logger = get_logger(
-    name='app',
-    level=logging.INFO,
-    handlers=[
-        StreamHandler(
-            formatter=JsonFormatter(
-                '%(timestamp)s %(logger)s %(level)s %(module)s %(lineno)d %(message)s'
-            )
-        )
-    ],
-)
-
-
 def get_app_logger(suffix: str | None = None) -> structlog.stdlib.BoundLogger:
     if not suffix:
         return _default_app_logger
@@ -129,23 +120,20 @@ def get_app_logger(suffix: str | None = None) -> structlog.stdlib.BoundLogger:
 
 def setup_app_logger(
     app: FastAPI,
-    loggers: list[structlog.stdlib.BoundLogger | logging.Logger | str]
-    | None = None,
     filepath: str | None = None,
     max_bytes: int = 1024 * 1024 * 10,
     backup_count: int = 5,
-    formatter: logging.Formatter | None = None,
 ) -> None:
     app.state.logger = _default_app_logger
     app.state.get_child_logger = get_app_logger
 
     if filepath:
         setup_log_rotation(
-            loggers=loggers or [_default_app_logger],
+            loggers=[_default_app_logger],
             filepath=filepath,
             max_bytes=max_bytes,
             backup_count=backup_count,
-            formatter=formatter,
+            formatter=_default_json_formatter,
         )
 
 
