@@ -21,3 +21,20 @@ class Instrumentation(ABC):
 
     def not_found(self, message: str, **kwargs) -> None:
         self._logger.warning(message, **kwargs)
+
+
+class NoInstrumentation(Instrumentation):
+    def __init__(self) -> None:
+        super().__init__(logger=None)  # type: ignore
+
+    def before(self, *args, **kwargs) -> None:
+        pass
+
+    def after(self, *args, **kwargs) -> None:
+        pass
+
+    def error(self, *args, **kwargs) -> None:
+        pass
+
+    def not_found(self, *args, **kwargs) -> None:
+        pass
