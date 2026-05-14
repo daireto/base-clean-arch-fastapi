@@ -45,12 +45,12 @@ def register_middlewares(app: FastAPI) -> None:
     app.add_middleware(
         AccessLogMiddleware,
         logger=get_logger('access'),
-        excluded_path_prefixes=settings.access_log_excluded_path_prefixes,
+        excluded_path_prefixes=settings.log.access_log_excluded_path_prefixes,
     )
     app.add_middleware(
         RateLimitMiddleware,
-        limit_string=settings.rate_limit_string,
-        storage_uri=settings.rate_limit_storage_uri.get_secret_value(),
+        limit_string=settings.rate_limit.string,
+        storage_uri=settings.rate_limit.storage_uri.get_secret_value(),
     )
 
     if not settings.is_dev:
@@ -86,7 +86,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        debug=settings.debug,
+        debug=settings.server.debug,
         default_response_class=ORJSONResponse,
         exception_handlers=exception_handlers,
         lifespan=lifespan,
@@ -94,7 +94,7 @@ def create_app() -> FastAPI:
 
     setup_app_logger(
         app=app,
-        filepath=settings.logs_path if settings.use_log_rotation else None,
+        filepath=settings.log.path,
     )
 
     app.state.enable_admin = False
@@ -115,7 +115,7 @@ def create_production_app() -> FastAPI:
         resources_provider,
         DBConnectionProvider(
             logger=get_logger('db'),
-            database_url=settings.database_url,
+            database_url=settings.database.url,
         ),
         FastapiProvider(),
     )

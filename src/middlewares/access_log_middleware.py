@@ -18,11 +18,13 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
         self,
         app: ASGIApp,
         logger: BoundLogger,
-        excluded_path_prefixes: list[str] | None = None,
+        excluded_path_prefixes: str | list[str] | None = None,
     ) -> None:
         super().__init__(app)
         self._logger = logger
-        self._excluded_path_prefixes = tuple(excluded_path_prefixes or [])
+        self._excluded_path_prefixes = self.__normalize_path_prefixes(
+            excluded_path_prefixes or ''
+        )
 
     async def dispatch(
         self,
@@ -56,7 +58,7 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
         response: Response | None = None,
         exception: Exception | None = None,
     ) -> None:
-        if request.url.path.startswith(self._excluded_path_prefixes):
+        if self.__check_excluded_path(request.url.path):
             return
 
         status_code = (
@@ -87,3 +89,25 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
             referrer=request.headers.get('referer'),
             exception=str(exception) if exception else None,
         )
+
+    def __check_excluded_path(self, path: str) -> bool:
+        if not path.startswith('/'):
+            path = '/' + path
+
+        return path.startswith(self._excluded_path_prefixes)
+
+    def __normalize_path_prefixes(
+        self, prefixes: str | list[str]
+    ) -> tuple[str, ...]:
+        if not prefixes:
+            return ()
+
+        if isinstance(prefixes, str):
+            prefixes = prefixes.split(',')
+
+        normalized = [
+            prefix if prefix.startswith('/') else f'/{prefix}'
+            for prefix in prefixes
+        ]
+
+        return tuple(normalized)

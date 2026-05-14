@@ -81,7 +81,7 @@ async def list_resources(
 ) -> PaginatedResponseDTO[ResourceResponseDTO]:
     odata = ODataHelper.get_from_query(
         query_string=request.url.query,
-        max_top=settings.max_records_per_page,
+        max_top=settings.query.max_records_per_page,
     )
     command = ListResourcesCommand(
         odata=odata,
