@@ -54,107 +54,134 @@ These are some of the main technologies used in this project:
 ```
 .
 ├── src/                        # Source code
-│   ├── app/                    # Application setup and API wiring
-│   │   ├── app.py              # FastAPI app factory and setup
-│   │   ├── config.py           # Application configuration
-│   │   ├── exception_handlers.py # Global exception handlers
-│   │   ├── health.py           # Health check logic
-│   │   ├── logger.py           # Logging configuration
-│   │   └── middlewares/        # Application middlewares
-│   │       └── access_log_middleware.py # Access logging middleware
+│   ├── __init__.py
+│   ├── app.py                  # FastAPI app factory and setup
+│   ├── config.py               # Application configuration
+│   ├── health.py               # Health check logic
+│   ├── logger.py               # Logging configuration
 │   ├── main.py                 # FastAPI application entry point
+│   ├── middlewares/            # Application middlewares
+│   │   ├── __init__.py
+│   │   ├── access_log_middleware.py # Access logging middleware
+│   │   └── rate_limit_middleware.py
 │   ├── modules/                # Feature modules (domain-driven)
-│   │   └── resources/          # Resources feature module
+│   │   └── <module_name>/      # Feature module (e.g., resources)
+│   │       ├── __init__.py
 │   │       ├── application/    # Application layer (use cases)
+│   │       │   ├── __init__.py
 │   │       │   └── use_cases/  # Use case implementations
 │   │       │       ├── __init__.py
-│   │       │       ├── create_resource.py
-│   │       │       ├── delete_resource.py
-│   │       │       ├── get_resource.py
-│   │       │       ├── list_resources.py
-│   │       │       └── update_resource.py
+│   │       │       ├── create_*.py
+│   │       │       ├── delete_*.py
+│   │       │       ├── get_*.py
+│   │       │       ├── list_*.py
+│   │       │       └── update_*.py
 │   │       ├── di.py           # Dependency injection configuration
 │   │       ├── domain/         # Domain layer
-│   │       │   ├── collections.py      # Domain collections
-│   │       │   ├── entities.py         # Domain entities
-│   │       │   ├── enums.py            # Domain enums
-│   │       │   ├── error_codes.py      # Domain-specific error codes
-│   │       │   ├── exceptions.py       # Domain-specific exceptions
-│   │       │   └── interfaces/         # Repository interfaces
-│   │       │       └── repositories.py
-│   │       │   └── value_objects.py    # Value objects
+│   │       │   ├── __init__.py
+│   │       │   ├── collections.py
+│   │       │   ├── entities.py
+│   │       │   ├── enums.py
+│   │       │   ├── error_codes.py
+│   │       │   ├── exceptions.py
+│   │       │   ├── interfaces/
+│   │       │   │   ├── __init__.py
+│   │       │   │   └── repositories.py
+│   │       │   └── value_objects.py
 │   │       ├── infrastructure/ # Infrastructure layer
-│   │       │   ├── instrumentation/ # Use case instrumentation/decorators
+│   │       │   ├── __init__.py
+│   │       │   ├── instrumentation/
+│   │       │   │   ├── __init__.py
 │   │       │   │   └── use_cases/
 │   │       │   │       ├── __init__.py
-│   │       │   │       ├── create_resource.py
-│   │       │   │       ├── delete_resource.py
-│   │       │   │       ├── get_resource.py
-│   │       │   │       ├── list_resources.py
-│   │       │   │       └── update_resource.py
+│   │       │   │       ├── create_*.py
+│   │       │   │       ├── delete_*.py
+│   │       │   │       ├── get_*.py
+│   │       │   │       ├── list_*.py
+│   │       │   │       └── update_*.py
 │   │       │   └── persistence/ # Persistence implementations
-│   │       │       ├── admin.py        # SQLAdmin view for resources
-│   │       │       ├── models/         # Database models
+│   │       │       ├── __init__.py
+│   │       │       ├── admin.py
+│   │       │       ├── models/
 │   │       │       │   ├── __init__.py
-│   │       │       │   ├── mock.py     # Mock models for testing
-│   │       │       │   └── sqlite.py   # SQLite database models
-│   │       │       └── repositories/   # Repository implementations
+│   │       │       │   ├── mock.py
+│   │       │       │   └── sqlite.py
+│   │       │       └── repositories/
 │   │       │           ├── __init__.py
-│   │       │           ├── mock.py     # Mock repository for testing
-│   │       │           └── sqlite.py   # SQLite repository implementation
-│   │       ├── presentation/   # Presentation layer (API)
-│   │       │   ├── api.py      # Resource API endpoints
-│   │       │   └── dtos.py     # Data transfer objects
-│   ├── shared/                 # Shared utilities and common code
-│   │   ├── application/        # Shared application layer
-│   │   │   └── interfaces/     # Shared interfaces
-│   │   │       ├── base.py     # Base interfaces
-│   │   │       └── instrumentation.py # Instrumentation interfaces
-│   │   ├── di.py               # Shared dependency injection config
-│   │   ├── domain/             # Shared domain layer
-│   │   │   ├── bases/          # Base classes
-│   │   │   │   ├── entity.py   # Entity base class
-│   │   │   │   ├── error.py    # Base error model
-│   │   │   │   └── value_object.py # Value object base class
-│   │   │   ├── error_codes.py  # Shared error codes
-│   │   │   └── exceptions.py   # Shared exception classes
-│   │   ├── helpers/            # Shared helper functions
-│   │   │   └── odata_helper.py # OData query helper
-│   │   ├── infrastructure/     # Shared infrastructure
-│   │   │   └── db.py           # Database connection utilities
-│   │   ├── presentation/       # Shared presentation layer
-│   │   │   ├── api.py          # Shared API routes (e.g., health check)
-│   │   │   ├── dtos.py         # Base DTO classes
-│   │   │   └── responses.py    # Response utilities
-│   │   └── utils/              # Shared utility functions
-│   │       └── uuid_tools.py   # UUID utility functions
+│   │       │           ├── mock.py
+│   │       │           └── sqlite.py
+│   │       └── presentation/   # Presentation layer (API)
+│   │           ├── __init__.py
+│   │           ├── api.py
+│   │           └── dtos.py
+│   └── shared/                 # Shared utilities and common code
+│       ├── __init__.py
+│       ├── application/
+│       │   ├── __init__.py
+│       │   ├── command_handler.py
+│       │   └── instrumentation.py
+│       ├── di.py
+│       ├── domain/
+│       │   ├── __init__.py
+│       │   ├── bases/
+│       │   │   ├── __init__.py
+│       │   │   ├── entity.py
+│       │   │   ├── error.py
+│       │   │   └── value_object.py
+│       │   ├── error_codes.py
+│       │   └── exceptions.py
+│       ├── helpers/
+│       │   ├── __init__.py
+│       │   └── odata_helper.py
+│       ├── infrastructure/
+│       │   ├── __init__.py
+│       │   └── db.py
+│       ├── presentation/
+│       │   ├── __init__.py
+│       │   ├── api.py
+│       │   ├── dtos.py
+│       │   ├── exception_handlers.py
+│       │   └── responses.py
+│       └── utils/
+│           ├── __init__.py
+│           └── uuid_tools.py
 ├── tests/                      # Tests directory
+│   ├── __init__.py
 │   ├── conftest.py             # Pytest global fixtures
-│   ├── resources/              # Resource module tests
-│   │   ├── application/        # Application layer tests
-│   │   │   ├── test_create_resource.py
-│   │   │   ├── test_delete_resource.py
-│   │   │   ├── test_get_resource.py
-│   │   │   ├── test_list_resources.py
-│   │   │   └── test_update_resource.py
-│   │   ├── domain/             # Domain layer tests
+│   ├── <module_name>/          # Module tests (e.g., resources)
+│   │   ├── application/
+│   │   │   ├── __init__.py
+│   │   │   ├── test_create_*.py
+│   │   │   ├── test_delete_*.py
+│   │   │   ├── test_get_*.py
+│   │   │   ├── test_list_*.py
+│   │   │   └── test_update_*.py
+│   │   ├── domain/
+│   │   │   ├── __init__.py
 │   │   │   ├── conftest.py
-│   │   │   └── test_collections.py
-│   │   ├── infrastructure/     # Infrastructure layer tests
-│   │   │   └── persistence/    # Persistence layer tests
-│   │   │       └── repositories/ # Repository tests
+│   │   │   └── test_*.py
+│   │   ├── infrastructure/
+│   │   │   ├── __init__.py
+│   │   │   └── persistence/
+│   │   │       ├── __init__.py
+│   │   │       └── repositories/
+│   │   │           ├── __init__.py
 │   │   │           ├── conftest.py
-│   │   │           └── test_sqlite_resource_repository.py
-│   │   └── presentation/       # Presentation layer tests
-│   │       ├── test_create_resource.py
-│   │       ├── test_delete_resource.py
-│   │       ├── test_get_resource.py
-│   │       ├── test_list_resources.py
-│   │       └── test_update_resource.py
-│   └── shared/                 # Shared tests
-│       └── presentation/       # Shared presentation tests
-│           └── api/            # API tests
-│               └── test_health.py # Health endpoint tests
+│   │   │           └── test_*.py
+│   │   └── presentation/
+│   │       ├── __init__.py
+│   │       ├── test_create_*.py
+│   │       ├── test_delete_*.py
+│   │       ├── test_get_*.py
+│   │       ├── test_list_*.py
+│   │       └── test_update_*.py
+│   └── shared/
+│       ├── __init__.py
+│       └── presentation/
+│           ├── __init__.py
+│           └── api/
+│               ├── __init__.py
+│               └── test_health.py
 ├── .env.example                # Environment variables template
 ├── .gitignore                  # Git ignored files
 ├── .python-version             # Python version for tooling
