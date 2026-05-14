@@ -1,11 +1,19 @@
 from collections.abc import AsyncGenerator, AsyncIterable
 
 import pytest_asyncio
-from dishka import AsyncContainer, Provider, Scope, make_async_container, provide
+from dishka import (
+    AsyncContainer,
+    Provider,
+    Scope,
+    make_async_container,
+    provide,
+)
 from sqlactive import DBConnection
 
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from modules.resources.infrastructure.persistence.models.sqlite import (
     BaseModel,
     ResourceModel,

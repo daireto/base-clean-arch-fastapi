@@ -2,7 +2,9 @@ import pytest
 from odata_v4_query import ODataQueryOptions
 
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from modules.resources.infrastructure.persistence.models.sqlite import (
     ResourceModel,
 )

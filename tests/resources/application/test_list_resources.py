@@ -6,7 +6,9 @@ from modules.resources.application.use_cases.list_resources import (
     ListResourcesHandler,
 )
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from shared.helpers.odata_helper import ODataHelper
 
 

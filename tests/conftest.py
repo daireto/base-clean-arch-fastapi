@@ -11,9 +11,11 @@ from dishka import (
 from dishka.integrations.fastapi import setup_dishka
 from fastapi.testclient import TestClient
 
-from app.app import create_app
+from app import create_app
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from modules.resources.infrastructure.persistence.repositories.mock import (
     MockResourceRepository,
 )

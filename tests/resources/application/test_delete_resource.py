@@ -5,7 +5,9 @@ from modules.resources.application.use_cases.delete_resource import (
     DeleteResourceHandler,
 )
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from shared.utils.uuid_tools import empty_uuid
 
 

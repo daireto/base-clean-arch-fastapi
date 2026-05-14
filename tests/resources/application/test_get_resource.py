@@ -6,7 +6,9 @@ from modules.resources.application.use_cases.get_resource import (
 )
 from modules.resources.domain.entities import Resource
 from modules.resources.domain.exceptions import ResourceNotFoundError
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from shared.utils.uuid_tools import empty_uuid
 
 

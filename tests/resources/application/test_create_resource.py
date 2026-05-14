@@ -6,7 +6,9 @@ from modules.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
 )
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 
 
 @pytest.mark.asyncio
