@@ -7,6 +7,7 @@ from typing import Any, TextIO
 
 import structlog
 from asgi_correlation_id.context import correlation_id
+from fastapi import FastAPI
 from pythonjsonlogger.json import JsonFormatter
 
 
@@ -102,7 +103,7 @@ def setup_log_rotation(
             logger.addHandler(file_handler)
 
 
-global_app_logger = get_logger(
+_default_app_logger = get_logger(
     name='app',
     level=logging.INFO,
     handlers=[
@@ -115,16 +116,41 @@ global_app_logger = get_logger(
 )
 
 
-def get_app_logger(suffix: str) -> structlog.stdlib.BoundLogger:
+def get_app_logger(suffix: str | None = None) -> structlog.stdlib.BoundLogger:
+    if not suffix:
+        return _default_app_logger
+
     return structlog.stdlib.BoundLogger(
-        logger=global_app_logger.getChild(suffix),
+        logger=_default_app_logger.getChild(suffix),
         processors=_processors,
-        context=structlog.get_context(global_app_logger),
+        context=structlog.get_context(_default_app_logger),
     )
 
 
+def setup_app_logger(
+    app: FastAPI,
+    loggers: list[structlog.stdlib.BoundLogger | logging.Logger | str]
+    | None = None,
+    filepath: str | None = None,
+    max_bytes: int = 1024 * 1024 * 10,
+    backup_count: int = 5,
+    formatter: logging.Formatter | None = None,
+) -> None:
+    app.state.logger = _default_app_logger
+    app.state.get_child_logger = get_app_logger
+
+    if filepath:
+        setup_log_rotation(
+            loggers=loggers or [_default_app_logger],
+            filepath=filepath,
+            max_bytes=max_bytes,
+            backup_count=backup_count,
+            formatter=formatter,
+        )
+
+
 def log_decorator(  # noqa: ANN201
-    logger: structlog.stdlib.BoundLogger = global_app_logger,
+    logger: structlog.stdlib.BoundLogger = _default_app_logger,
     on_start_msg: str = '',
     on_end_msg: str = '',
     on_error_msg: str = '',
@@ -152,7 +178,7 @@ def log_decorator(  # noqa: ANN201
 
 
 def async_log_decorator(  # noqa: ANN201
-    logger: structlog.stdlib.BoundLogger = global_app_logger,
+    logger: structlog.stdlib.BoundLogger = _default_app_logger,
     on_start_msg: str = '',
     on_end_msg: str = '',
     on_error_msg: str = '',
