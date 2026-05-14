@@ -1,6 +1,8 @@
 from dishka import Provider, Scope
 
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
 from modules.resources.infrastructure.persistence.repositories.sqlite import (
     SQLiteResourceRepository,
 )

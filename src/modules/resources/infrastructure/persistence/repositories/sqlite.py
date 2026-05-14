@@ -5,8 +5,12 @@ from odata_v4_query.utils.sqlalchemy import apply_to_sqlalchemy_query
 from sqlactive import DBConnection, execute
 
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.interfaces.repositories import ResourceRepositoryABC
-from modules.resources.infrastructure.persistence.models.sqlite import ResourceModel
+from modules.resources.domain.interfaces.repositories import (
+    ResourceRepositoryABC,
+)
+from modules.resources.infrastructure.persistence.models.sqlite import (
+    ResourceModel,
+)
 
 
 class SQLiteResourceRepository(ResourceRepositoryABC):
@@ -48,7 +52,9 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
 
         await resource.delete()
 
-    async def count(self, odata_options: ODataQueryOptions | None = None) -> int:
+    async def count(
+        self, odata_options: ODataQueryOptions | None = None
+    ) -> int:
         if odata_options:
             query = apply_to_sqlalchemy_query(odata_options, ResourceModel)
             result = await execute(self._session, query)

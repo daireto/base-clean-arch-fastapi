@@ -51,6 +51,8 @@ class Resource(Entity):
                     'id': self._id,
                     'name': self._name,
                     'url': ResourceUrl(value=self._url) if self._url else None,  # type: ignore
-                    'type': ResourceType(value=self._type) if self._type else None,  # type: ignore
+                    'type': ResourceType(value=self._type)
+                    if self._type
+                    else None,  # type: ignore
                 }
             )

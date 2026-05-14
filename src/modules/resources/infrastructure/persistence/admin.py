@@ -1,6 +1,8 @@
 from sqladmin import ModelView
 
-from modules.resources.infrastructure.persistence.models.sqlite import ResourceModel
+from modules.resources.infrastructure.persistence.models.sqlite import (
+    ResourceModel,
+)
 
 
 class ResourceAdmin(ModelView, model=ResourceModel):
