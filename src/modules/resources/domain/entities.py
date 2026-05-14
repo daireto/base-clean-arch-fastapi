@@ -1,5 +1,6 @@
-from pydantic import Field
+from pydantic import Field, HttpUrl
 
+from modules.resources.domain.enums import MediaType
 from modules.resources.domain.value_objects import ResourceType, ResourceUrl
 from shared.domain.bases.entity import Entity
 
@@ -20,10 +21,10 @@ class Resource(Entity):
     def set_name(self, name: str) -> None:
         self.name = name
 
-    def set_url(self, url: str) -> None:
+    def set_url(self, url: str | HttpUrl) -> None:
         self.url = ResourceUrl(value=url)  # type: ignore
 
-    def set_type(self, type_: str) -> None:
+    def set_type(self, type_: str | MediaType) -> None:
         self.type = ResourceType(value=type_)  # type: ignore
 
     class Builder(Entity.Builder):
@@ -37,11 +38,11 @@ class Resource(Entity):
             self._name = name
             return self
 
-        def with_url(self, url: str) -> 'Resource.Builder':
+        def with_url(self, url: str | HttpUrl) -> 'Resource.Builder':
             self._url = url
             return self
 
-        def with_type(self, type_: str) -> 'Resource.Builder':
+        def with_type(self, type_: str | MediaType) -> 'Resource.Builder':
             self._type = type_
             return self
 

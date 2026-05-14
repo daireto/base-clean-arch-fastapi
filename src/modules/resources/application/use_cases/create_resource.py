@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 
+from pydantic import HttpUrl
 from simple_result import Err, Ok, Result
 
 from modules.resources.domain.entities import Resource
+from modules.resources.domain.enums import MediaType
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
@@ -17,8 +19,8 @@ from shared.application.instrumentation import NoInstrumentation
 @dataclass
 class CreateResourceCommand:
     name: str
-    url: str
-    type: str
+    url: str | HttpUrl
+    type: str | MediaType
 
 
 class CreateResourceHandler(CommandHandler):

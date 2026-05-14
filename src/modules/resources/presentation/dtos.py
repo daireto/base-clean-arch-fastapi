@@ -1,11 +1,14 @@
+from pydantic import HttpUrl
+
 from modules.resources.domain.entities import Resource
+from modules.resources.domain.enums import MediaType
 from shared.presentation.dtos import EntityResponseDTO, RequestDTO, ResponseDTO
 
 
 class CreateResourceRequestDTO(RequestDTO):
     name: str
-    url: str
-    type: str
+    url: HttpUrl
+    type: MediaType
 
 
 class ResourceDTO(EntityResponseDTO):
