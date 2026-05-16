@@ -62,8 +62,9 @@ These are some of the main technologies used in this project:
 │   ├── main.py                 # FastAPI application entry point
 │   ├── middlewares/            # Application middlewares
 │   │   ├── __init__.py
-│   │   ├── access_log_middleware.py # Access logging middleware
-│   │   └── rate_limit_middleware.py
+│   │   ├── access_log_middleware.py
+│   │   ├── rate_limit_middleware.py
+│   │   └── security_headers_middleware.py
 │   ├── modules/                # Feature modules (domain-driven)
 │   │   └── <module_name>/      # Feature module (e.g., resources)
 │   │       ├── __init__.py
