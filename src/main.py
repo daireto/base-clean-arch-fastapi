@@ -1,16 +1,16 @@
-from app import create_production_app
+from app import create_default_app
 from config import settings
 
-app = create_production_app()
+app = create_default_app()
 
 
 if __name__ == '__main__':
     import uvicorn
 
     uvicorn.run(
-        app,
+        'main:app',
         host='0.0.0.0',
         port=settings.server.port,
         log_config=None,
-        reload=settings.server.debug,
+        reload=settings.is_dev,
     )

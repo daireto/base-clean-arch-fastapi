@@ -16,6 +16,7 @@ from config import settings
 from logger import get_app_logger, get_logger, setup_app_logger
 from middlewares.access_log_middleware import AccessLogMiddleware
 from middlewares.rate_limit_middleware import RateLimitMiddleware
+from middlewares.security_headers_middleware import SecurityHeadersMiddleware
 from modules.resources.di import provider as resources_provider
 from modules.resources.infrastructure.persistence.admin import ResourceAdmin
 from modules.resources.presentation.api import router as resources_router
@@ -29,7 +30,11 @@ def register_routers(app: FastAPI) -> None:
     app.include_router(resources_router)
 
 
-def register_middlewares(app: FastAPI) -> None:
+def register_middlewares(app: FastAPI, include_rate_limit: bool = True) -> None:
+    app.add_middleware(
+        SecurityHeadersMiddleware,
+        hsts=settings.server.https,
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=['*'],
@@ -38,23 +43,26 @@ def register_middlewares(app: FastAPI) -> None:
         expose_headers=['X-Request-ID'],
     )
     app.add_middleware(
-        TrustedHostMiddleware,
-        allowed_hosts=['*'],
-    )
-    app.add_middleware(CorrelationIdMiddleware)
-    app.add_middleware(
         AccessLogMiddleware,
         logger=get_logger('access'),
         excluded_path_prefixes=settings.log.access_log_excluded_path_prefixes,
     )
-    app.add_middleware(
-        RateLimitMiddleware,
-        limit_string=settings.rate_limit.string,
-        storage_uri=settings.rate_limit.storage_uri.get_secret_value(),
-    )
+    app.add_middleware(CorrelationIdMiddleware)
 
-    if not settings.is_dev:
+    if settings.server.https:
         app.add_middleware(HTTPSRedirectMiddleware)
+
+    if include_rate_limit:
+        app.add_middleware(
+            RateLimitMiddleware,
+            storage_uri=settings.rate_limit.storage_uri.get_secret_value(),
+            root_limit=settings.rate_limit.root_limit,
+        )
+
+    app.add_middleware(
+        TrustedHostMiddleware,
+        allowed_hosts=['*'],
+    )
 
 
 async def register_admin(app: FastAPI, container: AsyncContainer) -> None:
@@ -69,7 +77,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     container: AsyncContainer | None = app.state.dishka_container
 
-    if app.state.enable_admin and container is not None:
+    if app.state.register_admin and container is not None:
         await register_admin(app, container)
 
     app.state.logger.info(settings.startup_msg)
@@ -84,7 +92,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.logger.info('App stopped')
 
 
-def create_app() -> FastAPI:
+def create_app(
+    container: AsyncContainer,
+    logs_filepath: str | None = None,
+    enable_admin: bool = False,
+) -> FastAPI:
     app = FastAPI(
         debug=settings.server.debug,
         default_response_class=ORJSONResponse,
@@ -94,23 +106,17 @@ def create_app() -> FastAPI:
 
     setup_app_logger(
         app=app,
-        filepath=settings.log.path,
+        filepath=logs_filepath,
     )
-
-    app.state.enable_admin = False
-    app.state.dishka_container = None
-
     register_routers(app)
-    register_middlewares(app)
+    setup_dishka(container, app)
+
+    app.state.register_admin = enable_admin
 
     return app
 
 
-def create_production_app() -> FastAPI:
-    app = create_app()
-
-    app.state.enable_admin = True
-
+def create_default_app() -> FastAPI:
     container = make_async_container(
         resources_provider,
         DBConnectionProvider(
@@ -119,6 +125,12 @@ def create_production_app() -> FastAPI:
         ),
         FastapiProvider(),
     )
-    setup_dishka(container, app)
+    app = create_app(
+        container=container,
+        logs_filepath=settings.log.path if not settings.is_dev else None,
+        enable_admin=True,
+    )
+
+    register_middlewares(app)
 
     return app
