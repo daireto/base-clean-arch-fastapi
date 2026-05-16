@@ -1,12 +1,10 @@
 import logging
 import time
+from collections.abc import Callable
 
 from asgi_correlation_id.context import correlation_id
 from starlette import status
-from starlette.middleware.base import (
-    BaseHTTPMiddleware,
-    RequestResponseEndpoint,
-)
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.types import ASGIApp
@@ -19,12 +17,14 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
         app: ASGIApp,
         logger: BoundLogger,
         excluded_path_prefixes: str | list[str] | None = None,
+        user_id_extractor: Callable[[Request], str] | None = None,
     ) -> None:
         super().__init__(app)
         self._logger = logger
         self._excluded_path_prefixes = self.__normalize_path_prefixes(
             excluded_path_prefixes or ''
         )
+        self._user_id_extractor = user_id_extractor or self.__default_user_id_extractor
 
     async def dispatch(
         self,
@@ -62,16 +62,12 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
             return
 
         status_code = (
-            response.status_code
-            if response
-            else status.HTTP_500_INTERNAL_SERVER_ERROR
+            response.status_code if response else status.HTTP_500_INTERNAL_SERVER_ERROR
         )
         if status_code == status.HTTP_404_NOT_FOUND and not exception:
             return
 
-        request_failed = (
-            exception or status_code >= status.HTTP_400_BAD_REQUEST
-        )
+        request_failed = exception or status_code >= status.HTTP_400_BAD_REQUEST
         self._logger.log(
             logging.ERROR if request_failed else logging.INFO,
             'Request failed' if request_failed else 'Request succeeded',
@@ -82,7 +78,7 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
             protocol=request.scope.get('scheme', 'http'),
             status_code=status_code,
             duration_ms=duration_ms,
-            user_id=request.headers.get('x-user-id'),
+            user_id=self._user_id_extractor(request),
             trace_id=request.headers.get('x-trace-id'),
             client_ip=request.client.host if request.client else None,
             user_agent=request.headers.get('user-agent'),
@@ -96,9 +92,7 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
 
         return path.startswith(self._excluded_path_prefixes)
 
-    def __normalize_path_prefixes(
-        self, prefixes: str | list[str]
-    ) -> tuple[str, ...]:
+    def __normalize_path_prefixes(self, prefixes: str | list[str]) -> tuple[str, ...]:
         if not prefixes:
             return ()
 
@@ -106,8 +100,10 @@ class AccessLogMiddleware(BaseHTTPMiddleware):
             prefixes = prefixes.split(',')
 
         normalized = [
-            prefix if prefix.startswith('/') else f'/{prefix}'
-            for prefix in prefixes
+            prefix if prefix.startswith('/') else f'/{prefix}' for prefix in prefixes
         ]
 
         return tuple(normalized)
+
+    def __default_user_id_extractor(self, request: Request) -> str | None:
+        return request.headers.get('x-user-id')
