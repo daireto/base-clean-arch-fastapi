@@ -11,6 +11,15 @@ class ServerConfig(BaseModel):
     port: int = 8000
     host: str = 'localhost'
     debug: bool = False
+    https: bool = False
+
+    @property
+    def scheme(self) -> Literal['http', 'https']:
+        return 'https' if self.https else 'http'
+
+    @property
+    def base_url(self) -> str:
+        return f'{self.scheme}://{self.host}:{self.port}'
 
 
 class DatabaseConfig(BaseModel):
@@ -19,14 +28,12 @@ class DatabaseConfig(BaseModel):
 
 class LogConfig(BaseModel):
     path: str | None = None
-    access_log_excluded_path_prefixes: str = (
-        'openapi.json,docs,redoc,health,admin'
-    )
+    access_log_excluded_path_prefixes: str = 'openapi.json,docs,redoc,health,admin'
 
 
 class RateLimitConfig(BaseModel):
     storage_uri: Secret[str] = Secret('memory://')
-    string: str = '5/second'
+    root_limit: str = '5/second'
 
 
 class QueryConfig(BaseModel):
@@ -61,24 +68,16 @@ class Settings(BaseSettings):
         return self.server.env == 'prod'
 
     @property
-    def scheme(self) -> Literal['http', 'https']:
-        return 'http' if self.is_dev else 'https'
-
-    @property
-    def use_log_rotation(self) -> bool:
-        return self.server.env != 'dev' and bool(self.log.path)
-
-    @property
     def swagger_url(self) -> str:
-        return f'{self.scheme}://{self.server.host}:{self.server.port}/docs'
+        return f'{self.server.base_url}/docs'
 
     @property
     def redoc_url(self) -> str:
-        return f'{self.scheme}://{self.server.host}:{self.server.port}/redoc'
+        return f'{self.server.base_url}/redoc'
 
     @property
     def admin_url(self) -> str:
-        return f'{self.scheme}://{self.server.host}:{self.server.port}/admin'
+        return f'{self.server.base_url}/admin'
 
     @property
     def startup_msg(self) -> str:
