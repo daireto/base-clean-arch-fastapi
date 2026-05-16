@@ -27,9 +27,7 @@ class DeleteResourceHandler(CommandHandler):
         self._resource_repository = resource_repository
         self._instrumentation = instrumentation or NoInstrumentation()
 
-    async def handle(
-        self, command: DeleteResourceCommand
-    ) -> Result[None, Exception]:
+    async def handle(self, command: DeleteResourceCommand) -> Result[None, Exception]:
         self._instrumentation.before(command.id)
 
         try:

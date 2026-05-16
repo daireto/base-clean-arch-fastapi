@@ -35,9 +35,7 @@ class ListResourcesHandler(CommandHandler):
         self._instrumentation.before()
 
         try:
-            resources = await self._resource_repository.all(
-                command.odata.get()
-            )
+            resources = await self._resource_repository.all(command.odata.get())
         except Exception as error:
             self._instrumentation.error(error)
             return Err(error)
@@ -52,9 +50,7 @@ class ListResourcesHandler(CommandHandler):
         self._instrumentation.before()
 
         try:
-            resources = await self._resource_repository.all(
-                command.odata.get()
-            )
+            resources = await self._resource_repository.all(command.odata.get())
             total = await self._resource_repository.count(
                 command.odata.get_for_counting()
             )

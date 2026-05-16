@@ -29,9 +29,7 @@ class GetResourceHandler(CommandHandler):
         self._resource_repository = resource_repository
         self._instrumentation = instrumentation or NoInstrumentation()
 
-    async def handle(
-        self, command: GetResourceCommand
-    ) -> Result[Resource, Exception]:
+    async def handle(self, command: GetResourceCommand) -> Result[Resource, Exception]:
         self._instrumentation.before(command.id)
 
         try:
