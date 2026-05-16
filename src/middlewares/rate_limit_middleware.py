@@ -1,5 +1,4 @@
 import math
-import sys
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from datetime import datetime
@@ -8,22 +7,13 @@ from limits import RateLimitItem, WindowStats, parse_many
 from limits.aio.strategies import FixedWindowRateLimiter
 from limits.storage import StorageTypes, storage_from_string
 from starlette import status
-from starlette.middleware.base import (
-    BaseHTTPMiddleware,
-    RequestResponseEndpoint,
-)
+from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 from starlette.types import ASGIApp
 from starlette.websockets import WebSocket
 
 TZ = datetime.now().astimezone().tzinfo
-
-
-@dataclass
-class EndpointLimit:
-    path: str
-    limit_string: str
 
 
 @dataclass
@@ -35,6 +25,17 @@ class RateLimitResult:
 
     def __bool__(self) -> bool:
         return self.is_allowed
+
+
+def get_longest_prefix_match(prefixes: list[str], path: str) -> str:
+    def matches(path: str, prefix: str) -> bool:
+        return path == prefix or path.startswith(prefix + '/')
+
+    for prefix in prefixes:
+        if matches(path, prefix):
+            return prefix
+
+    return '/'
 
 
 async def default_identifier(request: Request | WebSocket) -> str:
@@ -64,26 +65,24 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app: ASGIApp,
-        limit_string: str,
         storage_uri: str,
-        identifier: Callable[[Request | WebSocket], Awaitable[str]]
-        | None = None,
+        root_limit: str,
+        prefix_limits: dict[str, str] | None = None,
+        identifier: Callable[[Request | WebSocket], Awaitable[str]] | None = None,
         callback: Callable[[Request, RateLimitResult], Awaitable[Response]]
         | None = None,
-        endpoint_limits: list[EndpointLimit] | None = None,
         skip: list[str] | Callable[[Request], Awaitable[bool]] | None = None,
     ) -> None:
         super().__init__(app)
-        self._rate_limits = self._parse_limit_string(limit_string)
         self._storage = self._storage_from_string(storage_uri)
         self._limiter = FixedWindowRateLimiter(self._storage)
 
+        self._root_limit = root_limit
+        self._prefix_limits = self._normalize_prefixes(prefix_limits or {})
+        self._sorted_prefixes = self._get_sorted_prefixes(self._prefix_limits)
+
         self._identifier = identifier or default_identifier
         self._callback = callback or default_callback
-
-        self._endpoint_limits = {
-            e.path.strip('/'): e.limit_string for e in endpoint_limits or []
-        }
 
         if isinstance(skip, list):
             self._skip = [path.strip('/') for path in skip]
@@ -98,16 +97,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if await self._check_skip(request):
             return await call_next(request)
 
+        limit_str = self.resolve_limit(request.url.path)
+        rate_limits = self._parse_limit_string(limit_str)
         identifier = await self._identifier(request)
-
-        if endpoint_limit_str := self._endpoint_limits.get(
-            request.url.path.strip('/')
-        ):
-            rate_limits = self._parse_limit_string(endpoint_limit_str)
-            result = await self._consume_rate_limits(rate_limits, identifier)
-        else:
-            rate_limits = self._rate_limits
-            result = await self._consume_rate_limits(rate_limits, identifier)
+        result = await self._consume_rate_limits(rate_limits, identifier)
 
         if result:
             response = await call_next(request)
@@ -117,6 +110,13 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         self._add_headers(response, result, rate_limits)
 
         return response
+
+    def resolve_limit(self, path: str) -> str:
+        prefix = get_longest_prefix_match(
+            prefixes=self._sorted_prefixes,
+            path=path.lstrip('/'),
+        )
+        return self._prefix_limits.get(prefix, self._root_limit)
 
     async def _consume_rate_limits(
         self, rate_limits: list[RateLimitItem], identifier: str
@@ -173,9 +173,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         result: RateLimitResult,
         rate_limits: list[RateLimitItem],
     ) -> None:
-        response.headers['RateLimit-Policy'] = self._get_rate_limit_policy(
-            rate_limits
-        )
+        response.headers['RateLimit-Policy'] = self._get_rate_limit_policy(rate_limits)
         response.headers['RateLimit-Limit'] = result.rate_limit
         if result.retry_after:
             response.headers['Retry-After'] = str(result.retry_after)
@@ -194,10 +192,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     def _parse_limit_string(self, limit_string: str) -> list[RateLimitItem]:
         return sorted(parse_many(limit_string), key=lambda limit: limit.amount)
 
-    async def _check_skip(self, request: Request) -> bool:
-        if 'pytest' in sys.modules:
-            return True
+    def _normalize_prefixes(self, prefix_limits: dict[str, str]) -> dict[str, str]:
+        return {
+            prefix.lstrip('/').strip(): limit for prefix, limit in prefix_limits.items()
+        }
 
+    def _get_sorted_prefixes(self, endpoint_limits: dict[str, str]) -> list[str]:
+        sorted_prefixes = sorted(endpoint_limits.keys(), key=len, reverse=True)
+        return [prefix for prefix in sorted_prefixes if prefix.lstrip('/') != '']
+
+    async def _check_skip(self, request: Request) -> bool:
         if not self._skip:
             return False
 
