@@ -37,10 +37,10 @@ def register_middlewares(app: FastAPI, include_rate_limit: bool = True) -> None:
     )
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=['*'],
-        allow_methods=['*'],
-        allow_headers=['X-Requested-With', 'X-Request-ID'],
-        expose_headers=['X-Request-ID'],
+        allow_origins=settings.cors.allow_origins.split(','),
+        allow_methods=settings.cors.allow_methods.split(','),
+        allow_headers=settings.cors.allow_headers.split(','),
+        expose_headers=settings.cors.expose_headers.split(','),
     )
     app.add_middleware(
         AccessLogMiddleware,
@@ -61,7 +61,7 @@ def register_middlewares(app: FastAPI, include_rate_limit: bool = True) -> None:
 
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=['*'],
+        allowed_hosts=settings.server.allowed_hosts.split(','),
     )
 
 

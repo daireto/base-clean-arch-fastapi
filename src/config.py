@@ -12,6 +12,7 @@ class ServerConfig(BaseModel):
     host: str = 'localhost'
     debug: bool = False
     https: bool = False
+    allowed_hosts: str = '*'
 
     @property
     def scheme(self) -> Literal['http', 'https']:
@@ -20,6 +21,13 @@ class ServerConfig(BaseModel):
     @property
     def base_url(self) -> str:
         return f'{self.scheme}://{self.host}:{self.port}'
+
+
+class CORSConfig(BaseModel):
+    allow_origins: str = '*'
+    allow_methods: str = '*'
+    allow_headers: str = 'X-Requested-With,X-Request-ID'
+    expose_headers: str = 'X-Request-ID'
 
 
 class DatabaseConfig(BaseModel):
@@ -50,6 +58,7 @@ class Settings(BaseSettings):
     )
 
     server: ServerConfig = ServerConfig()
+    cors: CORSConfig = CORSConfig()
     database: DatabaseConfig = DatabaseConfig()
     log: LogConfig = LogConfig()
     rate_limit: RateLimitConfig = RateLimitConfig()
