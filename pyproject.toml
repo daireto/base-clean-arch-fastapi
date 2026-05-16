@@ -9,6 +9,7 @@ dependencies = [
     "asgi-correlation-id==4.3.4",
     "dishka==1.9.1",
     "fastapi[standard]==0.119.0",
+    "fastmcp>=3.3.1",
     "httpx==0.28.1",
     "limits==5.8.0",
     "odata-v4-query==0.4.1",
