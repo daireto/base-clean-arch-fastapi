@@ -26,9 +26,7 @@ class TestCreateResource:
         assert response_content['resource']['url'] == data['url']
         assert response_content['resource']['type'] == data['type']
 
-    def test_returns_422_when_resource_url_is_invalid(
-        self, client: TestClient
-    ):
+    def test_returns_422_when_resource_url_is_invalid(self, client: TestClient):
         # Arrange
         data = {
             'name': 'Random Image',
@@ -42,9 +40,7 @@ class TestCreateResource:
         # Assert
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
-    def test_returns_422_when_resource_type_is_not_supported(
-        self, client: TestClient
-    ):
+    def test_returns_422_when_resource_type_is_not_supported(self, client: TestClient):
         # Arrange
         data = {
             'name': 'Random Image',

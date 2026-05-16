@@ -35,17 +35,13 @@ class EntityResponseDTO(ResponseDTO, ABC):
 
 
 class PaginatedResponseDTO(ResponseDTO, Generic[T], ABC):
-    items: list[T] = Field(
-        ..., description='List of returned items matching the query'
-    )
+    items: list[T] = Field(..., description='List of returned items matching the query')
     total: int = Field(
         ..., description='Total number of items available in the collection'
     )
     skip: int = Field(..., description='Number of items skipped')
     page: int = Field(..., description='Page number')
-    page_size: int = Field(
-        ..., description='Number of items returned per page'
-    )
+    page_size: int = Field(..., description='Number of items returned per page')
 
     @classmethod
     def from_odata_query_result(

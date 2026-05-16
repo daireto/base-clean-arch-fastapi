@@ -82,9 +82,7 @@ async def domain_exception_handler(_: Request, exc: Error) -> Response:
     )
 
 
-async def unexpected_exception_handler(
-    request: Request, exc: Exception
-) -> Response:
+async def unexpected_exception_handler(request: Request, exc: Exception) -> Response:
     request.app.state.logger.error('Unexpected error', exc_info=exc)
     return ORJSONResponse(
         build_rfc_9457_response_body(

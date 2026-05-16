@@ -17,29 +17,17 @@ class ResourceCollection(list[Resource]):
 
     def filter_by_name(self, name: str) -> 'ResourceCollection':
         return ResourceCollection(
-            [
-                resource
-                for resource in self
-                if name.lower() in resource.name.lower()
-            ]
+            [resource for resource in self if name.lower() in resource.name.lower()]
         )
 
     def filter_by_url_domain(self, domain: str) -> 'ResourceCollection':
         return ResourceCollection(
-            [
-                resource
-                for resource in self
-                if resource.url.domain_equals_to(domain)
-            ]
+            [resource for resource in self if resource.url.domain_equals_to(domain)]
         )
 
     def filter_by_url_scheme(self, scheme: str) -> 'ResourceCollection':
         return ResourceCollection(
-            [
-                resource
-                for resource in self
-                if resource.url.scheme_equals_to(scheme)
-            ]
+            [resource for resource in self if resource.url.scheme_equals_to(scheme)]
         )
 
     def get_created_before(self, timestamp: float) -> 'ResourceCollection':
@@ -68,9 +56,7 @@ class ResourceCollection(list[Resource]):
         return self.filter_by_type('other')
 
     def sort_by_name(self) -> 'ResourceCollection':
-        return ResourceCollection(
-            sorted(self, key=lambda resource: resource.name)
-        )
+        return ResourceCollection(sorted(self, key=lambda resource: resource.name))
 
     def sort_by_created_at(self) -> 'ResourceCollection':
         return ResourceCollection(

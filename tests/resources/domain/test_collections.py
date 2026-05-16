@@ -8,9 +8,7 @@ class TestResourceCollection:
     ):
         # Arrange
         type_ = 'image'
-        expected = [
-            resource for resource in resources if resource.type == type_
-        ]
+        expected = [resource for resource in resources if resource.type == type_]
 
         # Act
         collection = ResourceCollection(resources)
@@ -25,9 +23,7 @@ class TestResourceCollection:
     ):
         # Arrange
         name = 'Random Image'
-        expected = [
-            resource for resource in resources if name in resource.name
-        ]
+        expected = [resource for resource in resources if name in resource.name]
 
         # Act
         collection = ResourceCollection(resources)
@@ -43,9 +39,7 @@ class TestResourceCollection:
         # Arrange
         domain = 'picsum.photos'
         expected = [
-            resource
-            for resource in resources
-            if resource.url.domain_equals_to(domain)
+            resource for resource in resources if resource.url.domain_equals_to(domain)
         ]
 
         # Act
@@ -54,9 +48,7 @@ class TestResourceCollection:
 
         # Assert
         assert len(filtered) == len(expected)
-        assert all(
-            resource.url.domain_equals_to(domain) for resource in filtered
-        )
+        assert all(resource.url.domain_equals_to(domain) for resource in filtered)
 
     def test_filter_by_url_scheme_returns_only_resources_with_given_scheme(
         self, resources: list[Resource]
@@ -64,9 +56,7 @@ class TestResourceCollection:
         # Arrange
         scheme = 'https'
         expected = [
-            resource
-            for resource in resources
-            if resource.url.scheme_equals_to(scheme)
+            resource for resource in resources if resource.url.scheme_equals_to(scheme)
         ]
 
         # Act
@@ -75,9 +65,7 @@ class TestResourceCollection:
 
         # Assert
         assert len(filtered) == len(expected)
-        assert all(
-            resource.url.scheme_equals_to(scheme) for resource in filtered
-        )
+        assert all(resource.url.scheme_equals_to(scheme) for resource in filtered)
 
     def test_get_created_before_returns_only_resources_created_before_given_timestamp(
         self, resources: list[Resource]
@@ -85,9 +73,7 @@ class TestResourceCollection:
         # Arrange
         timestamp = resources[0].created_at
         expected = [
-            resource
-            for resource in resources
-            if resource.created_at < timestamp
+            resource for resource in resources if resource.created_at < timestamp
         ]
 
         # Act
@@ -104,9 +90,7 @@ class TestResourceCollection:
         # Arrange
         timestamp = resources[0].created_at
         expected = [
-            resource
-            for resource in resources
-            if resource.created_at > timestamp
+            resource for resource in resources if resource.created_at > timestamp
         ]
 
         # Act
@@ -119,9 +103,7 @@ class TestResourceCollection:
 
     def test_get_images_returns_only_images(self, resources: list[Resource]):
         # Arrange
-        expected = [
-            resource for resource in resources if resource.type == 'image'
-        ]
+        expected = [resource for resource in resources if resource.type == 'image']
 
         # Act
         collection = ResourceCollection(resources)
@@ -133,9 +115,7 @@ class TestResourceCollection:
 
     def test_get_videos_returns_only_videos(self, resources: list[Resource]):
         # Arrange
-        expected = [
-            resource for resource in resources if resource.type == 'video'
-        ]
+        expected = [resource for resource in resources if resource.type == 'video']
 
         # Act
         collection = ResourceCollection(resources)
@@ -147,9 +127,7 @@ class TestResourceCollection:
 
     def test_get_audios_returns_only_audios(self, resources: list[Resource]):
         # Arrange
-        expected = [
-            resource for resource in resources if resource.type == 'audio'
-        ]
+        expected = [resource for resource in resources if resource.type == 'audio']
 
         # Act
         collection = ResourceCollection(resources)
@@ -161,9 +139,7 @@ class TestResourceCollection:
 
     def test_get_texts_returns_only_texts(self, resources: list[Resource]):
         # Arrange
-        expected = [
-            resource for resource in resources if resource.type == 'text'
-        ]
+        expected = [resource for resource in resources if resource.type == 'text']
 
         # Act
         collection = ResourceCollection(resources)
@@ -175,9 +151,7 @@ class TestResourceCollection:
 
     def test_get_others_returns_only_others(self, resources: list[Resource]):
         # Arrange
-        expected = [
-            resource for resource in resources if resource.type == 'other'
-        ]
+        expected = [resource for resource in resources if resource.type == 'other']
 
         # Act
         collection = ResourceCollection(resources)
@@ -205,6 +179,4 @@ class TestResourceCollection:
         sorted_ = collection.sort_by_created_at()
 
         # Assert
-        assert sorted_ == sorted(
-            resources, key=lambda resource: resource.created_at
-        )
+        assert sorted_ == sorted(resources, key=lambda resource: resource.created_at)

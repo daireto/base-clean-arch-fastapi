@@ -41,9 +41,7 @@ class ResourceResponseDTO(ResponseDTO):
         )
 
     @classmethod
-    def from_entities(
-        cls, resources: list[Resource]
-    ) -> 'list[ResourceResponseDTO]':
+    def from_entities(cls, resources: list[Resource]) -> 'list[ResourceResponseDTO]':
         return [
             cls(
                 resource=ResourceDTO.from_entity(resource),

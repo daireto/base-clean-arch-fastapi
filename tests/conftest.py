@@ -8,10 +8,9 @@ from dishka import (
     Scope,
     make_async_container,
 )
-from dishka.integrations.fastapi import setup_dishka
 from fastapi.testclient import TestClient
 
-from app import create_app
+from app import create_app, register_middlewares
 from modules.resources.domain.entities import Resource
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
@@ -33,8 +32,10 @@ async def container() -> AsyncGenerator[AsyncContainer, None]:
 
 @pytest.fixture
 def client(container: AsyncContainer) -> Generator[TestClient]:
-    app = create_app()
-    setup_dishka(container, app)
+    app = create_app(container)
+
+    register_middlewares(app, include_rate_limit=False)
+
     with TestClient(app) as client:
         yield client
 

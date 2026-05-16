@@ -24,9 +24,7 @@ class TestGetResource:
         assert response_content['resource']['type'] == 'image'
 
     @pytest.mark.usefixtures('repo')
-    def test_returns_404_when_resource_does_not_exist(
-        self, client: TestClient
-    ):
+    def test_returns_404_when_resource_does_not_exist(self, client: TestClient):
         # Act
         response = client.get(f'/resources/{empty_uuid()}')
 
