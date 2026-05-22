@@ -40,7 +40,6 @@ These are some of the main technologies used in this project:
 - **SQLite** - Database (via aiosqlite for async operations).
 - **Dishka** - Inversion of Control (IoC) container.
 - **Pydantic** - Data validation and settings management.
-- **Orjson** - Fast JSON serialization.
 - **Uvloop** - High-performance event loop.
 - **Structlog** - Structured logging.
 - **Validators** - Data validation.
@@ -145,6 +144,7 @@ These are some of the main technologies used in this project:
 │       │   └── responses.py
 │       └── utils/
 │           ├── __init__.py
+│           ├── rfc_9457.py
 │           └── uuid_tools.py
 ├── tests/                      # Tests directory
 │   ├── __init__.py
