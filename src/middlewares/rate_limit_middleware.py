@@ -146,9 +146,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 is_allowed=False,
                 rate_limit=f'"{limit.GRANULARITY.name}";r={remaining};t={reset_time}',
                 retry_after=reset_time,
-                violated_policies=[
-                    limit[0].GRANULARITY.name for limit in violated_limits
-                ],
+                violated_policies=[v[0].GRANULARITY.name for v in violated_limits],
             )
 
         name, remaining, reset_time = less_restrictive_limit_window or (
@@ -187,7 +185,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     def _storage_from_string(self, storage_uri: str) -> StorageTypes:
         if not storage_uri.startswith('async+'):
             storage_uri = 'async+' + storage_uri
-        return storage_from_string(storage_uri)
+
+        options = {}
+        if storage_uri.startswith('async+redis'):
+            options['implementation'] = 'redispy'
+
+        return storage_from_string(storage_uri, **options)
 
     def _parse_limit_string(self, limit_string: str) -> list[RateLimitItem]:
         return sorted(parse_many(limit_string), key=lambda limit: limit.amount)
