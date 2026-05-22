@@ -1,13 +1,15 @@
 from asgi_correlation_id import correlation_id
 from fastapi import HTTPException, Request, Response
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import ORJSONResponse
 from fastapi.utils import is_body_allowed_for_status_code
 from pydantic import ValidationError
-from starlette.responses import JSONResponse
 
-from shared.domain.bases.error import Error, ValidationErrorDetail
+from shared.domain.bases.error import Error
 from shared.domain.error_codes import ErrorCode
+from shared.utils.rfc_9457 import (
+    build_rfc_9457_response,
+    error_to_rfc_9457_response,
+)
 
 
 def get_correlation_id_header() -> dict[str, str]:
@@ -20,78 +22,50 @@ def get_correlation_id_urn() -> str | None:
     return None
 
 
-def build_rfc_9457_response_body(
-    title: str,
-    status: int,
-    detail: str,
-    code: str,
-    type_: str = 'about:blank',
-    errors: list[ValidationErrorDetail] | None = None,
-) -> dict[str, object]:
-    return {
-        'type': type_,
-        'title': title,
-        'status': status,
-        'detail': detail,
-        'instance': get_correlation_id_urn(),
-        'code': code,
-        'errors': errors,
-    }
-
-
 async def http_exception_handler(_: Request, exc: HTTPException) -> Response:
     headers = getattr(exc, 'headers', {}) or {}
     headers.update(get_correlation_id_header())
     if not is_body_allowed_for_status_code(exc.status_code):
         return Response(status_code=exc.status_code, headers=headers)
-    return ORJSONResponse(
-        build_rfc_9457_response_body(
-            title=exc.detail,
-            status=exc.status_code,
-            detail=exc.detail,
-            code=ErrorCode.UNEXPECTED_ERROR,
-        ),
-        status_code=exc.status_code,
+    return build_rfc_9457_response(
+        title=exc.detail,
+        status=exc.status_code,
+        detail=exc.detail,
+        code=ErrorCode.UNEXPECTED_ERROR,
+        instance=get_correlation_id_urn(),
         headers=headers,
     )
 
 
 async def request_validation_exception_handler(
     _: Request, exc: RequestValidationError | ValidationError
-) -> JSONResponse:
-    return ORJSONResponse(
-        content=build_rfc_9457_response_body(
-            title='Validation Error',
-            status=422,
-            detail='Invalid input.',
-            code=ErrorCode.VALIDATION_ERROR,
-            errors=ValidationErrorDetail.from_pydantic_error_details(
-                errors=exc.errors()  # type: ignore
-            ),
-        ),
-        status_code=422,
+) -> Response:
+    return build_rfc_9457_response(
+        title='Validation Error',
+        status=422,
+        detail='Invalid input.',
+        code=ErrorCode.VALIDATION_ERROR,
+        instance=get_correlation_id_urn(),
+        errors=exc.errors(),
         headers=get_correlation_id_header(),
     )
 
 
 async def domain_exception_handler(_: Request, exc: Error) -> Response:
-    return ORJSONResponse(
-        exc.to_rfc_9457_dict(instance=get_correlation_id_urn()),
-        status_code=exc.status,
+    return error_to_rfc_9457_response(
+        exc,
+        instance=get_correlation_id_urn(),
         headers=get_correlation_id_header(),
     )
 
 
-async def unexpected_exception_handler(request: Request, exc: Exception) -> Response:
-    request.app.state.logger.error('Unexpected error', exc_info=exc)
-    return ORJSONResponse(
-        build_rfc_9457_response_body(
-            title='Internal Server Error',
-            status=500,
-            detail='An unexpected error occurred. Please try again later.',
-            code=ErrorCode.UNEXPECTED_ERROR,
-        ),
-        status_code=500,
+async def unexpected_exception_handler(_: Request, __: Exception) -> Response:
+    return build_rfc_9457_response(
+        title='Internal Server Error',
+        status=500,
+        detail='An unexpected error occurred. Please try again later.',
+        code=ErrorCode.UNEXPECTED_ERROR,
+        instance=get_correlation_id_urn(),
         headers=get_correlation_id_header(),
     )
 
