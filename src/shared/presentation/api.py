@@ -3,10 +3,14 @@ from fastapi import APIRouter
 
 from health import ServerHealthResponse, server_health
 
-router = APIRouter(route_class=DishkaRoute)
+router = APIRouter(
+    prefix='/health',
+    tags=['health'],
+    route_class=DishkaRoute,
+)
 
 
-@router.get('/health')
+@router.get('/')
 def read_health() -> ServerHealthResponse:
     """Health check endpoint.
 

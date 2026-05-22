@@ -1,6 +1,6 @@
 from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Request, Response, status
 
 from config import settings
 from modules.resources.application.use_cases.create_resource import (
@@ -50,10 +50,14 @@ from shared.presentation.dtos import PaginatedResponseDTO
 from shared.presentation.responses import NoContent
 from shared.utils.uuid_tools import uuid_from_string
 
-router = APIRouter(route_class=DishkaRoute)
+router = APIRouter(
+    prefix='/resources',
+    tags=['resources'],
+    route_class=DishkaRoute,
+)
 
 
-@router.get('/resources/{id_}')
+@router.get('/{id_}')
 async def get_resource(
     request: Request,
     id_: str,
@@ -74,7 +78,7 @@ async def get_resource(
     raise result.unwrap_error()
 
 
-@router.get('/resources/')
+@router.get('/')
 async def list_resources(
     request: Request,
     repo: FromDishka[ResourceRepositoryABC],
@@ -103,7 +107,7 @@ async def list_resources(
     raise result.unwrap_error()
 
 
-@router.post('/resources/')
+@router.post('/', status_code=status.HTTP_201_CREATED)
 async def create_resource(
     request: Request,
     dto: CreateResourceRequestDTO,
@@ -123,7 +127,7 @@ async def create_resource(
     raise result.unwrap_error()
 
 
-@router.put('/resources/{id_}')
+@router.put('/{id_}')
 async def update_resource(
     request: Request,
     id_: str,
@@ -150,7 +154,7 @@ async def update_resource(
     raise result.unwrap_error()
 
 
-@router.delete('/resources/{id_}')
+@router.delete('/{id_}')
 async def delete_resource(
     request: Request,
     id_: str,
