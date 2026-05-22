@@ -8,7 +8,7 @@ class ServerHealthResponse(BaseModel):
     healthy: bool = Field(..., description='Health status')
 
 
-class _ServerHealth:
+class ServerHealth:
     def __init__(self) -> None:
         self.reset()
 
@@ -49,8 +49,8 @@ class _ServerHealth:
 
 
 @lru_cache
-def get_server_health() -> _ServerHealth:
-    return _ServerHealth()
+def get_server_health() -> ServerHealth:
+    return ServerHealth()
 
 
-server_health = _ServerHealth()
+server_health = ServerHealth()
