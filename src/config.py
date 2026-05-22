@@ -7,12 +7,26 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ServerConfig(BaseModel):
-    env: Literal['dev', 'lab', 'prod'] = 'dev'
+    env: Literal['dev', 'prod'] = 'dev'
     port: int = 8000
     host: str = 'localhost'
     debug: bool = False
-    https: bool = False
+    ssl_certfile: str | None = None
+    ssl_keyfile: str | None = None
     allowed_hosts: str = '*'
+    behind_proxy: bool = False
+
+    @property
+    def is_dev(self) -> bool:
+        return self.env == 'dev'
+
+    @property
+    def is_prod(self) -> bool:
+        return self.env == 'prod'
+
+    @property
+    def https(self) -> bool:
+        return self.ssl_certfile is not None and self.ssl_keyfile is not None
 
     @property
     def scheme(self) -> Literal['http', 'https']:
@@ -63,18 +77,6 @@ class Settings(BaseSettings):
     log: LogConfig = LogConfig()
     rate_limit: RateLimitConfig = RateLimitConfig()
     query: QueryConfig = QueryConfig()
-
-    @property
-    def is_dev(self) -> bool:
-        return self.server.env == 'dev'
-
-    @property
-    def is_lab(self) -> bool:
-        return self.server.env == 'lab'
-
-    @property
-    def is_prod(self) -> bool:
-        return self.server.env == 'prod'
 
     @property
     def swagger_url(self) -> str:
