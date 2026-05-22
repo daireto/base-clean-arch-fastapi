@@ -8,7 +8,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import ORJSONResponse
 from sqlactive import DBConnection
 from sqladmin import Admin
 
@@ -99,7 +98,6 @@ def create_app(
 ) -> FastAPI:
     app = FastAPI(
         debug=settings.server.debug,
-        default_response_class=ORJSONResponse,
         exception_handlers=exception_handlers,
         lifespan=lifespan,
     )
@@ -127,7 +125,7 @@ def create_default_app() -> FastAPI:
     )
     app = create_app(
         container=container,
-        logs_filepath=settings.log.path if not settings.is_dev else None,
+        logs_filepath=settings.log.path if not settings.server.is_dev else None,
         enable_admin=True,
     )
 
