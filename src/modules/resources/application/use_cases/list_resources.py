@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-
+from pydantic import BaseModel, ConfigDict
 from simple_result import Err, Ok, Result
 
 from modules.resources.domain.collections import ResourceCollection
@@ -14,8 +13,9 @@ from shared.application.instrumentation import NoInstrumentation
 from shared.helpers.odata_helper import ODataHelper
 
 
-@dataclass
-class ListResourcesCommand:
+class ListResourcesCommand(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     odata: ODataHelper
 
 

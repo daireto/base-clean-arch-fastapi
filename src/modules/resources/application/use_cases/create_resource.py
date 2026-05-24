@@ -1,6 +1,4 @@
-from dataclasses import dataclass
-
-from pydantic import HttpUrl
+from pydantic import BaseModel, HttpUrl
 from simple_result import Err, Ok, Result
 
 from modules.resources.domain.entities import Resource
@@ -8,7 +6,7 @@ from modules.resources.domain.enums import MediaType
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
-from modules.resources.domain.value_objects import ResourceType, ResourceUrl
+from modules.resources.domain.value_objects import ResourceUrl
 from modules.resources.infrastructure.instrumentation.use_cases.create_resource import (
     CreateResourceInstrumentation,
 )
@@ -16,8 +14,7 @@ from shared.application.command_handler import CommandHandler
 from shared.application.instrumentation import NoInstrumentation
 
 
-@dataclass
-class CreateResourceCommand:
+class CreateResourceCommand(BaseModel):
     name: str
     url: str | HttpUrl
     type: str | MediaType
@@ -39,7 +36,7 @@ class CreateResourceHandler(CommandHandler):
         resource = Resource(
             name=command.name,
             url=ResourceUrl(value=command.url),  # type: ignore
-            type=ResourceType(value=command.type),  # type: ignore
+            type=command.type,  # type: ignore
         )
         self._instrumentation.before(resource)
 

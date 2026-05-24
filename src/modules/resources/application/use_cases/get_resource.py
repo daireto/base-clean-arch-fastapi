@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 from uuid import UUID
 
+from pydantic import BaseModel
 from simple_result import Err, Ok, Result
 
 from modules.resources.domain.entities import Resource
@@ -15,8 +15,7 @@ from shared.application.command_handler import CommandHandler
 from shared.application.instrumentation import NoInstrumentation
 
 
-@dataclass
-class GetResourceCommand:
+class GetResourceCommand(BaseModel):
     id: UUID
 
 
