@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
@@ -34,7 +34,7 @@ class EntityResponseDTO(ResponseDTO, ABC):
     updated_at: float
 
 
-class PaginatedResponseDTO(ResponseDTO, Generic[T], ABC):
+class PaginatedResponseDTO[T](ResponseDTO, ABC):
     items: list[T] = Field(..., description='List of returned items matching the query')
     total: int = Field(
         ..., description='Total number of items available in the collection'
