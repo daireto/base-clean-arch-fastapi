@@ -11,7 +11,6 @@ from dishka import (
 from fastapi.testclient import TestClient
 
 from app import create_app, register_middlewares
-from modules.resources.domain.entities import Resource
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
@@ -20,8 +19,8 @@ from modules.resources.infrastructure.persistence.repositories.mock import (
 )
 
 
-@pytest_asyncio.fixture
-async def container() -> AsyncGenerator[AsyncContainer, None]:
+@pytest_asyncio.fixture(scope='session')
+async def container() -> AsyncGenerator[AsyncContainer]:
     provider = Provider(scope=Scope.APP)
     provider.provide(MockResourceRepository, provides=ResourceRepositoryABC)
 
@@ -30,7 +29,7 @@ async def container() -> AsyncGenerator[AsyncContainer, None]:
     await container.close()
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def client(container: AsyncContainer) -> Generator[TestClient]:
     app = create_app(container)
 
@@ -40,37 +39,6 @@ def client(container: AsyncContainer) -> Generator[TestClient]:
         yield client
 
 
-@pytest_asyncio.fixture
-async def repo(container: AsyncContainer) -> ResourceRepositoryABC:
-    return await container.get(ResourceRepositoryABC)
-
-
-@pytest_asyncio.fixture
-async def resource(repo: ResourceRepositoryABC) -> Resource:
-    return await repo.create(
-        Resource.Builder()
-        .with_name('Random Image')
-        .with_url('https://example.com/')
-        .with_type('image')
-        .build()
-    )
-
-
-@pytest_asyncio.fixture
-async def resources(repo: ResourceRepositoryABC) -> list[Resource]:
-    return [
-        await repo.create(
-            Resource.Builder()
-            .with_name('Random Image')
-            .with_url('https://example.com/')
-            .with_type('image')
-            .build()
-        ),
-        await repo.create(
-            Resource.Builder()
-            .with_name('Random Image')
-            .with_url('https://example.org/')
-            .with_type('image')
-            .build()
-        ),
-    ]
+@pytest_asyncio.fixture(scope='session')
+async def repo(container: AsyncContainer) -> MockResourceRepository:
+    return await container.get(ResourceRepositoryABC)  # type: ignore

@@ -1,13 +1,6 @@
-from collections.abc import AsyncGenerator, AsyncIterable
+from collections.abc import AsyncGenerator
 
 import pytest_asyncio
-from dishka import (
-    AsyncContainer,
-    Provider,
-    Scope,
-    make_async_container,
-    provide,
-)
 from sqlactive import DBConnection
 
 from modules.resources.domain.entities import Resource
@@ -23,27 +16,21 @@ from modules.resources.infrastructure.persistence.repositories.sqlite import (
 )
 
 
-class DBConnectionProvider(Provider):
-    @provide(scope=Scope.APP)
-    async def get_db_connection(self) -> AsyncIterable[DBConnection]:
-        mock_conn = DBConnection('sqlite+aiosqlite:///:memory:', echo=False)
-        await mock_conn.init_db(BaseModel)
+@pytest_asyncio.fixture
+async def conn() -> AsyncGenerator[DBConnection]:
+    mock_conn = DBConnection('sqlite+aiosqlite:///:memory:', echo=False)
+    await mock_conn.init_db(BaseModel)
 
-        yield mock_conn
+    yield mock_conn
 
-        async with mock_conn.async_engine.begin() as conn:
-            await conn.run_sync(BaseModel.metadata.drop_all)
-        await mock_conn.close()
+    async with mock_conn.async_engine.begin() as conn:
+        await conn.run_sync(BaseModel.metadata.drop_all)
+    await mock_conn.close()
 
 
 @pytest_asyncio.fixture
-async def container() -> AsyncGenerator[AsyncContainer, None]:
-    provider = Provider(scope=Scope.APP)
-    provider.provide(SQLiteResourceRepository, provides=ResourceRepositoryABC)
-
-    container = make_async_container(provider, DBConnectionProvider())
-    yield container
-    await container.close()
+async def repo(conn: DBConnection) -> ResourceRepositoryABC:
+    return SQLiteResourceRepository(conn)
 
 
 @pytest_asyncio.fixture

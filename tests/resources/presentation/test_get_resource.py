@@ -7,7 +7,7 @@ from shared.utils.uuid_tools import empty_uuid
 
 
 class TestGetResource:
-    def test_returns_200_with_resource_details_when_resource_exists(
+    def test_returns_200_when_resource_exists(
         self,
         resource: Resource,
         client: TestClient,

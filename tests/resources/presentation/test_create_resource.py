@@ -5,51 +5,42 @@ from fastapi.testclient import TestClient
 
 @pytest.mark.usefixtures('repo')
 class TestCreateResource:
-    def test_returns_200_with_resource_details_after_creating_resource(
+    def test_returns_201_when_resource_is_created(
         self,
         client: TestClient,
     ):
-        # Arrange
         data = {
             'name': 'Random Image',
             'url': 'https://picsum.photos/200/200',
             'type': 'image',
         }
 
-        # Act
         response = client.post('/resources/', json=data)
         response_content = response.json()
 
-        # Assert
-        assert response.status_code == status.HTTP_200_OK
+        assert response.status_code == status.HTTP_201_CREATED
         assert response_content['resource']['name'] == data['name']
         assert response_content['resource']['url'] == data['url']
         assert response_content['resource']['type'] == data['type']
 
     def test_returns_422_when_resource_url_is_invalid(self, client: TestClient):
-        # Arrange
         data = {
             'name': 'Random Image',
             'url': 'not-a-valid-url',
             'type': 'image',
         }
 
-        # Act
         response = client.post('/resources/', json=data)
 
-        # Assert
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     def test_returns_422_when_resource_type_is_not_supported(self, client: TestClient):
-        # Arrange
         data = {
             'name': 'Random Image',
             'url': 'https://example.com/',
             'type': 'not-a-valid-type',
         }
 
-        # Act
         response = client.post('/resources/', json=data)
 
-        # Assert
-        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT

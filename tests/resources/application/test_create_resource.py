@@ -13,10 +13,9 @@ from modules.resources.domain.interfaces.repositories import (
 
 @pytest.mark.asyncio
 class TestCreateResource:
-    async def test_returns_resource_details_after_creating_resource(
+    async def test_returns_created_resource(
         self, repo: ResourceRepositoryABC
     ):
-        # Act
         await CreateResourceHandler(repo).handle(
             CreateResourceCommand(
                 name='Random Image',
@@ -28,14 +27,12 @@ class TestCreateResource:
             odata_options=ODataQueryOptions(top=100),
         )
 
-        # Assert
         assert len(resources) == 1
         assert str(resources[0].url) == 'https://example.com/'
 
     async def test_raises_when_resource_url_is_invalid(
         self, repo: ResourceRepositoryABC
     ):
-        # Assert
         with pytest.raises(ValidationError):
             await CreateResourceHandler(repo).handle(
                 CreateResourceCommand(
@@ -48,7 +45,6 @@ class TestCreateResource:
     async def test_raises_when_resource_type_is_not_supported(
         self, repo: ResourceRepositoryABC
     ):
-        # Assert
         with pytest.raises(ValidationError):
             await CreateResourceHandler(repo).handle(
                 CreateResourceCommand(

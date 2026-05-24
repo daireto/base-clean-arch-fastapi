@@ -13,28 +13,28 @@ from shared.utils.uuid_tools import empty_uuid
 
 @pytest.mark.asyncio
 class TestDeleteResource:
-    async def test_return_none_after_deleting_resource(
+    async def test_return_none_when_resource_exists(
         self, repo: ResourceRepositoryABC, resource: Resource
     ):
-        # Act
+        count_before = await repo.count()
+
         result = await DeleteResourceHandler(repo).handle(
             DeleteResourceCommand(id=resource.id)
         )
-        resources_count = await repo.count()
 
-        # Assert
         assert result
         assert result.value is None
-        assert not resources_count
+        assert await repo.count() == count_before - 1
 
-    async def test_returns_none_when_deleting_resource_that_does_not_exist(
+    async def test_returns_none_when_resource_does_not_exist(
         self, repo: ResourceRepositoryABC
     ):
-        # Act
+        count_before = await repo.count()
+
         result = await DeleteResourceHandler(repo).handle(
             DeleteResourceCommand(id=empty_uuid())
         )
 
-        # Assert
         assert result
         assert result.value is None
+        assert await repo.count() == count_before

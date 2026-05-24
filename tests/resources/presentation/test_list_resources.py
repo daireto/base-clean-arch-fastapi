@@ -11,12 +11,10 @@ class TestListResources:
         resources: list[Resource],
         client: TestClient,
     ):
-        # Act
         response = client.get('/resources/')
         response_content = response.json()
         retrieved_resources = response_content['items']
 
-        # Assert
         assert response.status_code == status.HTTP_200_OK
         assert len(retrieved_resources) == len(resources)
         assert response_content['total'] == len(resources)
@@ -28,15 +26,12 @@ class TestListResources:
         self,
         client: TestClient,
     ):
-        # Arrange
         limit = 1
 
-        # Act
         response = client.get(f'/resources/?$top={limit}')
         response_content = response.json()
         retrieved_resources = response_content['items']
 
-        # Assert
         assert response.status_code == status.HTTP_200_OK
         assert len(retrieved_resources) == limit
 
@@ -45,16 +40,13 @@ class TestListResources:
         self,
         client: TestClient,
     ):
-        # Arrange
         skip = 1
         expected_resources = 1
 
-        # Act
         response = client.get(f'/resources/?$skip={skip}')
         response_content = response.json()
         retrieved_resources = response_content['items']
 
-        # Assert
         assert response.status_code == status.HTTP_200_OK
         assert len(retrieved_resources) == expected_resources
 
@@ -63,16 +55,13 @@ class TestListResources:
         self,
         client: TestClient,
     ):
-        # Arrange
         page = 2
         page_size = 1
 
-        # Act
         response = client.get(f'/resources/?$page={page}&$top={page_size}')
         response_content = response.json()
         retrieved_resources = response_content['items']
 
-        # Assert
         assert response.status_code == status.HTTP_200_OK
         assert len(retrieved_resources) == page_size
         assert response_content['skip'] == page_size

@@ -14,17 +14,15 @@ from shared.helpers.odata_helper import ODataHelper
 
 @pytest.mark.asyncio
 class TestListResource:
-    async def test_returns_all_available_resources_from_repository(
+    async def test_returns_all_available_resources(
         self, repo: ResourceRepositoryABC, resources: list[Resource]
     ):
-        # Act
         result = await ListResourcesHandler(repo).handle(
             ListResourcesCommand(
                 odata=ODataHelper(ODataQueryOptions(top=10), max_top=100),
             ),
         )
 
-        # Assert
         assert result
         listed_resources = result.unwrap_value()
         assert len(listed_resources) == len(resources)
@@ -35,17 +33,14 @@ class TestListResource:
     async def test_returns_only_requested_number_of_resources(
         self, repo: ResourceRepositoryABC
     ):
-        # Arrange
         limit = 1
 
-        # Act
         result = await ListResourcesHandler(repo).handle(
             ListResourcesCommand(
                 odata=ODataHelper(ODataQueryOptions(top=limit), max_top=100),
             ),
         )
 
-        # Assert
         assert result
         listed_resources = result.unwrap_value()
         assert len(listed_resources) == limit

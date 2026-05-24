@@ -14,12 +14,11 @@ from shared.utils.uuid_tools import empty_uuid
 
 @pytest.mark.asyncio
 class TestUpdateResource:
-    async def test_returns_resource_details_after_updating_resource(
+    async def test_returns_updated_resource_when_resource_exists(
         self,
         repo: ResourceRepositoryABC,
         resource: Resource,
     ):
-        # Act
         result = await UpdateResourceHandler(repo).handle(
             UpdateResourceCommand(
                 id=resource.id,
@@ -29,7 +28,6 @@ class TestUpdateResource:
             )
         )
 
-        # Assert
         assert result
         updated = result.unwrap_value()
         assert updated.id == resource.id
@@ -37,10 +35,9 @@ class TestUpdateResource:
         assert str(updated.url) == 'https://example.org/'
         assert updated.type == 'text'
 
-    async def test_returns_resource_details_after_creating_resource_when_it_does_not_exist(
+    async def test_returns_created_resource_when_resource_does_not_exist(
         self, repo: ResourceRepositoryABC
     ):
-        # Act
         result = await UpdateResourceHandler(repo).handle(
             UpdateResourceCommand(
                 id=empty_uuid(),
@@ -50,7 +47,6 @@ class TestUpdateResource:
             )
         )
 
-        # Assert
         assert result
         created = result.unwrap_value()
         assert created.id is not None
@@ -63,7 +59,6 @@ class TestUpdateResource:
         repo: ResourceRepositoryABC,
         resource: Resource,
     ):
-        # Assert
         with pytest.raises(ValidationError):
             await UpdateResourceHandler(repo).handle(
                 UpdateResourceCommand(
@@ -79,7 +74,6 @@ class TestUpdateResource:
         repo: ResourceRepositoryABC,
         resource: Resource,
     ):
-        # Assert
         with pytest.raises(ValidationError):
             await UpdateResourceHandler(repo).handle(
                 UpdateResourceCommand(
