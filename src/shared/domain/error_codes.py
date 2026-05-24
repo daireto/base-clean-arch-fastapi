@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ErrorCode(str, Enum):
+class ErrorCode(StrEnum):
     AUTHENTICATION_ERROR = 'AUTHENTICATION_ERROR'
     AUTHORIZATION_ERROR = 'AUTHORIZATION_ERROR'
     UNEXPECTED_ERROR = 'UNEXPECTED_ERROR'

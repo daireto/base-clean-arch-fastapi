@@ -1,5 +1,5 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ErrorCode(str, Enum):
+class ErrorCode(StrEnum):
     RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND'
