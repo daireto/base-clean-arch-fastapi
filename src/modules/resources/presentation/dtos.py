@@ -11,6 +11,18 @@ class CreateResourceRequestDTO(RequestDTO):
     type: MediaType
 
 
+class UpdateResourceRequestDTO(RequestDTO):
+    name: str
+    url: HttpUrl
+    type: MediaType
+
+
+class PartialUpdateResourceRequestDTO(RequestDTO):
+    name: str | None = None
+    url: HttpUrl | None = None
+    type: MediaType | None = None
+
+
 class ResourceDTO(EntityResponseDTO):
     id: str
     name: str
@@ -25,7 +37,7 @@ class ResourceDTO(EntityResponseDTO):
             id=str(resource.id),
             name=resource.name,
             url=resource.url_value,
-            type=resource.type_value,
+            type=resource.type,
             created_at=resource.created_at,
             updated_at=resource.updated_at,
         )

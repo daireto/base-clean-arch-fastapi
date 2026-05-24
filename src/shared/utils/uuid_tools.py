@@ -14,10 +14,3 @@ class InvalidUUIDError(ValueError):
 
 def empty_uuid() -> UUID:
     return UUID(EMPTY_UUID)
-
-
-def uuid_from_string(uuid_str: str) -> UUID:
-    try:
-        return UUID(uuid_str)
-    except ValueError as e:
-        raise InvalidUUIDError(uuid_str) from e

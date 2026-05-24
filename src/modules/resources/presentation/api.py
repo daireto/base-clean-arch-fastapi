@@ -20,6 +20,7 @@ from modules.resources.application.use_cases.list_resources import (
     ListResourcesHandler,
 )
 from modules.resources.application.use_cases.update_resource import (
+    PartialUpdateResourceCommand,
     UpdateResourceCommand,
     UpdateResourceHandler,
 )
@@ -43,12 +44,13 @@ from modules.resources.infrastructure.instrumentation.use_cases.update_resource 
 )
 from modules.resources.presentation.dtos import (
     CreateResourceRequestDTO,
+    PartialUpdateResourceRequestDTO,
     ResourceResponseDTO,
+    UpdateResourceRequestDTO,
 )
 from shared.helpers.odata_helper import ODataHelper
 from shared.presentation.dtos import PaginatedResponseDTO
 from shared.presentation.responses import NoContent
-from shared.utils.uuid_tools import uuid_from_string
 
 router = APIRouter(
     prefix='/resources',
@@ -63,8 +65,7 @@ async def get_resource(
     id_: str,
     repo: FromDishka[ResourceRepositoryABC],
 ) -> ResourceResponseDTO:
-    uuid_id = uuid_from_string(id_)
-    command = GetResourceCommand(id=uuid_id)
+    command = GetResourceCommand(id=id_)  # type: ignore
     handler = GetResourceHandler(
         resource_repository=repo,
         instrumentation=GetResourceInstrumentation(
@@ -131,12 +132,11 @@ async def create_resource(
 async def update_resource(
     request: Request,
     id_: str,
-    dto: CreateResourceRequestDTO,
+    dto: UpdateResourceRequestDTO,
     repo: FromDishka[ResourceRepositoryABC],
 ) -> ResourceResponseDTO:
-    uuid_id = uuid_from_string(id_)
     command = UpdateResourceCommand(
-        id=uuid_id,
+        id=id_,  # type: ignore
         name=dto.name,
         url=dto.url,
         type=dto.type,
@@ -154,13 +154,37 @@ async def update_resource(
     raise result.unwrap_error()
 
 
+@router.patch('/{id_}')
+async def partially_update_resource(
+    request: Request,
+    id_: str,
+    dto: PartialUpdateResourceRequestDTO,
+    repo: FromDishka[ResourceRepositoryABC],
+) -> ResourceResponseDTO:
+    command = PartialUpdateResourceCommand(
+        id=id_,  # type: ignore
+        **dto.model_dump(exclude_unset=True),
+    )
+    handler = UpdateResourceHandler(
+        resource_repository=repo,
+        instrumentation=UpdateResourceInstrumentation(
+            logger=request.app.state.get_child_logger('resources.update'),
+        ),
+    )
+
+    if result := await handler.handle_partial(command):
+        return ResourceResponseDTO.from_entity(result.unwrap_value())
+
+    raise result.unwrap_error()
+
+
 @router.delete('/{id_}')
 async def delete_resource(
     request: Request,
     id_: str,
     repo: FromDishka[ResourceRepositoryABC],
 ) -> Response:
-    command = DeleteResourceCommand(id=uuid_from_string(id_))
+    command = DeleteResourceCommand(id=id_)  # type: ignore
     handler = DeleteResourceHandler(
         resource_repository=repo,
         instrumentation=DeleteResourceInstrumentation(
