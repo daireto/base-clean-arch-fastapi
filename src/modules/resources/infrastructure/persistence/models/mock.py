@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, Field
 
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.value_objects import ResourceType, ResourceUrl
+from modules.resources.domain.value_objects import ResourceUrl
 
 
 class MockResourceModel(BaseModel):
@@ -20,7 +20,7 @@ class MockResourceModel(BaseModel):
             id=self.id,
             name=self.name,
             url=ResourceUrl(value=self.url),  # type: ignore
-            type=ResourceType(value=self.type),  # type: ignore
+            type=self.type,  # type: ignore
             created_at=self.created_at,
             updated_at=self.updated_at,
         )
@@ -31,7 +31,7 @@ class MockResourceModel(BaseModel):
             id=entity.id,
             name=entity.name,
             url=entity.url_value,
-            type=entity.type_value,
+            type=entity.type,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )

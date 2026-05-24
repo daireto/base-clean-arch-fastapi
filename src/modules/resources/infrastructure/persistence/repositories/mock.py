@@ -37,7 +37,7 @@ class MockResourceRepository(ResourceRepositoryABC):
     async def update(self, resource: Resource) -> Resource | None:
         model = self._storage.get(resource.id)
         if not model:
-            return await self.create(resource)
+            return None
 
         model = MockResourceModel.from_entity(resource)
         self._storage[resource.id] = model
@@ -54,3 +54,6 @@ class MockResourceRepository(ResourceRepositoryABC):
 
     async def count(self, _: ODataQueryOptions | None = None) -> int:
         return len(self._storage)
+
+    def clear(self) -> None:
+        self._storage.clear()

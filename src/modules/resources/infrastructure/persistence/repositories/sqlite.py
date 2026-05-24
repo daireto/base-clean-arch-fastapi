@@ -36,11 +36,11 @@ class SQLiteResourceRepository(ResourceRepositoryABC):
     async def update(self, resource: Resource) -> Resource | None:
         model = await ResourceModel.get(resource.id)
         if not model:
-            return await self.create(resource)
+            return None
 
         model.name = resource.name
         model.url = resource.url_value
-        model.type = resource.type_value
+        model.type = resource.type
         await model.save()
 
         return model.to_entity()

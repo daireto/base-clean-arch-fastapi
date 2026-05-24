@@ -4,7 +4,7 @@ from sqlactive import ActiveRecordBaseModel
 from sqlalchemy.orm import Mapped, mapped_column
 
 from modules.resources.domain.entities import Resource
-from modules.resources.domain.value_objects import ResourceType, ResourceUrl
+from modules.resources.domain.value_objects import ResourceUrl
 
 
 class BaseModel(ActiveRecordBaseModel):
@@ -24,7 +24,7 @@ class ResourceModel(BaseModel):
             id=self.id,
             name=self.name,
             url=ResourceUrl(value=self.url),  # type: ignore
-            type=ResourceType(value=self.type),  # type: ignore
+            type=self.type,  # type: ignore
             created_at=self.created_at.timestamp(),
             updated_at=self.updated_at.timestamp(),
         )
@@ -35,5 +35,5 @@ class ResourceModel(BaseModel):
             id=entity.id,
             name=entity.name,
             url=entity.url_value,
-            type=entity.type_value,
+            type=entity.type,
         )
