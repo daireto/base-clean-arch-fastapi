@@ -42,7 +42,6 @@ These are some of the main technologies used in this project:
 - **Pydantic** - Data validation and settings management.
 - **Uvloop** - High-performance event loop.
 - **Structlog** - Structured logging.
-- **Validators** - Data validation.
 - **OData V4 Query** - OData query parsing.
 - **ASGI Correlation ID** - Requests correlation with unique IDs.
 - **Ruff** - Linter and code formatter.
@@ -199,7 +198,7 @@ These are some of the main technologies used in this project:
 
 ### Prerequisites
 
-- Python 3.10+
+- Python 3.13+
 - uv
 
 ### Installation

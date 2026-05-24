@@ -3,7 +3,7 @@ name = "base-clean-arch-api"
 version = "0.1.0"
 description = "Base project for FastAPI-based APIs implementing clean architecture patterns for maintainable and testable code."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "aiosqlite==0.22.1",
     "asgi-correlation-id==4.3.4",
@@ -20,7 +20,6 @@ dependencies = [
     "sqladmin[full]==0.26.0",
     "structlog==25.5.0",
     "uvloop==0.22.1",
-    "validators==0.35.0",
 ]
 
 [dependency-groups]
