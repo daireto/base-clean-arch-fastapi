@@ -8,8 +8,8 @@ from modules.resources.domain.interfaces.repositories import (
 from modules.resources.infrastructure.instrumentation.use_cases.list_resources import (
     ListResourcesInstrumentation,
 )
-from shared.application.command_handler import CommandHandler
-from shared.application.instrumentation import NoInstrumentation
+from shared.application.interfaces.command_handler import CommandHandler
+from shared.application.interfaces.instrumentation import NoUseCaseInstrumentation
 from shared.helpers.odata_helper import ODataHelper
 
 
@@ -26,7 +26,7 @@ class ListResourcesHandler(CommandHandler):
         instrumentation: ListResourcesInstrumentation | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or NoInstrumentation()
+        self._instrumentation = instrumentation or NoUseCaseInstrumentation()
 
     async def handle(
         self,

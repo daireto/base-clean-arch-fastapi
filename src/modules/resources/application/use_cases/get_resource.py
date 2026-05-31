@@ -11,8 +11,8 @@ from modules.resources.domain.interfaces.repositories import (
 from modules.resources.infrastructure.instrumentation.use_cases.get_resource import (
     GetResourceInstrumentation,
 )
-from shared.application.command_handler import CommandHandler
-from shared.application.instrumentation import NoInstrumentation
+from shared.application.interfaces.command_handler import CommandHandler
+from shared.application.interfaces.instrumentation import NoUseCaseInstrumentation
 
 
 class GetResourceCommand(BaseModel):
@@ -26,7 +26,7 @@ class GetResourceHandler(CommandHandler):
         instrumentation: GetResourceInstrumentation | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or NoInstrumentation()
+        self._instrumentation = instrumentation or NoUseCaseInstrumentation()
 
     async def handle(self, command: GetResourceCommand) -> Result[Resource, Exception]:
         self._instrumentation.before(command.id)
