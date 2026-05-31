@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from structlog.stdlib import BoundLogger
 
 
-class Instrumentation(ABC):
+class UseCaseInstrumentation(ABC):
     def __init__(self, logger: BoundLogger) -> None:
         self._logger = logger
 
@@ -23,7 +23,7 @@ class Instrumentation(ABC):
         self._logger.warning(message, **kwargs)
 
 
-class NoInstrumentation(Instrumentation):
+class NoUseCaseInstrumentation(UseCaseInstrumentation):
     def __init__(self) -> None:
         super().__init__(logger=None)  # type: ignore
 
