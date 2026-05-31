@@ -1,9 +1,9 @@
 from uuid import UUID
 
-from shared.application.instrumentation import Instrumentation
+from shared.application.interfaces.instrumentation import UseCaseInstrumentation
 
 
-class DeleteResourceInstrumentation(Instrumentation):
+class DeleteResourceInstrumentation(UseCaseInstrumentation):
     def before(self, id_: UUID) -> None:
         super().before('Deleting resource', resource_id=id_)
 

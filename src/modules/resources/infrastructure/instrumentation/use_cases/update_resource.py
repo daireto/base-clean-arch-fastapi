@@ -1,10 +1,10 @@
 from uuid import UUID
 
 from modules.resources.domain.entities import Resource
-from shared.application.instrumentation import Instrumentation
+from shared.application.interfaces.instrumentation import UseCaseInstrumentation
 
 
-class UpdateResourceInstrumentation(Instrumentation):
+class UpdateResourceInstrumentation(UseCaseInstrumentation):
     def before(self, resource: Resource) -> None:
         super().before('Updating resource', resource_id=resource.id)
 

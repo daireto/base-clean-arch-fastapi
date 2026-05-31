@@ -1,8 +1,8 @@
 from modules.resources.domain.entities import Resource
-from shared.application.instrumentation import Instrumentation
+from shared.application.interfaces.instrumentation import UseCaseInstrumentation
 
 
-class ListResourcesInstrumentation(Instrumentation):
+class ListResourcesInstrumentation(UseCaseInstrumentation):
     def before(self) -> None:
         super().before('Listing resources')
 
