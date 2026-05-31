@@ -13,9 +13,7 @@ from modules.resources.domain.interfaces.repositories import (
 
 @pytest.mark.asyncio
 class TestCreateResource:
-    async def test_returns_created_resource(
-        self, repo: ResourceRepositoryABC
-    ):
+    async def test_returns_created_resource(self, repo: ResourceRepositoryABC):
         await CreateResourceHandler(repo).handle(
             CreateResourceCommand(
                 name='Random Image',
