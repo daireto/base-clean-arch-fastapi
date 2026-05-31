@@ -18,7 +18,7 @@ TYPES:
 - build: Changes that affect the build system or external dependencies
 - chore: Other changes that don't fit into the above categories. For example, changes to configuration files, updating dependencies, etc
 - ci: Changes to the CI/CD configuration files and scripts
-- docs: Documentation only changes
+- docs: Documentation only changes. This can omit the scope if the change is to the root README.md file
 - feat: A new feature
 - fix: A bug fix
 - perf: A code change that improves performance
