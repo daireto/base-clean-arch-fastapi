@@ -1,28 +1,52 @@
-.vscode/
+# Other
 .copilot/
 .logs/
 .temp/
 .ignore/
 
-# Python cache
+# Python bytecode cache
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Secrets
-.env
-
 # Virtual environments
 .venv/
+venv/
+env/
+ENV/
+pip-wheel-metadata/
 
-# Pytest
-.pytest_cache/
+# Environment secrets and configurations
+.env
+.env.*
+!.env.example
+secrets.toml
 
-# mypy
-.mypy_cache/
-
-# Ruff
-.ruff_cache/
-
-# Database
+# Databases (SQLite local files)
 *.db
+*.sqlite3
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Testing and coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Vim temporary files
+*~
+.*.sw?
+.cache
