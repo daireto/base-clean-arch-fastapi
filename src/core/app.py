@@ -11,17 +11,17 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from sqlactive import DBConnection
 from sqladmin import Admin
 
-from config import settings
-from logger import get_app_logger, get_logger, setup_app_logger
-from middlewares.access_log_middleware import AccessLogMiddleware
-from middlewares.rate_limit_middleware import RateLimitMiddleware
-from middlewares.security_headers_middleware import SecurityHeadersMiddleware
+from core.config import settings
+from core.exception_handlers import exception_handlers
+from core.logger import get_app_logger, get_logger, setup_app_logger
+from core.middlewares.access_log_middleware import AccessLogMiddleware
+from core.middlewares.rate_limit_middleware import RateLimitMiddleware
+from core.middlewares.security_headers_middleware import SecurityHeadersMiddleware
 from modules.resources.di import provider as resources_provider
 from modules.resources.infrastructure.persistence.admin import ResourceAdmin
 from modules.resources.presentation.api import router as resources_router
 from shared.di import DBConnectionProvider
 from shared.presentation.api import router as shared_router
-from shared.presentation.exception_handlers import exception_handlers
 
 
 def register_routers(app: FastAPI) -> None:

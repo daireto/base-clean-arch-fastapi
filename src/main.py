@@ -1,5 +1,5 @@
-from app import create_default_app
-from config import settings
+from core.app import create_default_app
+from core.config import settings
 
 app = create_default_app()
 
