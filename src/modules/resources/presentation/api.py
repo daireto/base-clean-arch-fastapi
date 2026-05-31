@@ -2,7 +2,7 @@ from dishka import FromDishka
 from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter, Request, Response, status
 
-from config import settings
+from core.config import settings
 from modules.resources.application.use_cases.create_resource import (
     CreateResourceCommand,
     CreateResourceHandler,
