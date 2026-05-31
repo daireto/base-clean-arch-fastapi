@@ -10,7 +10,7 @@ from dishka import (
 )
 from fastapi.testclient import TestClient
 
-from app import create_app, register_middlewares
+from core.app import create_app, register_middlewares
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
