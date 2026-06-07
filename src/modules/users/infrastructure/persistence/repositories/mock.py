@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from odata_v4_query import ODataQueryOptions
-from pydantic import SecretStr
 
 from modules.users.domain.entities import User
 from modules.users.domain.interfaces.repositories import (
@@ -10,6 +9,7 @@ from modules.users.domain.interfaces.repositories import (
 from modules.users.infrastructure.persistence.models.mock import (
     MockUserModel,
 )
+from shared.utils.validation_types import HashedSecretStr
 
 
 class MockUserRepository(UserRepositoryABC):
@@ -30,18 +30,19 @@ class MockUserRepository(UserRepositoryABC):
 
         return [model.to_entity() for model in users]
 
-    async def create(self, user: User, password: SecretStr) -> User:
-        _ = password
-        model = MockUserModel.from_entity(user)
+    async def create(self, user: User, password: HashedSecretStr) -> User:
+        model = MockUserModel.from_entity(user, password)
         self._storage[model.id] = model
         return model.to_entity()
 
-    async def update(self, user: User) -> User | None:
+    async def update(
+        self, user: User, password: HashedSecretStr | None = None
+    ) -> User | None:
         model = self._storage.get(user.id)
         if not model:
             return None
 
-        model = MockUserModel.from_entity(user)
+        model = MockUserModel.from_entity(user, password or model.password)
         self._storage[user.id] = model
         model.id = user.id
 

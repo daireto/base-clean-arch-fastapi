@@ -5,6 +5,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 from modules.users.domain.entities import User
 from modules.users.domain.enums import Gender
+from shared.utils.validation_types import HashedSecretStr
 
 
 class MockUserModel(BaseModel):
@@ -13,6 +14,7 @@ class MockUserModel(BaseModel):
     fullname: str
     email: EmailStr
     gender: Gender
+    password: HashedSecretStr
     created_at: float = Field(default_factory=time.time)
     updated_at: float = Field(default_factory=time.time)
 
@@ -28,13 +30,14 @@ class MockUserModel(BaseModel):
         )
 
     @classmethod
-    def from_entity(cls, entity: User) -> 'MockUserModel':
+    def from_entity(cls, entity: User, password: HashedSecretStr) -> 'MockUserModel':
         return cls(
             id=entity.id,
             username=entity.username,
             fullname=entity.fullname,
             email=entity.email,
             gender=entity.gender,
+            password=password,
             created_at=entity.created_at,
             updated_at=entity.updated_at,
         )

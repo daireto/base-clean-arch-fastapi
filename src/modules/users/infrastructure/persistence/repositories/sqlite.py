@@ -2,7 +2,6 @@ from uuid import UUID
 
 from odata_v4_query import ODataQueryOptions
 from odata_v4_query.utils.sqlalchemy import apply_to_sqlalchemy_query
-from pydantic import SecretStr
 from sqlactive import DBConnection, execute
 
 from modules.users.domain.entities import User
@@ -12,6 +11,7 @@ from modules.users.domain.interfaces.repositories import (
 from modules.users.infrastructure.persistence.models.sqlite import (
     UserModel,
 )
+from shared.utils.validation_types import HashedSecretStr
 
 
 class SQLiteUserRepository(UserRepositoryABC):
@@ -29,12 +29,14 @@ class SQLiteUserRepository(UserRepositoryABC):
         users = result.scalars().all()
         return [user.to_entity() for user in users]
 
-    async def create(self, user: User, password: SecretStr) -> User:
+    async def create(self, user: User, password: HashedSecretStr) -> User:
         model = UserModel.from_entity(user, password)
         await model.save()
         return model.to_entity()
 
-    async def update(self, user: User) -> User | None:
+    async def update(
+        self, user: User, password: HashedSecretStr | None = None
+    ) -> User | None:
         model = await UserModel.get(user.id)
         if not model:
             return None
@@ -43,6 +45,8 @@ class SQLiteUserRepository(UserRepositoryABC):
         model.fullname = user.fullname
         model.email = user.email
         model.gender = user.gender
+        if password:
+            model.password = password.get_secret_value()
         await model.save()
 
         return model.to_entity()

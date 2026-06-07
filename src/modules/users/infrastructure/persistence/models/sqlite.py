@@ -1,12 +1,12 @@
 from uuid import UUID, uuid4
 
-from pydantic import SecretStr
 from sqlactive import ActiveRecordBaseModel
 from sqlalchemy import Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
 from modules.users.domain.entities import User
 from modules.users.domain.enums import Gender
+from shared.utils.validation_types import HashedSecretStr
 
 
 class BaseModel(ActiveRecordBaseModel):
@@ -35,7 +35,7 @@ class UserModel(BaseModel):
         )
 
     @classmethod
-    def from_entity(cls, entity: User, password: SecretStr) -> 'UserModel':
+    def from_entity(cls, entity: User, password: HashedSecretStr) -> 'UserModel':
         return cls(
             id=entity.id,
             username=entity.username,
