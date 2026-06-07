@@ -8,6 +8,7 @@ from shared.application.instrumentation import (
     RetrievalUseCaseInstrumentation,
     UpdateUseCaseInstrumentation,
 )
+from shared.domain.bases.error import Error
 
 
 class CreateUserInstrumentation(CreationUseCaseInstrumentation[User]):
@@ -19,6 +20,11 @@ class CreateUserInstrumentation(CreationUseCaseInstrumentation[User]):
 
     def error(self, error: Exception) -> None:
         self._logger.exception('Error creating user', exc_info=error)
+
+    def validation_error(self, error: Error) -> None:
+        self._logger.warning(
+            'Validation error creating user', detail=error.detail, extra=error.extra
+        )
 
 
 class DeleteUserInstrumentation(DeletionUseCaseInstrumentation):
