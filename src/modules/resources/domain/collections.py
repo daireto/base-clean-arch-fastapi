@@ -1,7 +1,8 @@
 from modules.resources.domain.entities import Resource
+from shared.domain.bases.collection import Collection
 
 
-class ResourceCollection(list[Resource]):
+class ResourceCollection(Collection[Resource]):
     def __init__(
         self,
         resources: list[Resource],
@@ -30,16 +31,6 @@ class ResourceCollection(list[Resource]):
             [resource for resource in self if resource.url.scheme_equals_to(scheme)]
         )
 
-    def get_created_before(self, timestamp: float) -> 'ResourceCollection':
-        return ResourceCollection(
-            [resource for resource in self if resource.created_at < timestamp]
-        )
-
-    def get_created_after(self, timestamp: float) -> 'ResourceCollection':
-        return ResourceCollection(
-            [resource for resource in self if resource.created_at > timestamp]
-        )
-
     def get_images(self) -> 'ResourceCollection':
         return self.filter_by_type('image')
 
@@ -57,8 +48,3 @@ class ResourceCollection(list[Resource]):
 
     def sort_by_name(self) -> 'ResourceCollection':
         return ResourceCollection(sorted(self, key=lambda resource: resource.name))
-
-    def sort_by_created_at(self) -> 'ResourceCollection':
-        return ResourceCollection(
-            sorted(self, key=lambda resource: resource.created_at)
-        )
