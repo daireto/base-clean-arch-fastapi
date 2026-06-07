@@ -1,8 +1,4 @@
-from typing import TypeVar
-
 from pydantic import BaseModel, ConfigDict, model_serializer
-
-T = TypeVar('T')
 
 
 class ValueObject[T](BaseModel):
