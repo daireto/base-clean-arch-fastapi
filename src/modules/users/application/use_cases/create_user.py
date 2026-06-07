@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, SecretStr
+from pydantic import BaseModel, EmailStr
 from simple_result import Err, Ok, Result
 
 from modules.users.domain.entities import User
@@ -8,6 +8,7 @@ from modules.users.domain.interfaces.repositories import (
 )
 from shared.application.instrumentation import CreationUseCaseInstrumentation
 from shared.application.interfaces.command_handler import CommandHandler
+from shared.utils.validation_types import HashedSecretStr
 
 
 class CreateUserCommand(BaseModel):
@@ -15,7 +16,7 @@ class CreateUserCommand(BaseModel):
     fullname: str
     email: EmailStr
     gender: Gender | str
-    password: SecretStr
+    password: HashedSecretStr
 
 
 class CreateUserHandler(CommandHandler):
