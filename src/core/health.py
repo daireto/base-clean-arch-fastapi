@@ -1,12 +1,5 @@
 from functools import lru_cache
 
-from pydantic import BaseModel, Field
-
-
-class ServerHealthResponse(BaseModel):
-    message: str = Field(..., description='"ok" if healthy, error message otherwise.')
-    healthy: bool = Field(..., description='Health status')
-
 
 class ServerHealth:
     def __init__(self) -> None:
@@ -30,12 +23,6 @@ class ServerHealth:
 
     def get_unhealthy_reason(self) -> str:
         return self._unhealthy_reason
-
-    def to_response(self) -> ServerHealthResponse:
-        return ServerHealthResponse(
-            message='ok' if self.is_healthy else self.get_unhealthy_reason(),
-            healthy=self.is_healthy,
-        )
 
     def __str__(self) -> str:
         return (
