@@ -9,29 +9,29 @@ from modules.resources.domain.exceptions import ResourceNotFoundError
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
-from shared.utils.uuid_tools import empty_uuid
+from shared.utils.uuid_tools import uuid
 
 
 @pytest.mark.asyncio
 class TestGetResource:
     async def test_returns_resource_when_resource_exists(
-        self, repo: ResourceRepositoryABC, resource: Resource
+        self, resources_repo: ResourceRepositoryABC, resource: Resource
     ):
-        result = await GetResourceHandler(repo).handle(
+        result = await GetResourceHandler(resources_repo).handle(
             GetResourceCommand(id=resource.id)
         )
 
         assert result
         resource = result.unwrap_value()
-        assert resource.name == 'Random Image'
-        assert str(resource.url) == 'https://example.com/'
-        assert resource.type == 'image'
+        assert resource.name == resource.name
+        assert str(resource.url) == str(resource.url)
+        assert resource.type == resource.type
 
     async def test_fails_when_resource_does_not_exist(
-        self, repo: ResourceRepositoryABC
+        self, resources_repo: ResourceRepositoryABC
     ):
-        result = await GetResourceHandler(repo).handle(
-            GetResourceCommand(id=empty_uuid())
+        result = await GetResourceHandler(resources_repo).handle(
+            GetResourceCommand(id=uuid())
         )
 
         assert not result

@@ -3,7 +3,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from modules.resources.domain.entities import Resource
-from shared.utils.uuid_tools import empty_uuid
+from shared.utils.uuid_tools import uuid
 
 
 class TestUpdateResource:
@@ -27,7 +27,7 @@ class TestUpdateResource:
         assert response_content['resource']['url'] == data['url']
         assert response_content['resource']['type'] == data['type']
 
-    @pytest.mark.usefixtures('repo')
+    @pytest.mark.usefixtures('resources_repo')
     def test_returns_200_when_resource_does_not_exist(
         self,
         client: TestClient,
@@ -38,7 +38,7 @@ class TestUpdateResource:
             'type': 'image',
         }
 
-        response = client.put(f'/resources/{empty_uuid()}', json=data)
+        response = client.put(f'/resources/{uuid()}', json=data)
 
         assert response.status_code == status.HTTP_200_OK
         assert response.json()['resource']['name'] == data['name']

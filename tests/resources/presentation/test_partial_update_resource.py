@@ -2,7 +2,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from modules.resources.domain.entities import Resource
-from shared.utils.uuid_tools import empty_uuid
+from shared.utils.uuid_tools import uuid
 
 
 class TestUpdateResource:
@@ -30,7 +30,7 @@ class TestUpdateResource:
             'url': 'https://example.com/',
         }
 
-        response = client.patch(f'/resources/{empty_uuid()}', json=data)
+        response = client.patch(f'/resources/{uuid()}', json=data)
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 

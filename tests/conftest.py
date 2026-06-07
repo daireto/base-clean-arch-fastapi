@@ -17,13 +17,38 @@ from modules.resources.domain.interfaces.repositories import (
 from modules.resources.infrastructure.persistence.repositories.mock import (
     MockResourceRepository,
 )
+from modules.users.domain.interfaces.repositories import (
+    UserRepositoryABC,
+)
+from modules.users.infrastructure.persistence.repositories.mock import (
+    MockUserRepository,
+)
+from shared.application.instrumentation import (
+    CreationUseCaseInstrumentation,
+    DeletionUseCaseInstrumentation,
+    ListingUseCaseInstrumentation,
+    RetrievalUseCaseInstrumentation,
+    UpdateUseCaseInstrumentation,
+    UseCaseInstrumentation,
+)
+
+
+def get_use_case_instrumentation() -> UseCaseInstrumentation:
+    return UseCaseInstrumentation()
+
+
+provider = Provider(scope=Scope.APP)
+provider.provide(MockResourceRepository, provides=ResourceRepositoryABC)
+provider.provide(MockUserRepository, provides=UserRepositoryABC)
+provider.provide(get_use_case_instrumentation, provides=CreationUseCaseInstrumentation)
+provider.provide(get_use_case_instrumentation, provides=DeletionUseCaseInstrumentation)
+provider.provide(get_use_case_instrumentation, provides=RetrievalUseCaseInstrumentation)
+provider.provide(get_use_case_instrumentation, provides=ListingUseCaseInstrumentation)
+provider.provide(get_use_case_instrumentation, provides=UpdateUseCaseInstrumentation)
 
 
 @pytest_asyncio.fixture(scope='session')
 async def container() -> AsyncGenerator[AsyncContainer]:
-    provider = Provider(scope=Scope.APP)
-    provider.provide(MockResourceRepository, provides=ResourceRepositoryABC)
-
     container = make_async_container(provider)
     yield container
     await container.close()
@@ -40,5 +65,10 @@ def client(container: AsyncContainer) -> Generator[TestClient]:
 
 
 @pytest_asyncio.fixture(scope='session')
-async def repo(container: AsyncContainer) -> MockResourceRepository:
+async def resources_repo(container: AsyncContainer) -> MockResourceRepository:
     return await container.get(ResourceRepositoryABC)  # type: ignore
+
+
+@pytest_asyncio.fixture(scope='session')
+async def users_repo(container: AsyncContainer) -> MockUserRepository:
+    return await container.get(UserRepositoryABC)  # type: ignore

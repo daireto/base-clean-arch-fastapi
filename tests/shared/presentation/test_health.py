@@ -3,11 +3,9 @@ from fastapi.testclient import TestClient
 
 
 def test_returns_200_with_health_details(client: TestClient):
-    # Act
     response = client.get('/health')
     health = response.json()
 
-    # Assert
     assert response.status_code == status.HTTP_200_OK
     assert health['message'] == 'ok'
     assert health['healthy']

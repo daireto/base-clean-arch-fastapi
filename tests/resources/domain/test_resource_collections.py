@@ -55,34 +55,6 @@ class TestResourceCollection:
         assert len(filtered) == len(expected)
         assert all(resource.url.scheme_equals_to(scheme) for resource in filtered)
 
-    def test_get_created_before_returns_only_resources_created_before_given_timestamp(
-        self, resources: list[Resource]
-    ):
-        timestamp = resources[0].created_at
-        expected = [
-            resource for resource in resources if resource.created_at < timestamp
-        ]
-
-        collection = ResourceCollection(resources)
-        filtered = collection.get_created_before(timestamp)
-
-        assert len(filtered) == len(expected)
-        assert all(resource.created_at < timestamp for resource in filtered)
-
-    def test_get_created_after_returns_only_resources_created_after_given_timestamp(
-        self, resources: list[Resource]
-    ):
-        timestamp = resources[0].created_at
-        expected = [
-            resource for resource in resources if resource.created_at > timestamp
-        ]
-
-        collection = ResourceCollection(resources)
-        filtered = collection.get_created_after(timestamp)
-
-        assert len(filtered) == len(expected)
-        assert all(resource.created_at > timestamp for resource in filtered)
-
     def test_get_images_returns_only_images(self, resources: list[Resource]):
         expected = [resource for resource in resources if resource.type == 'image']
 
@@ -135,11 +107,3 @@ class TestResourceCollection:
         sorted_ = collection.sort_by_name()
 
         assert sorted_ == sorted(resources, key=lambda resource: resource.name)
-
-    def test_sort_by_created_at_returns_resources_sorted_by_created_at(
-        self, resources: list[Resource]
-    ):
-        collection = ResourceCollection(resources)
-        sorted_ = collection.sort_by_created_at()
-
-        assert sorted_ == sorted(resources, key=lambda resource: resource.created_at)

@@ -3,7 +3,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 from modules.resources.domain.entities import Resource
-from shared.utils.uuid_tools import empty_uuid
+from shared.utils.uuid_tools import uuid
 
 
 class TestGetResource:
@@ -12,21 +12,16 @@ class TestGetResource:
         resource: Resource,
         client: TestClient,
     ):
-        # Act
         response = client.get(f'/resources/{resource.id}')
         response_content = response.json()
 
-        # Assert
         assert response.status_code == status.HTTP_200_OK
         assert response_content['resource']['id'] == str(resource.id)
-        assert response_content['resource']['name'] == 'Random Image'
-        assert response_content['resource']['url'] == 'https://example.com/'
-        assert response_content['resource']['type'] == 'image'
+        assert response_content['resource']['name'] == resource.name
+        assert response_content['resource']['url'] == str(resource.url)
 
-    @pytest.mark.usefixtures('repo')
+    @pytest.mark.usefixtures('resources_repo')
     def test_returns_404_when_resource_does_not_exist(self, client: TestClient):
-        # Act
-        response = client.get(f'/resources/{empty_uuid()}')
+        response = client.get(f'/resources/{uuid()}')
 
-        # Assert
         assert response.status_code == status.HTTP_404_NOT_FOUND

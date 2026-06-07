@@ -3,7 +3,7 @@ from fastapi import status
 from fastapi.testclient import TestClient
 
 
-@pytest.mark.usefixtures('repo')
+@pytest.mark.usefixtures('resources_repo')
 class TestCreateResource:
     def test_returns_201_when_resource_is_created(
         self,

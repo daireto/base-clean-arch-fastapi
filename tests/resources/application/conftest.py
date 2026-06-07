@@ -8,13 +8,13 @@ from modules.resources.infrastructure.persistence.repositories.mock import (
 
 
 @pytest.fixture
-def repo() -> MockResourceRepository:
+def resources_repo() -> MockResourceRepository:
     return MockResourceRepository()
 
 
 @pytest_asyncio.fixture
-async def resource(repo: MockResourceRepository) -> Resource:
-    return await repo.create(
+async def resource(resources_repo: MockResourceRepository) -> Resource:
+    return await resources_repo.create(
         Resource.Builder()
         .with_name('Random Image')
         .with_url('https://example.com/')
@@ -24,16 +24,16 @@ async def resource(repo: MockResourceRepository) -> Resource:
 
 
 @pytest_asyncio.fixture
-async def resources(repo: MockResourceRepository) -> list[Resource]:
+async def resources(resources_repo: MockResourceRepository) -> list[Resource]:
     return [
-        await repo.create(
+        await resources_repo.create(
             Resource.Builder()
             .with_name('Random Image')
             .with_url('https://example.com/')
             .with_type('image')
             .build()
         ),
-        await repo.create(
+        await resources_repo.create(
             Resource.Builder()
             .with_name('Random Image')
             .with_url('https://example.org/')

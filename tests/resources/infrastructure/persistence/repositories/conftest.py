@@ -29,13 +29,13 @@ async def conn() -> AsyncGenerator[DBConnection]:
 
 
 @pytest_asyncio.fixture
-async def repo(conn: DBConnection) -> ResourceRepositoryABC:
+async def resources_repo(conn: DBConnection) -> ResourceRepositoryABC:
     return SQLiteResourceRepository(conn)
 
 
 @pytest_asyncio.fixture
-async def resource_model(repo: ResourceRepositoryABC) -> ResourceModel:
-    _ = repo
+async def resource_model(resources_repo: ResourceRepositoryABC) -> ResourceModel:
+    _ = resources_repo
     return await ResourceModel.from_entity(
         Resource.Builder()
         .with_name('Random Image')
@@ -46,8 +46,8 @@ async def resource_model(repo: ResourceRepositoryABC) -> ResourceModel:
 
 
 @pytest_asyncio.fixture
-async def resource_models(repo: ResourceRepositoryABC) -> list[ResourceModel]:
-    _ = repo
+async def resource_models(resources_repo: ResourceRepositoryABC) -> list[ResourceModel]:
+    _ = resources_repo
     return [
         await ResourceModel.from_entity(
             Resource.Builder()

@@ -13,15 +13,17 @@ from modules.resources.domain.interfaces.repositories import (
 
 @pytest.mark.asyncio
 class TestCreateResource:
-    async def test_returns_created_resource(self, repo: ResourceRepositoryABC):
-        await CreateResourceHandler(repo).handle(
+    async def test_returns_created_resource(
+        self, resources_repo: ResourceRepositoryABC
+    ):
+        await CreateResourceHandler(resources_repo).handle(
             CreateResourceCommand(
                 name='Random Image',
                 url='https://example.com/',
                 type='image',
             )
         )
-        resources = await repo.all(
+        resources = await resources_repo.all(
             odata_options=ODataQueryOptions(top=100),
         )
 
@@ -29,10 +31,10 @@ class TestCreateResource:
         assert str(resources[0].url) == 'https://example.com/'
 
     async def test_raises_when_resource_url_is_invalid(
-        self, repo: ResourceRepositoryABC
+        self, resources_repo: ResourceRepositoryABC
     ):
         with pytest.raises(ValidationError):
-            await CreateResourceHandler(repo).handle(
+            await CreateResourceHandler(resources_repo).handle(
                 CreateResourceCommand(
                     name='Random Image',
                     url='not-a-valid-url',
@@ -41,10 +43,10 @@ class TestCreateResource:
             )
 
     async def test_raises_when_resource_type_is_not_supported(
-        self, repo: ResourceRepositoryABC
+        self, resources_repo: ResourceRepositoryABC
     ):
         with pytest.raises(ValidationError):
-            await CreateResourceHandler(repo).handle(
+            await CreateResourceHandler(resources_repo).handle(
                 CreateResourceCommand(
                     name='Random Image',
                     url='https://example.com/',

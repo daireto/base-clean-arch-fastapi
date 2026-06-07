@@ -9,17 +9,17 @@ from modules.resources.domain.entities import Resource
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
-from shared.utils.uuid_tools import empty_uuid
+from shared.utils.uuid_tools import uuid
 
 
 @pytest.mark.asyncio
 class TestUpdateResource:
     async def test_returns_updated_resource_when_resource_exists(
         self,
-        repo: ResourceRepositoryABC,
+        resources_repo: ResourceRepositoryABC,
         resource: Resource,
     ):
-        result = await UpdateResourceHandler(repo).handle(
+        result = await UpdateResourceHandler(resources_repo).handle(
             UpdateResourceCommand(
                 id=resource.id,
                 name='Random Text',
@@ -36,11 +36,11 @@ class TestUpdateResource:
         assert updated.type == 'text'
 
     async def test_returns_created_resource_when_resource_does_not_exist(
-        self, repo: ResourceRepositoryABC
+        self, resources_repo: ResourceRepositoryABC
     ):
-        result = await UpdateResourceHandler(repo).handle(
+        result = await UpdateResourceHandler(resources_repo).handle(
             UpdateResourceCommand(
-                id=empty_uuid(),
+                id=uuid(),
                 name='Random Image',
                 url='https://example.com/',
                 type='image',
@@ -56,11 +56,11 @@ class TestUpdateResource:
 
     async def test_raises_when_resource_url_is_invalid(
         self,
-        repo: ResourceRepositoryABC,
+        resources_repo: ResourceRepositoryABC,
         resource: Resource,
     ):
         with pytest.raises(ValidationError):
-            await UpdateResourceHandler(repo).handle(
+            await UpdateResourceHandler(resources_repo).handle(
                 UpdateResourceCommand(
                     id=resource.id,
                     name='Random Image',
@@ -71,11 +71,11 @@ class TestUpdateResource:
 
     async def test_raises_when_resource_type_is_not_supported(
         self,
-        repo: ResourceRepositoryABC,
+        resources_repo: ResourceRepositoryABC,
         resource: Resource,
     ):
         with pytest.raises(ValidationError):
-            await UpdateResourceHandler(repo).handle(
+            await UpdateResourceHandler(resources_repo).handle(
                 UpdateResourceCommand(
                     id=resource.id,
                     name='Random Image',
