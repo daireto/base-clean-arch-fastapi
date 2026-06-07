@@ -1,7 +1,8 @@
 from dishka.integrations.fastapi import DishkaRoute
 from fastapi import APIRouter
 
-from core.health import ServerHealthResponse, server_health
+from core.health import server_health
+from shared.presentation.dtos import ServerHealthResponse
 
 router = APIRouter(
     prefix='/health',
@@ -12,4 +13,9 @@ router = APIRouter(
 
 @router.get('/')
 def read_health() -> ServerHealthResponse:
-    return server_health.to_response()
+    return ServerHealthResponse(
+        message='ok'
+        if server_health.is_healthy
+        else server_health.get_unhealthy_reason(),
+        healthy=server_health.is_healthy,
+    )
