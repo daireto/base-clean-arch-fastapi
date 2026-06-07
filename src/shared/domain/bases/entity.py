@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Self
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, SecretStr
 
 from shared.domain.bases.value_object import ValueObject
 
@@ -13,7 +13,9 @@ class Entity(BaseModel, ABC):
     created_at: float = Field(default_factory=time.time)
     updated_at: float = Field(default_factory=time.time)
 
-    def update(self, data: BaseModel | dict[str, Any]):  # noqa: ANN201
+    def update(
+        self, data: BaseModel | dict[str, Any], exclude_secrets: bool = False
+    ) -> Self:
         if isinstance(data, BaseModel):
             dumped_data = data.model_dump(exclude_unset=True)
         else:
@@ -26,7 +28,12 @@ class Entity(BaseModel, ABC):
         for key, value in updated_data.items():
             if not hasattr(self, key):
                 continue
+
             attr = getattr(self, key)
+
+            if exclude_secrets and isinstance(attr, SecretStr):
+                continue
+
             if isinstance(attr, ValueObject):
                 new_model[key] = attr.__class__(value=value)
             else:
