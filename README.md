@@ -81,12 +81,7 @@ These are some of the main technologies used in this project:
 │   │       │   └── value_objects.py
 │   │       ├── infrastructure/ # Infrastructure layer
 │   │       │   ├── instrumentation/
-│   │       │   │   └── use_cases/
-│   │       │   │       ├── create_*.py
-│   │       │   │       ├── delete_*.py
-│   │       │   │       ├── get_*.py
-│   │       │   │       ├── list_*.py
-│   │       │   │       └── update_*.py
+│   │       │   │   └── use_cases.py
 │   │       │   └── persistence/ # Persistence implementations
 │   │       │       ├── models/
 │   │       │       │   ├── mock.py
@@ -101,11 +96,12 @@ These are some of the main technologies used in this project:
 │   │       └── di.py           # Dependency injection configuration
 │   ├── shared/                 # Shared utilities and common code
 │   │   ├── application/
-│   │   │   └── interfaces/
-│   │   │       ├── command_handler.py
-│   │   │       └── instrumentation.py
+│   │   │   ├── interfaces/
+│   │   │   │   └── command_handler.py
+│   │   │   └── instrumentation.py
 │   │   ├── domain/
 │   │   │   ├── bases/
+│   │   │   │   ├── collection.py
 │   │   │   │   ├── entity.py
 │   │   │   │   ├── error.py
 │   │   │   │   └── value_object.py
