@@ -1,6 +1,6 @@
 import time
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Self
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field
@@ -38,9 +38,13 @@ class Entity(BaseModel, ABC):
         def __init__(self) -> None:
             self._id = uuid4()
 
-        def with_id(self, id_: UUID):  # noqa: ANN201
+        def with_id(self, id_: UUID) -> Self:
             self._id = id_
             return self
 
         @abstractmethod
         def build(self): ...  # noqa: ANN201
+
+
+class MockEntity(Entity):
+    foo: str
