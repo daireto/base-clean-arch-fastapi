@@ -3,6 +3,7 @@ from uuid import UUID
 from structlog.stdlib import BoundLogger
 
 from shared.domain.bases.entity import Entity
+from shared.domain.bases.error import Error
 
 
 class UseCaseInstrumentation:
@@ -22,6 +23,9 @@ class UseCaseInstrumentation:
         pass
 
     def error(self, error: Exception) -> None:
+        pass
+
+    def validation_error(self, error: Error) -> None:
         pass
 
     def not_found(self, *args, **kwargs) -> None:
