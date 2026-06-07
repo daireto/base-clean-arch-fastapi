@@ -7,27 +7,24 @@ from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
 from modules.resources.domain.value_objects import ResourceUrl
-from modules.resources.infrastructure.instrumentation.use_cases.create_resource import (
-    CreateResourceInstrumentation,
-)
+from shared.application.instrumentation import CreationUseCaseInstrumentation
 from shared.application.interfaces.command_handler import CommandHandler
-from shared.application.interfaces.instrumentation import NoUseCaseInstrumentation
 
 
 class CreateResourceCommand(BaseModel):
     name: str
-    url: str | HttpUrl
-    type: str | MediaType
+    url: HttpUrl | str
+    type: MediaType | str
 
 
 class CreateResourceHandler(CommandHandler):
     def __init__(
         self,
         resource_repository: ResourceRepositoryABC,
-        instrumentation: CreateResourceInstrumentation | None = None,
+        instrumentation: CreationUseCaseInstrumentation[Resource] | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or NoUseCaseInstrumentation()
+        self._instrumentation = instrumentation or CreationUseCaseInstrumentation()
 
     async def handle(
         self,

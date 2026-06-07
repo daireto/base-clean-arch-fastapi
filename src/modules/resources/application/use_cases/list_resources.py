@@ -2,14 +2,12 @@ from pydantic import BaseModel, ConfigDict
 from simple_result import Err, Ok, Result
 
 from modules.resources.domain.collections import ResourceCollection
+from modules.resources.domain.entities import Resource
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
-from modules.resources.infrastructure.instrumentation.use_cases.list_resources import (
-    ListResourcesInstrumentation,
-)
+from shared.application.instrumentation import ListingUseCaseInstrumentation
 from shared.application.interfaces.command_handler import CommandHandler
-from shared.application.interfaces.instrumentation import NoUseCaseInstrumentation
 from shared.helpers.odata_helper import ODataHelper
 
 
@@ -23,10 +21,10 @@ class ListResourcesHandler(CommandHandler):
     def __init__(
         self,
         resource_repository: ResourceRepositoryABC,
-        instrumentation: ListResourcesInstrumentation | None = None,
+        instrumentation: ListingUseCaseInstrumentation[Resource] | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or NoUseCaseInstrumentation()
+        self._instrumentation = instrumentation or ListingUseCaseInstrumentation()
 
     async def handle(
         self,

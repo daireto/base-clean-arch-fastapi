@@ -8,11 +8,8 @@ from modules.resources.domain.exceptions import ResourceNotFoundError
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
-from modules.resources.infrastructure.instrumentation.use_cases.get_resource import (
-    GetResourceInstrumentation,
-)
+from shared.application.instrumentation import RetrievalUseCaseInstrumentation
 from shared.application.interfaces.command_handler import CommandHandler
-from shared.application.interfaces.instrumentation import NoUseCaseInstrumentation
 
 
 class GetResourceCommand(BaseModel):
@@ -23,10 +20,10 @@ class GetResourceHandler(CommandHandler):
     def __init__(
         self,
         resource_repository: ResourceRepositoryABC,
-        instrumentation: GetResourceInstrumentation | None = None,
+        instrumentation: RetrievalUseCaseInstrumentation[Resource] | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or NoUseCaseInstrumentation()
+        self._instrumentation = instrumentation or RetrievalUseCaseInstrumentation()
 
     async def handle(self, command: GetResourceCommand) -> Result[Resource, Exception]:
         self._instrumentation.before(command.id)

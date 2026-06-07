@@ -10,35 +10,32 @@ from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
 from modules.resources.domain.value_objects import ResourceUrl
-from modules.resources.infrastructure.instrumentation.use_cases.update_resource import (
-    UpdateResourceInstrumentation,
-)
+from shared.application.instrumentation import UpdateUseCaseInstrumentation
 from shared.application.interfaces.command_handler import CommandHandler
-from shared.application.interfaces.instrumentation import NoUseCaseInstrumentation
 
 
 class UpdateResourceCommand(BaseModel):
     id: UUID
     name: str
-    url: str | HttpUrl
-    type: str | MediaType
+    url: HttpUrl | str
+    type: MediaType | str
 
 
 class PartialUpdateResourceCommand(BaseModel):
     id: UUID
-    name: str | None = None
-    url: str | HttpUrl | None = None
-    type: str | MediaType | None = None
+    name: None | str = None
+    url: HttpUrl | str | None = None
+    type: MediaType | str | None = None
 
 
 class UpdateResourceHandler(CommandHandler):
     def __init__(
         self,
         resource_repository: ResourceRepositoryABC,
-        instrumentation: UpdateResourceInstrumentation | None = None,
+        instrumentation: UpdateUseCaseInstrumentation[Resource] | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or NoUseCaseInstrumentation()
+        self._instrumentation = instrumentation or UpdateUseCaseInstrumentation()
 
     async def handle(
         self,
@@ -47,7 +44,7 @@ class UpdateResourceHandler(CommandHandler):
         resource = Resource(
             id=command.id,
             name=command.name,
-            url=ResourceUrl(command.url),  # type: ignore
+            url=ResourceUrl(value=command.url),  # type: ignore
             type=command.type,  # type: ignore
         )
         self._instrumentation.before(resource)

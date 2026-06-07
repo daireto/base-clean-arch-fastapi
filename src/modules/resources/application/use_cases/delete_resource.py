@@ -6,11 +6,8 @@ from simple_result import Err, Ok, Result
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
-from modules.resources.infrastructure.instrumentation.use_cases.delete_resource import (
-    DeleteResourceInstrumentation,
-)
+from shared.application.instrumentation import DeletionUseCaseInstrumentation
 from shared.application.interfaces.command_handler import CommandHandler
-from shared.application.interfaces.instrumentation import NoUseCaseInstrumentation
 
 
 class DeleteResourceCommand(BaseModel):
@@ -21,10 +18,10 @@ class DeleteResourceHandler(CommandHandler):
     def __init__(
         self,
         resource_repository: ResourceRepositoryABC,
-        instrumentation: DeleteResourceInstrumentation | None = None,
+        instrumentation: DeletionUseCaseInstrumentation | None = None,
     ) -> None:
         self._resource_repository = resource_repository
-        self._instrumentation = instrumentation or NoUseCaseInstrumentation()
+        self._instrumentation = instrumentation or DeletionUseCaseInstrumentation()
 
     async def handle(self, command: DeleteResourceCommand) -> Result[None, Exception]:
         self._instrumentation.before(command.id)
