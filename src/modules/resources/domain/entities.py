@@ -1,3 +1,5 @@
+from typing import Self
+
 from pydantic import Field, HttpUrl
 
 from modules.resources.domain.enums import MediaType
@@ -21,15 +23,15 @@ class Resource(Entity):
             self._url = None
             self._type = None
 
-        def with_name(self, name: str) -> 'Resource.Builder':
+        def with_name(self, name: str) -> Self:
             self._name = name
             return self
 
-        def with_url(self, url: str | HttpUrl) -> 'Resource.Builder':
+        def with_url(self, url: str | HttpUrl) -> Self:
             self._url = url
             return self
 
-        def with_type(self, type_: str | MediaType) -> 'Resource.Builder':
+        def with_type(self, type_: str | MediaType) -> Self:
             self._type = type_
             return self
 
