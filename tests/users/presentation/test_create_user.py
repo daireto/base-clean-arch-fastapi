@@ -14,6 +14,7 @@ class TestCreateUser:
             'fullname': 'Test User 1',
             'email': 'testuser1@example.com',
             'gender': 'male',
+            'role': 'user',
             'password': 'password123',
         }
 
@@ -29,6 +30,7 @@ class TestCreateUser:
             'fullname': 'Test User 1',
             'email': 'not-a-valid-email',
             'gender': 'male',
+            'role': 'user',
             'password': 'password123',
         }
 
@@ -42,6 +44,21 @@ class TestCreateUser:
             'fullname': 'Test User 1',
             'email': 'testuser1@example.com',
             'gender': 'not-a-valid-gender',
+            'role': 'user',
+            'password': 'password123',
+        }
+
+        response = client.post('/users/', json=data)
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+
+    def test_returns_422_when_user_role_is_not_supported(self, client: TestClient):
+        data = {
+            'username': 'testuser1',
+            'fullname': 'Test User 1',
+            'email': 'testuser1@example.com',
+            'gender': 'male',
+            'role': 'not-a-valid-role',
             'password': 'password123',
         }
 
@@ -55,6 +72,7 @@ class TestCreateUser:
             'fullname': 'Test User 1',
             'email': 'testuser1@example.com',
             'gender': 'male',
+            'role': 'user',
             'password': 'short',
         }
 
@@ -68,6 +86,7 @@ class TestCreateUser:
             'fullname': 'Test User 1',
             'email': 'testuser1@example.com',
             'gender': 'male',
+            'role': 'user',
             'password': 'a' * 129,
         }
 

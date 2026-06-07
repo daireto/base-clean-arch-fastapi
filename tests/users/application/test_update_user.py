@@ -27,6 +27,7 @@ class TestUpdateUser:
                 fullname='Test User',
                 email='testuser1@example.com',
                 gender='male',
+                role='user',
             )
         )
 
@@ -46,6 +47,7 @@ class TestUpdateUser:
                 fullname='Test User 2',
                 email='testuser2@example.com',
                 gender='female',
+                role='user',
                 password=HashedSecretStr('password123'),
             )
         )
@@ -71,6 +73,7 @@ class TestUpdateUser:
                     fullname='Test User',
                     email='not-a-valid-email',
                     gender='male',
+                    role='user',
                 )
             )
 
@@ -87,5 +90,23 @@ class TestUpdateUser:
                     fullname='Test User',
                     email='testuser1@example.com',
                     gender='not-a-valid-gender',
+                    role='user',
+                )
+            )
+
+    async def test_raises_when_user_role_is_not_supported(
+        self,
+        users_repo: UserRepositoryABC,
+        user: User,
+    ):
+        with pytest.raises(ValidationError):
+            await UpdateUserHandler(users_repo).handle(
+                UpdateUserCommand(
+                    id=user.id,
+                    username='testuser1',
+                    fullname='Test User',
+                    email='testuser1@example.com',
+                    gender='male',
+                    role='not-a-valid-role',
                 )
             )

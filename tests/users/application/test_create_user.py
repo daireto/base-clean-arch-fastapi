@@ -21,6 +21,7 @@ class TestCreateUser:
                 fullname='Test User 1',
                 email='testuser1@example.com',
                 gender='male',
+                role='user',
                 password=HashedSecretStr('password123'),
             )
         )
@@ -41,6 +42,7 @@ class TestCreateUser:
                     fullname='Test User 1',
                     email='not-a-valid-email',
                     gender='male',
+                    role='user',
                     password=HashedSecretStr('password123'),
                 )
             )
@@ -55,6 +57,22 @@ class TestCreateUser:
                     fullname='Test User 1',
                     email='testuser1@example.com',
                     gender='not-a-valid-gender',
+                    role='user',
+                    password=HashedSecretStr('password123'),
+                )
+            )
+
+    async def test_raises_when_user_role_is_not_supported(
+        self, users_repo: UserRepositoryABC
+    ):
+        with pytest.raises(ValidationError):
+            await CreateUserHandler(users_repo).handle(
+                CreateUserCommand(
+                    username='testuser1',
+                    fullname='Test User 1',
+                    email='testuser1@example.com',
+                    gender='male',
+                    role='not-a-valid-role',
                     password=HashedSecretStr('password123'),
                 )
             )

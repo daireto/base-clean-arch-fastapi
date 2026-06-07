@@ -56,3 +56,21 @@ class TestUserCollection:
 
         assert len(females) == len(expected)
         assert all(user.gender == 'female' for user in females)
+
+    def test_get_standard_users_returns_only_standard_users(self, users: list[User]):
+        expected = [user for user in users if user.role == 'user']
+
+        collection = UserCollection(users)
+        standard_users = collection.get_standard_users()
+
+        assert len(standard_users) == len(expected)
+        assert all(user.role == 'user' for user in standard_users)
+
+    def test_get_admin_users_returns_only_admins(self, users: list[User]):
+        expected = [user for user in users if user.role == 'admin']
+
+        collection = UserCollection(users)
+        admins = collection.get_admin_users()
+
+        assert len(admins) == len(expected)
+        assert all(user.role == 'admin' for user in admins)

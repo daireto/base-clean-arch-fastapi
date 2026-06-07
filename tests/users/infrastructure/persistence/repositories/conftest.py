@@ -43,6 +43,7 @@ async def user_model(users_repo: UserRepositoryABC) -> UserModel:
         .with_fullname('Test User 1')
         .with_email('testuser1@example.com')
         .with_gender('male')
+        .with_role('user')
         .build(),
         password=HashedSecretStr('password123'),
     ).save()
@@ -58,6 +59,7 @@ async def user_models(users_repo: UserRepositoryABC) -> list[UserModel]:
             .with_fullname('Test User 1')
             .with_email('testuser1@example.com')
             .with_gender('male')
+            .with_role('user')
             .build(),
             password=HashedSecretStr('password123'),
         ).save(),
@@ -67,6 +69,7 @@ async def user_models(users_repo: UserRepositoryABC) -> list[UserModel]:
             .with_fullname('Test User 2')
             .with_email('testuser2@example.com')
             .with_gender('female')
+            .with_role('admin')
             .build(),
             password=HashedSecretStr('password123'),
         ).save(),

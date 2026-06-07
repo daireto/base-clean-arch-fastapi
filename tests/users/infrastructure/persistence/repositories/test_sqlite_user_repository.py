@@ -48,6 +48,7 @@ class TestSQLiteUsersRepository:
             .with_fullname('Test User 1')
             .with_email('testuser1@example.com')
             .with_gender('male')
+            .with_role('user')
             .build(),
             password=HashedSecretStr('password123'),
         )
@@ -57,6 +58,7 @@ class TestSQLiteUsersRepository:
         assert user.fullname == 'Test User 1'
         assert user.email == 'testuser1@example.com'
         assert user.gender == 'male'
+        assert user.role == 'user'
         assert user.created_at == user.updated_at
 
     async def test_update_returns_updated_user_when_user_exists(
@@ -69,6 +71,7 @@ class TestSQLiteUsersRepository:
             .with_fullname('Test User 1')
             .with_email('updateduser@example.com')
             .with_gender('female')
+            .with_role('admin')
             .build(),
         )
 
@@ -85,6 +88,7 @@ class TestSQLiteUsersRepository:
             .with_fullname('Nonexistent User')
             .with_email('nonexistentuser@example.com')
             .with_gender('male')
+            .with_role('user')
             .build(),
         )
 

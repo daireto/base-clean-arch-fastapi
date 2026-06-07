@@ -17,6 +17,7 @@ class TestUpdateUser:
             'fullname': 'Test User Updated',
             'email': 'testuser1@example.com',
             'gender': 'male',
+            'role': 'user',
         }
 
         response = client.put(f'/users/{user.id}', json=data)
@@ -28,6 +29,7 @@ class TestUpdateUser:
         assert response_content['user']['username'] == data['username']
         assert response_content['user']['email'] == data['email']
         assert response_content['user']['gender'] == data['gender']
+        assert response_content['user']['role'] == data['role']
 
     @pytest.mark.usefixtures('users_repo')
     def test_returns_200_when_user_does_not_exist(
@@ -39,6 +41,7 @@ class TestUpdateUser:
             'fullname': 'Test User Updated',
             'email': 'testuser1@example.com',
             'gender': 'male',
+            'role': 'user',
             'password': 'password123',
         }
 
@@ -49,6 +52,7 @@ class TestUpdateUser:
         assert response.json()['user']['fullname'] == data['fullname']
         assert response.json()['user']['email'] == data['email']
         assert response.json()['user']['gender'] == data['gender']
+        assert response.json()['user']['role'] == data['role']
 
     def test_returns_422_when_user_does_not_exist_and_password_is_not_provided(
         self,
@@ -59,6 +63,7 @@ class TestUpdateUser:
             'fullname': 'Test User Updated',
             'email': 'testuser1@example.com',
             'gender': 'male',
+            'role': 'user',
         }
 
         response = client.put(f'/users/{uuid()}', json=data)
@@ -75,6 +80,7 @@ class TestUpdateUser:
             'fullname': 'Test User Updated',
             'email': 'not-a-valid-email',
             'gender': 'male',
+            'role': 'user',
         }
 
         response = client.put(f'/users/{user.id}', json=data)
@@ -91,6 +97,24 @@ class TestUpdateUser:
             'fullname': 'Test User Updated',
             'email': 'testuser1@example.com',
             'gender': 'not-a-valid-gender',
+            'role': 'user',
+        }
+
+        response = client.put(f'/users/{user.id}', json=data)
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+
+    def test_returns_422_when_user_role_is_not_supported(
+        self,
+        user: User,
+        client: TestClient,
+    ):
+        data = {
+            'username': 'testuser1',
+            'fullname': 'Test User Updated',
+            'email': 'testuser1@example.com',
+            'gender': 'male',
+            'role': 'not-a-valid-role',
         }
 
         response = client.put(f'/users/{user.id}', json=data)
@@ -107,6 +131,7 @@ class TestUpdateUser:
             'fullname': 'Test User Updated',
             'email': 'testuser1@example.com',
             'gender': 'male',
+            'role': 'user',
             'password': 'short',
         }
 
@@ -124,6 +149,7 @@ class TestUpdateUser:
             'fullname': 'Test User Updated',
             'email': 'testuser1@example.com',
             'gender': 'male',
+            'role': 'user',
             'password': 'a' * 129,
         }
 

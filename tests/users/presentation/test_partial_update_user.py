@@ -56,3 +56,16 @@ class TestUpdateUser:
         response = client.patch(f'/users/{user.id}', json=data)
 
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+
+    def test_returns_422_when_user_role_is_not_supported(
+        self,
+        user: User,
+        client: TestClient,
+    ):
+        data = {
+            'role': 'not-a-valid-role',
+        }
+
+        response = client.patch(f'/users/{user.id}', json=data)
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
