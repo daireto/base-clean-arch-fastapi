@@ -50,7 +50,7 @@ class TestUpdateUser:
         assert response.json()['user']['email'] == data['email']
         assert response.json()['user']['gender'] == data['gender']
 
-    def test_returns_404_when_user_does_not_exist_and_password_is_not_provided(
+    def test_returns_422_when_user_does_not_exist_and_password_is_not_provided(
         self,
         client: TestClient,
     ):
@@ -63,7 +63,7 @@ class TestUpdateUser:
 
         response = client.put(f'/users/{uuid()}', json=data)
 
-        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
 
     def test_returns_422_when_user_email_is_invalid(
         self,

@@ -1,11 +1,11 @@
 import pytest
 import pytest_asyncio
-from pydantic import SecretStr
 
 from modules.users.domain.entities import User
 from modules.users.infrastructure.persistence.repositories.mock import (
     MockUserRepository,
 )
+from shared.utils.validation_types import HashedSecretStr
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ async def user(users_repo: MockUserRepository) -> User:
         .with_email('testuser1@example.com')
         .with_gender('male')
         .build(),
-        password=SecretStr('password123'),
+        password=HashedSecretStr('password123'),
     )
 
 
@@ -36,7 +36,7 @@ async def users(users_repo: MockUserRepository) -> list[User]:
             .with_email('testuser1@example.com')
             .with_gender('male')
             .build(),
-            password=SecretStr('password123'),
+            password=HashedSecretStr('password123'),
         ),
         await users_repo.create(
             User.Builder()
@@ -45,6 +45,6 @@ async def users(users_repo: MockUserRepository) -> list[User]:
             .with_email('testuser2@example.com')
             .with_gender('female')
             .build(),
-            password=SecretStr('password123'),
+            password=HashedSecretStr('password123'),
         ),
     ]

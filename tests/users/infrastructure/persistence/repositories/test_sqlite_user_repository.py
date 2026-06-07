@@ -1,6 +1,5 @@
 import pytest
 from odata_v4_query import ODataQueryOptions
-from pydantic import SecretStr
 
 from modules.users.domain.entities import User
 from modules.users.domain.interfaces.repositories import (
@@ -11,6 +10,7 @@ from modules.users.infrastructure.persistence.models.sqlite import (
 )
 from shared.helpers.odata_helper import ODataHelper
 from shared.utils.uuid_tools import uuid
+from shared.utils.validation_types import HashedSecretStr
 
 
 @pytest.mark.asyncio
@@ -49,7 +49,7 @@ class TestSQLiteUsersRepository:
             .with_email('testuser1@example.com')
             .with_gender('male')
             .build(),
-            password=SecretStr('password123'),
+            password=HashedSecretStr('password123'),
         )
         user = await UserModel.one()
 

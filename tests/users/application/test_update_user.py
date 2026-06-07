@@ -1,5 +1,5 @@
 import pytest
-from pydantic import SecretStr, ValidationError
+from pydantic import ValidationError
 
 from modules.users.application.use_cases.update_user import (
     UpdateUserCommand,
@@ -10,6 +10,7 @@ from modules.users.domain.interfaces.repositories import (
     UserRepositoryABC,
 )
 from shared.utils.uuid_tools import uuid
+from shared.utils.validation_types import HashedSecretStr
 
 
 @pytest.mark.asyncio
@@ -45,7 +46,7 @@ class TestUpdateUser:
                 fullname='Test User 2',
                 email='testuser2@example.com',
                 gender='female',
-                password=SecretStr('password123'),
+                password=HashedSecretStr('password123'),
             )
         )
 

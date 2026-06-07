@@ -1,7 +1,6 @@
 from collections.abc import AsyncGenerator
 
 import pytest_asyncio
-from pydantic import SecretStr
 from sqlactive import DBConnection
 
 from modules.users.domain.entities import User
@@ -15,6 +14,7 @@ from modules.users.infrastructure.persistence.models.sqlite import (
 from modules.users.infrastructure.persistence.repositories.sqlite import (
     SQLiteUserRepository,
 )
+from shared.utils.validation_types import HashedSecretStr
 
 
 @pytest_asyncio.fixture
@@ -44,7 +44,7 @@ async def user_model(users_repo: UserRepositoryABC) -> UserModel:
         .with_email('testuser1@example.com')
         .with_gender('male')
         .build(),
-        password=SecretStr('password123'),
+        password=HashedSecretStr('password123'),
     ).save()
 
 
@@ -59,7 +59,7 @@ async def user_models(users_repo: UserRepositoryABC) -> list[UserModel]:
             .with_email('testuser1@example.com')
             .with_gender('male')
             .build(),
-            password=SecretStr('password123'),
+            password=HashedSecretStr('password123'),
         ).save(),
         await UserModel.from_entity(
             User.Builder()
@@ -68,6 +68,6 @@ async def user_models(users_repo: UserRepositoryABC) -> list[UserModel]:
             .with_email('testuser2@example.com')
             .with_gender('female')
             .build(),
-            password=SecretStr('password123'),
+            password=HashedSecretStr('password123'),
         ).save(),
     ]

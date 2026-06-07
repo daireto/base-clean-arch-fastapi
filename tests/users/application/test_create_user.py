@@ -1,6 +1,6 @@
 import pytest
 from odata_v4_query import ODataQueryOptions
-from pydantic import SecretStr, ValidationError
+from pydantic import ValidationError
 
 from modules.users.application.use_cases.create_user import (
     CreateUserCommand,
@@ -9,6 +9,7 @@ from modules.users.application.use_cases.create_user import (
 from modules.users.domain.interfaces.repositories import (
     UserRepositoryABC,
 )
+from shared.utils.validation_types import HashedSecretStr
 
 
 @pytest.mark.asyncio
@@ -20,7 +21,7 @@ class TestCreateUser:
                 fullname='Test User 1',
                 email='testuser1@example.com',
                 gender='male',
-                password=SecretStr('password123'),
+                password=HashedSecretStr('password123'),
             )
         )
         users = await users_repo.all(
@@ -40,7 +41,7 @@ class TestCreateUser:
                     fullname='Test User 1',
                     email='not-a-valid-email',
                     gender='male',
-                    password=SecretStr('password123'),
+                    password=HashedSecretStr('password123'),
                 )
             )
 
@@ -54,6 +55,6 @@ class TestCreateUser:
                     fullname='Test User 1',
                     email='testuser1@example.com',
                     gender='not-a-valid-gender',
-                    password=SecretStr('password123'),
+                    password=HashedSecretStr('password123'),
                 )
             )
