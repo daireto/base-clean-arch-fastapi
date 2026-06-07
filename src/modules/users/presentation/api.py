@@ -108,6 +108,7 @@ async def create_user(
         fullname=dto.fullname,
         email=dto.email,
         gender=dto.gender,
+        role=dto.role,
         password=dto.password,
     )
     handler = CreateUserHandler(
@@ -134,6 +135,7 @@ async def update_user(
         fullname=dto.fullname,
         email=dto.email,
         gender=dto.gender,
+        role=dto.role,
         password=dto.password,
     )
     handler = UpdateUserHandler(

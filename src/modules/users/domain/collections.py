@@ -25,11 +25,20 @@ class UserCollection(Collection[User]):
     def filter_by_gender(self, gender: str) -> 'UserCollection':
         return UserCollection([user for user in self if user.gender == gender])
 
+    def filter_by_role(self, role: str) -> 'UserCollection':
+        return UserCollection([user for user in self if user.role == role])
+
     def get_males(self) -> 'UserCollection':
         return self.filter_by_gender('male')
 
     def get_females(self) -> 'UserCollection':
         return self.filter_by_gender('female')
+
+    def get_standard_users(self) -> 'UserCollection':
+        return self.filter_by_role('user')
+
+    def get_admin_users(self) -> 'UserCollection':
+        return self.filter_by_role('admin')
 
     def sort_by_username(self) -> 'UserCollection':
         return UserCollection(sorted(self, key=lambda user: user.username))

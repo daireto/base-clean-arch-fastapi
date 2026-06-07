@@ -11,4 +11,5 @@ class UserAdmin(ModelView, model=UserModel):
         UserModel.fullname,
         UserModel.email,
         UserModel.gender,
+        UserModel.role,
     ]

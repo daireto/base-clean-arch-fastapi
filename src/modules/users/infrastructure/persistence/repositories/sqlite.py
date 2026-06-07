@@ -45,6 +45,7 @@ class SQLiteUserRepository(UserRepositoryABC):
         model.fullname = user.fullname
         model.email = user.email
         model.gender = user.gender
+        model.role = user.role
         if password:
             model.password = password.get_secret_value()
         await model.save()

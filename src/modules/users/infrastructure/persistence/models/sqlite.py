@@ -5,7 +5,7 @@ from sqlalchemy import Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
 from modules.users.domain.entities import User
-from modules.users.domain.enums import Gender
+from modules.users.domain.enums import Gender, Role
 from shared.utils.validation_types import HashedSecretStr
 
 
@@ -21,6 +21,7 @@ class UserModel(BaseModel):
     fullname: Mapped[str] = mapped_column()
     email: Mapped[str] = mapped_column()
     gender: Mapped[Gender] = mapped_column(Enum(Gender))
+    role: Mapped[Role] = mapped_column(Enum(Role))
     password: Mapped[str] = mapped_column()
 
     def to_entity(self) -> User:
@@ -30,6 +31,7 @@ class UserModel(BaseModel):
             fullname=self.fullname,
             email=self.email,
             gender=self.gender,
+            role=self.role,
             created_at=self.created_at.timestamp(),
             updated_at=self.updated_at.timestamp(),
         )
@@ -42,5 +44,6 @@ class UserModel(BaseModel):
             fullname=entity.fullname,
             email=entity.email,
             gender=entity.gender,
+            role=entity.role,
             password=password.get_secret_value(),
         )

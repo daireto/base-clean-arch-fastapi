@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from simple_result import Err, Ok, Result
 
 from modules.users.domain.entities import User
-from modules.users.domain.enums import Gender
+from modules.users.domain.enums import Gender, Role
 from modules.users.domain.interfaces.repositories import (
     UserRepositoryABC,
 )
@@ -16,6 +16,7 @@ class CreateUserCommand(BaseModel):
     fullname: str
     email: EmailStr
     gender: Gender | str
+    role: Role | str
     password: HashedSecretStr
 
 
@@ -37,6 +38,7 @@ class CreateUserHandler(CommandHandler):
             fullname=command.fullname,
             email=command.email,
             gender=command.gender,  # type: ignore
+            role=command.role,  # type: ignore
         )
         self._instrumentation.before(user)
 

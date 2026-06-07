@@ -4,7 +4,7 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel, EmailStr, Field
 
 from modules.users.domain.entities import User
-from modules.users.domain.enums import Gender
+from modules.users.domain.enums import Gender, Role
 from shared.utils.validation_types import HashedSecretStr
 
 
@@ -14,6 +14,7 @@ class MockUserModel(BaseModel):
     fullname: str
     email: EmailStr
     gender: Gender
+    role: Role
     password: HashedSecretStr
     created_at: float = Field(default_factory=time.time)
     updated_at: float = Field(default_factory=time.time)
@@ -25,6 +26,7 @@ class MockUserModel(BaseModel):
             fullname=self.fullname,
             email=self.email,
             gender=self.gender,
+            role=self.role,
             created_at=self.created_at,
             updated_at=self.updated_at,
         )
@@ -37,6 +39,7 @@ class MockUserModel(BaseModel):
             fullname=entity.fullname,
             email=entity.email,
             gender=entity.gender,
+            role=entity.role,
             password=password,
             created_at=entity.created_at,
             updated_at=entity.updated_at,

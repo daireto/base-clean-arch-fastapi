@@ -2,7 +2,7 @@ from typing import Self
 
 from pydantic import EmailStr, Field
 
-from modules.users.domain.enums import Gender
+from modules.users.domain.enums import Gender, Role
 from shared.domain.bases.entity import Entity
 
 
@@ -11,6 +11,7 @@ class User(Entity):
     fullname: str = Field(min_length=5, max_length=50)
     email: EmailStr
     gender: Gender
+    role: Role
 
     class Builder(Entity.Builder):
         def __init__(self) -> None:
@@ -19,6 +20,7 @@ class User(Entity):
             self._fullname = None
             self._email = None
             self._gender = None
+            self._role = None
 
         def with_username(self, username: str) -> Self:
             self._username = username
@@ -36,6 +38,10 @@ class User(Entity):
             self._gender = gender
             return self
 
+        def with_role(self, role: Role | str) -> Self:
+            self._role = role
+            return self
+
         def build(self) -> 'User':
             return User.model_validate(
                 {
@@ -44,5 +50,6 @@ class User(Entity):
                     'fullname': self._fullname,
                     'email': self._email,
                     'gender': self._gender,
+                    'role': self._role,
                 }
             )

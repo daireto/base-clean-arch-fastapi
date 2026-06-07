@@ -4,7 +4,7 @@ from pydantic import BaseModel, EmailStr
 from simple_result import Err, Ok, Result
 
 from modules.users.domain.entities import User
-from modules.users.domain.enums import Gender
+from modules.users.domain.enums import Gender, Role
 from modules.users.domain.exceptions import MissingPasswordError, UserNotFoundError
 from modules.users.domain.interfaces.repositories import (
     UserRepositoryABC,
@@ -20,6 +20,7 @@ class UpdateUserCommand(BaseModel):
     fullname: str
     email: EmailStr
     gender: Gender | str
+    role: Role | str
     password: HashedSecretStr | None = None
 
 
@@ -29,6 +30,7 @@ class PartialUpdateUserCommand(BaseModel):
     fullname: str | None = None
     email: EmailStr | None = None
     gender: Gender | str | None = None
+    role: Role | str | None = None
     password: HashedSecretStr | None = None
 
 
@@ -51,6 +53,7 @@ class UpdateUserHandler(CommandHandler):
             fullname=command.fullname,
             email=command.email,
             gender=command.gender,  # type: ignore
+            role=command.role,  # type: ignore
         )
         self._instrumentation.before(user)
 
