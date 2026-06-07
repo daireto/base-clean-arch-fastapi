@@ -1,4 +1,4 @@
-from pydantic import HttpUrl
+from pydantic import Field, HttpUrl
 
 from modules.resources.domain.entities import Resource
 from modules.resources.domain.enums import MediaType
@@ -6,30 +6,27 @@ from shared.presentation.dtos import EntityResponseDTO, RequestDTO, ResponseDTO
 
 
 class CreateResourceRequestDTO(RequestDTO):
-    name: str
-    url: HttpUrl
-    type: MediaType
+    name: str = Field(..., description='Name of the resource')
+    url: HttpUrl = Field(..., description='URL of the resource')
+    type: MediaType = Field(..., description='Media type of the resource')
 
 
 class UpdateResourceRequestDTO(RequestDTO):
-    name: str
-    url: HttpUrl
-    type: MediaType
+    name: str = Field(..., description='Name of the resource')
+    url: HttpUrl = Field(..., description='URL of the resource')
+    type: MediaType = Field(..., description='Media type of the resource')
 
 
 class PartialUpdateResourceRequestDTO(RequestDTO):
-    name: str | None = None
-    url: HttpUrl | None = None
-    type: MediaType | None = None
+    name: str | None = Field(None, description='Name of the resource')
+    url: HttpUrl | None = Field(None, description='URL of the resource')
+    type: MediaType | None = Field(None, description='Media type of the resource')
 
 
 class ResourceDTO(EntityResponseDTO):
-    id: str
-    name: str
-    url: str
-    type: str
-    created_at: float
-    updated_at: float
+    name: str = Field(..., description='Name of the resource')
+    url: str = Field(..., description='URL of the resource')
+    type: str = Field(..., description='Media type of the resource')
 
     @classmethod
     def from_entity(cls, resource: Resource) -> 'ResourceDTO':
@@ -44,7 +41,7 @@ class ResourceDTO(EntityResponseDTO):
 
 
 class ResourceResponseDTO(ResponseDTO):
-    resource: ResourceDTO
+    resource: ResourceDTO = Field(..., description='Resource data')
 
     @classmethod
     def from_entity(cls, resource: Resource) -> 'ResourceResponseDTO':
