@@ -1,16 +1,17 @@
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, SecretStr
+from pydantic import BaseModel, EmailStr
 from simple_result import Err, Ok, Result
 
 from modules.users.domain.entities import User
 from modules.users.domain.enums import Gender
-from modules.users.domain.exceptions import UserNotFoundError
+from modules.users.domain.exceptions import MissingPasswordError, UserNotFoundError
 from modules.users.domain.interfaces.repositories import (
     UserRepositoryABC,
 )
 from shared.application.instrumentation import UpdateUseCaseInstrumentation
 from shared.application.interfaces.command_handler import CommandHandler
+from shared.utils.validation_types import HashedSecretStr
 
 
 class UpdateUserCommand(BaseModel):
@@ -19,7 +20,7 @@ class UpdateUserCommand(BaseModel):
     fullname: str
     email: EmailStr
     gender: Gender | str
-    password: SecretStr | None = None
+    password: HashedSecretStr | None = None
 
 
 class PartialUpdateUserCommand(BaseModel):
@@ -28,6 +29,7 @@ class PartialUpdateUserCommand(BaseModel):
     fullname: str | None = None
     email: EmailStr | None = None
     gender: Gender | str | None = None
+    password: HashedSecretStr | None = None
 
 
 class UpdateUserHandler(CommandHandler):
@@ -53,11 +55,12 @@ class UpdateUserHandler(CommandHandler):
         self._instrumentation.before(user)
 
         try:
-            updated = await self._user_repository.update(user)
+            updated = await self._user_repository.update(user, command.password)
             if not updated:
                 if not command.password:
-                    self._instrumentation.not_found(user.id)
-                    return Err(UserNotFoundError(user.id))
+                    error = MissingPasswordError(user.id)
+                    self._instrumentation.validation_error(error)
+                    return Err(error)
                 updated = await self._user_repository.create(user, command.password)
         except Exception as error:
             self._instrumentation.error(error)
@@ -76,10 +79,10 @@ class UpdateUserHandler(CommandHandler):
             return Err(UserNotFoundError(command.id))
 
         self._instrumentation.before(user)
-        user = user.update(command)
+        user = user.update(command, exclude_secrets=True)
 
         try:
-            updated = await self._user_repository.update(user)
+            updated = await self._user_repository.update(user, command.password)
             if not updated:
                 self._instrumentation.not_found(user.id)
                 return Err(UserNotFoundError(user.id))
