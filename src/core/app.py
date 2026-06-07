@@ -20,6 +20,9 @@ from core.middlewares.security_headers_middleware import SecurityHeadersMiddlewa
 from modules.resources.di import provider as resources_provider
 from modules.resources.infrastructure.persistence.admin import ResourceAdmin
 from modules.resources.presentation.api import router as resources_router
+from modules.users.di import provider as users_provider
+from modules.users.infrastructure.persistence.admin import UserAdmin
+from modules.users.presentation.api import router as users_router
 from shared.di import DBConnectionProvider
 from shared.presentation.api import router as shared_router
 
@@ -27,6 +30,7 @@ from shared.presentation.api import router as shared_router
 def register_routers(app: FastAPI) -> None:
     app.include_router(shared_router)
     app.include_router(resources_router)
+    app.include_router(users_router)
 
 
 def register_middlewares(app: FastAPI, include_rate_limit: bool = True) -> None:
@@ -68,6 +72,7 @@ async def register_admin(app: FastAPI, container: AsyncContainer) -> None:
     conn = await container.get(DBConnection)
     admin = Admin(app, session_maker=conn.async_sessionmaker)
     admin.add_view(ResourceAdmin)
+    admin.add_view(UserAdmin)
 
 
 @asynccontextmanager
@@ -117,6 +122,7 @@ def create_app(
 def create_default_app() -> FastAPI:
     container = make_async_container(
         resources_provider,
+        users_provider,
         DBConnectionProvider(
             logger=get_app_logger('db'),
             database_url=settings.database.url,
