@@ -26,9 +26,13 @@ class ResponseDTO(DTO, ABC):
 
 
 class EntityResponseDTO(ResponseDTO, ABC):
-    id: str
-    created_at: float
-    updated_at: float
+    id: str = Field(..., description='Unique identifier of the entity')
+    created_at: float = Field(
+        ..., description='Unix timestamp of when the entity was created'
+    )
+    updated_at: float = Field(
+        ..., description='Unix timestamp of when the entity was last updated'
+    )
 
 
 class PaginatedResponseDTO[T: ResponseDTO](ResponseDTO, ABC):
@@ -51,3 +55,8 @@ class PaginatedResponseDTO[T: ResponseDTO](ResponseDTO, ABC):
             page_size=odata.get_top(),
             page=odata.get_page(),
         )
+
+
+class ServerHealthResponse(BaseModel):
+    message: str = Field(..., description='"ok" if healthy, error message otherwise.')
+    healthy: bool = Field(..., description='Health status')
