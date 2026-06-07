@@ -41,8 +41,9 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-"test_*.py" = [
+"tests/*" = [
     "ANN201", # Missing type annotation for public function
+    "INP001", # File is part of an implicit namespace package, but does not include an `__init__.py` file
     "S101",   # Use of `assert` detected
 ]
 
