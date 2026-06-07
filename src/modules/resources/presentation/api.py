@@ -27,26 +27,18 @@ from modules.resources.application.use_cases.update_resource import (
 from modules.resources.domain.interfaces.repositories import (
     ResourceRepositoryABC,
 )
-from modules.resources.infrastructure.instrumentation.use_cases.create_resource import (
-    CreateResourceInstrumentation,
-)
-from modules.resources.infrastructure.instrumentation.use_cases.delete_resource import (
-    DeleteResourceInstrumentation,
-)
-from modules.resources.infrastructure.instrumentation.use_cases.get_resource import (
-    GetResourceInstrumentation,
-)
-from modules.resources.infrastructure.instrumentation.use_cases.list_resources import (
-    ListResourcesInstrumentation,
-)
-from modules.resources.infrastructure.instrumentation.use_cases.update_resource import (
-    UpdateResourceInstrumentation,
-)
 from modules.resources.presentation.dtos import (
     CreateResourceRequestDTO,
     PartialUpdateResourceRequestDTO,
     ResourceResponseDTO,
     UpdateResourceRequestDTO,
+)
+from shared.application.instrumentation import (
+    CreationUseCaseInstrumentation,
+    DeletionUseCaseInstrumentation,
+    ListingUseCaseInstrumentation,
+    RetrievalUseCaseInstrumentation,
+    UpdateUseCaseInstrumentation,
 )
 from shared.helpers.odata_helper import ODataHelper
 from shared.presentation.dtos import PaginatedResponseDTO
@@ -61,16 +53,14 @@ router = APIRouter(
 
 @router.get('/{id_}')
 async def get_resource(
-    request: Request,
     id_: str,
     repo: FromDishka[ResourceRepositoryABC],
+    instrumentation: FromDishka[RetrievalUseCaseInstrumentation],
 ) -> ResourceResponseDTO:
     command = GetResourceCommand(id=id_)  # type: ignore
     handler = GetResourceHandler(
         resource_repository=repo,
-        instrumentation=GetResourceInstrumentation(
-            logger=request.app.state.get_child_logger('resources.get'),
-        ),
+        instrumentation=instrumentation,
     )
 
     if result := await handler.handle(command):
@@ -83,6 +73,7 @@ async def get_resource(
 async def list_resources(
     request: Request,
     repo: FromDishka[ResourceRepositoryABC],
+    instrumentation: FromDishka[ListingUseCaseInstrumentation],
 ) -> PaginatedResponseDTO[ResourceResponseDTO]:
     odata = ODataHelper.get_from_query(
         query_string=request.url.query,
@@ -93,9 +84,7 @@ async def list_resources(
     )
     handler = ListResourcesHandler(
         resource_repository=repo,
-        instrumentation=ListResourcesInstrumentation(
-            logger=request.app.state.get_child_logger('resources.list'),
-        ),
+        instrumentation=instrumentation,
     )
 
     if result := await handler.handle_with_count(command):
@@ -110,16 +99,14 @@ async def list_resources(
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
 async def create_resource(
-    request: Request,
     dto: CreateResourceRequestDTO,
     repo: FromDishka[ResourceRepositoryABC],
+    instrumentation: FromDishka[CreationUseCaseInstrumentation],
 ) -> ResourceResponseDTO:
     command = CreateResourceCommand(name=dto.name, url=dto.url, type=dto.type)
     handler = CreateResourceHandler(
         resource_repository=repo,
-        instrumentation=CreateResourceInstrumentation(
-            logger=request.app.state.get_child_logger('resources.create'),
-        ),
+        instrumentation=instrumentation,
     )
 
     if result := await handler.handle(command):
@@ -130,10 +117,10 @@ async def create_resource(
 
 @router.put('/{id_}')
 async def update_resource(
-    request: Request,
     id_: str,
     dto: UpdateResourceRequestDTO,
     repo: FromDishka[ResourceRepositoryABC],
+    instrumentation: FromDishka[UpdateUseCaseInstrumentation],
 ) -> ResourceResponseDTO:
     command = UpdateResourceCommand(
         id=id_,  # type: ignore
@@ -143,9 +130,7 @@ async def update_resource(
     )
     handler = UpdateResourceHandler(
         resource_repository=repo,
-        instrumentation=UpdateResourceInstrumentation(
-            logger=request.app.state.get_child_logger('resources.update'),
-        ),
+        instrumentation=instrumentation,
     )
 
     if result := await handler.handle(command):
@@ -156,10 +141,10 @@ async def update_resource(
 
 @router.patch('/{id_}')
 async def partially_update_resource(
-    request: Request,
     id_: str,
     dto: PartialUpdateResourceRequestDTO,
     repo: FromDishka[ResourceRepositoryABC],
+    instrumentation: FromDishka[UpdateUseCaseInstrumentation],
 ) -> ResourceResponseDTO:
     command = PartialUpdateResourceCommand(
         id=id_,  # type: ignore
@@ -167,9 +152,7 @@ async def partially_update_resource(
     )
     handler = UpdateResourceHandler(
         resource_repository=repo,
-        instrumentation=UpdateResourceInstrumentation(
-            logger=request.app.state.get_child_logger('resources.update'),
-        ),
+        instrumentation=instrumentation,
     )
 
     if result := await handler.handle_partial(command):
@@ -180,16 +163,14 @@ async def partially_update_resource(
 
 @router.delete('/{id_}')
 async def delete_resource(
-    request: Request,
     id_: str,
     repo: FromDishka[ResourceRepositoryABC],
+    instrumentation: FromDishka[DeletionUseCaseInstrumentation],
 ) -> Response:
     command = DeleteResourceCommand(id=id_)  # type: ignore
     handler = DeleteResourceHandler(
         resource_repository=repo,
-        instrumentation=DeleteResourceInstrumentation(
-            logger=request.app.state.get_child_logger('resources.delete'),
-        ),
+        instrumentation=instrumentation,
     )
 
     if result := await handler.handle(command):
