@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from uuid import UUID
 
 from odata_v4_query import ODataQueryOptions
-from pydantic import SecretStr
 
 from modules.users.domain.entities import User
+from shared.utils.validation_types import HashedSecretStr
 
 
 class UserRepositoryABC(ABC):
@@ -15,10 +15,12 @@ class UserRepositoryABC(ABC):
     async def all(self, odata_options: ODataQueryOptions) -> list[User]: ...
 
     @abstractmethod
-    async def create(self, user: User, password: SecretStr) -> User: ...
+    async def create(self, user: User, password: HashedSecretStr) -> User: ...
 
     @abstractmethod
-    async def update(self, user: User) -> User | None: ...
+    async def update(
+        self, user: User, password: HashedSecretStr | None = None
+    ) -> User | None: ...
 
     @abstractmethod
     async def delete(self, id_: UUID) -> None: ...
