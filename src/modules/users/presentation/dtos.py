@@ -6,36 +6,37 @@ from shared.presentation.dtos import EntityResponseDTO, RequestDTO, ResponseDTO
 
 
 class CreateUserRequestDTO(RequestDTO):
-    username: str
-    fullname: str
-    email: EmailStr
-    gender: Gender
-    password: SecretStr = Field(..., min_length=8, max_length=80)
+    username: str = Field(..., description='Unique username of the user')
+    fullname: str = Field(..., description='Full name of the user')
+    email: EmailStr = Field(..., description='Email address of the user')
+    gender: Gender = Field(..., description='Gender of the user')
+    password: SecretStr = Field(
+        ..., min_length=8, max_length=80, description='Password of the user'
+    )
 
 
 class UpdateUserRequestDTO(RequestDTO):
-    username: str
-    fullname: str
-    email: EmailStr
-    gender: Gender
-    password: SecretStr | None = Field(min_length=8, max_length=80, default=None)
+    username: str = Field(..., description='Unique username of the user')
+    fullname: str = Field(..., description='Full name of the user')
+    email: EmailStr = Field(..., description='Email address of the user')
+    gender: Gender = Field(..., description='Gender of the user')
+    password: SecretStr | None = Field(
+        None, min_length=8, max_length=80, description='Password of the user'
+    )
 
 
 class PartialUpdateUserRequestDTO(RequestDTO):
-    username: str | None = None
-    fullname: str | None = None
-    email: EmailStr | None = None
-    gender: Gender | None = None
+    username: str | None = Field(None, description='Unique username of the user')
+    fullname: str | None = Field(None, description='Full name of the user')
+    email: EmailStr | None = Field(None, description='Email address of the user')
+    gender: Gender | None = Field(None, description='Gender of the user')
 
 
 class UserDTO(EntityResponseDTO):
-    id: str
-    username: str
-    fullname: str
-    email: str
-    gender: str
-    created_at: float
-    updated_at: float
+    username: str = Field(..., description='Unique username of the user')
+    fullname: str = Field(..., description='Full name of the user')
+    email: str = Field(..., description='Email address of the user')
+    gender: str = Field(..., description='Gender of the user')
 
     @classmethod
     def from_entity(cls, user: User) -> 'UserDTO':
@@ -51,7 +52,7 @@ class UserDTO(EntityResponseDTO):
 
 
 class UserResponseDTO(ResponseDTO):
-    user: UserDTO
+    user: UserDTO = Field(..., description='User data')
 
     @classmethod
     def from_entity(cls, user: User) -> 'UserResponseDTO':
